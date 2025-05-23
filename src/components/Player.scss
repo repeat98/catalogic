@@ -1,0 +1,12 @@
+.Player {
+    align-self: stretch;
+    height: 52px;
+    background: #1C1C1C;
+    justify-content: flex-start; // Or space-between, center, etc., depending on content
+    align-items: center; // Typically align items vertically center in a player bar
+    display: inline-flex; // Or flex
+    flex-wrap: wrap; // As specified, though for a single row player, nowrap is common
+    align-content: flex-start; // As specified
+    padding-left: 24px; // Added for consistency if content starts from edge
+    padding-right: 24px; // Added for consistency
+  }

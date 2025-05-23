@@ -1,0 +1,119 @@
+.Navbar {
+    align-self: stretch;
+    padding-left: 24px;
+    padding-right: 24px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    overflow: hidden;
+    justify-content: space-between;
+    align-items: center;
+    display: inline-flex; // Note: In a flex column parent, this might behave unexpectedly. Usually display: flex;
+  
+    .NavbarMenu {
+      justify-content: flex-start;
+      align-items: center;
+      gap: 24px;
+      display: flex;
+  
+      .NavbarMenuItem {
+        color: white;
+        font-size: 12px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 400;
+        line-height: 20px;
+        word-wrap: break-word;
+        cursor: pointer;
+  
+        &.active, &:hover { // Example active/hover state
+          font-weight: 700;
+        }
+      }
+    }
+  
+    .WindowControl {
+      width: 45px; // Sum of children and divider approx
+      height: 18px;
+      position: relative;
+      display: flex;
+      align-items: center;
+  
+      .Icons {
+        width: 18px;
+        height: 18px;
+        position: relative; // Changed from absolute for flex layout
+        overflow: hidden;
+        cursor: pointer;
+  
+        // Specific classes for icon containers if needed for spacing
+        &.FullWindowIconContainer {}
+        &.TwoWindowIconContainer {}
+  
+        .FullWindow {
+          width: 18px;
+          height: 18px;
+          position: relative; // Changed from absolute
+          overflow: hidden;
+  
+          .Rectangle16 { // Top part of full window icon
+            width: 14px;
+            height: 5px;
+            left: 2px;
+            top: 3px;
+            position: absolute;
+            background: #9C9C9C;
+          }
+  
+          .Rectangle17Full { // Main part of full window icon (combined)
+            width: 14px;
+            height: 12px; // Assuming this is the full body
+            left: 2px;
+            top: 3px;
+            position: absolute;
+            background: #9C9C9C; // Color active state
+            // border: 1px solid #9C9C9C; // Example border
+          }
+           /* Rectangle18 seems decorative or a misinterpretation of a border */
+          .Rectangle18 {
+            width: 2px;
+            height: 15px;
+            left: 20px; /* This places it outside the 18px icon box */
+            top: 1px;
+            position: absolute;
+            background: #D9D9D9;
+          }
+        }
+  
+        .TwoWindow {
+          width: 18px;
+          height: 18px;
+          position: relative; // Changed from absolute
+          overflow: hidden;
+  
+          .Rectangle16 { // Top part of split window icon
+            width: 14px;
+            height: 5px;
+            left: 2px;
+            top: 3px;
+            position: absolute;
+            background: #555555; // Color inactive state
+          }
+  
+          .Rectangle17Two { // Bottom part of split window icon
+            width: 14px;
+            height: 5px;
+            left: 2px;
+            top: 10px; // Positioned below the first rectangle
+            position: absolute;
+            background: #555555; // Color inactive state
+          }
+        }
+      }
+      .WindowControlDivider {
+        width: 1px;
+        height: 18px;
+        background: #9C9C9C;
+        margin-left: 4px; // Spacing around divider
+        margin-right: 4px; // Spacing around divider
+      }
+    }
+  }

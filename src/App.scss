@@ -1,0 +1,37 @@
+/* App.scss */
+
+/* Global body styles */
+body {
+  font-family: 'Inter', sans-serif; /* Sets the default font for the application */
+  margin: 0; /* Removes default browser margin */
+  background-color: #333; /* A neutral background for the page, visible if AppWindow doesn't fill */
+  height: 100vh; /* Ensures html/body take full viewport height */
+  width: 100vw; /* Ensures html/body take full viewport width */
+  overflow: hidden; /* Prevent scrollbars on the body itself */
+  display: flex; /* Make body a flex container to allow AppWindow to fill it using flex properties */
+}
+
+/* Styles for the main application window */
+.AppWindow {
+  width: 100%; /* Fallback width, primary sizing handled by flex */
+  height: 100%; /* Fallback height, primary sizing handled by flex */
+  background: #292929; /* User-specified, was already present */
+  
+  overflow: hidden; /* Kept, important for border-radius and preventing content overflow */
+  display: flex; /* This makes AppWindow a flex container for its children (Sidebar, Main) */
+
+  /* Properties for AppWindow as a flex item of 'body' */
+  flex: 1 0 0; /* Allows AppWindow to grow and fill the available space in 'body' (main axis: width) */
+  align-self: stretch; /* Allows AppWindow to stretch to fill 'body' (cross axis: height) */
+  
+  /* Aligns children (Sidebar, Main) along the cross-axis (vertical by default for row flex-direction).
+     Note: Sidebar and Main components have 'align-self: stretch;' in their own SCSS,
+     which will override this and make them take the full height of AppWindow. */
+  align-items: flex-start; 
+}
+
+/* Ensure you have the 'Inter' font available in your project. 
+  You can include it via a CDN in your public/index.html:
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  or install it via npm/yarn if you prefer.
+*/

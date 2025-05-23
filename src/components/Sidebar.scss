@@ -1,0 +1,177 @@
+.Sidebar {
+    width: 256px;
+    align-self: stretch;
+    background: #1C1C1C;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    display: inline-flex;
+  
+    .WindowControlsOuter {
+      align-self: stretch;
+      height: 52px;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 10px;
+      display: flex;
+  
+      .WindowControlsInner {
+        height: 52px;
+        padding-left: 24px;
+        padding-right: 24px;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        display: inline-flex;
+  
+        .Close {
+          width: 12px;
+          height: 12px;
+          position: relative;
+          background: #FF5F57;
+          border-radius: 100px;
+          border: 0.50px rgba(0, 0, 0, 0.20) solid;
+        }
+  
+        .Minimize {
+          width: 12px;
+          height: 12px;
+          position: relative;
+          background: #FEBC2E;
+          border-radius: 100px;
+          border: 0.50px rgba(0, 0, 0, 0.20) solid;
+        }
+  
+        .Zoom {
+          width: 12px;
+          height: 12px;
+          position: relative;
+          background: #28C840;
+          border-radius: 100px;
+          border: 0.50px rgba(0, 0, 0, 0.20) solid;
+        }
+      }
+    }
+  
+    .Menu {
+      align-self: stretch;
+      flex: 1 1 0;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      display: flex;
+  
+      .MenuCategory {
+        align-self: stretch;
+        flex: 1 1 0;
+        padding-left: 24px;
+        padding-right: 24px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        overflow: hidden;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 4px;
+        display: flex;
+  
+        .Label {
+          width: 151px; // Or consider width: auto or max-width
+          height: 24px;
+          color: #DADADA;
+          font-size: 10px;
+          font-family: 'Inter', sans-serif;
+          font-weight: 400;
+          line-height: 20px;
+          word-wrap: break-word;
+        }
+      }
+  
+      .LibraryMenu {
+        align-self: stretch;
+        height: auto; // Adjusted from 120px to be more flexible
+        overflow: hidden;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        display: flex;
+         .Label { // Inherits from MenuCategory .Label, but can be overridden
+          // Specific styles for LibraryMenu Label if needed
+        }
+      }
+  
+      .MenuItem {
+        align-self: stretch;
+        flex: 1 1 0; // This might cause items to grow a lot, adjust if needed
+        overflow: hidden;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        display: flex;
+        .Label { // Inherits from MenuCategory .Label, but can be overridden
+          // Specific styles for MenuItem Label if needed
+        }
+      }
+  
+      .Divider {
+        align-self: stretch;
+        height: 2px;
+        background: #292929;
+      }
+    }
+  
+    .LogoContainer {
+      align-self: stretch;
+      padding-left: 24px;
+      padding-right: 24px;
+      padding-top: 16px;
+      padding-bottom: 16px;
+      overflow: hidden;
+      justify-content: space-between;
+      align-items: center;
+      display: inline-flex;
+  
+      .LogoWrapper {
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        display: flex;
+  
+        .Logo {
+          width: 18px;
+          height: 17px;
+          border-radius: 5px;
+          border: 4px #FF5A16 solid;
+        }
+  
+        .LogoText {
+          width: auto; // Adjusted from 76px
+          height: 20px;
+          color: #DADADA;
+          font-size: 14px;
+          font-family: 'Inter', sans-serif;
+          font-weight: 700;
+          line-height: 20px;
+          word-wrap: break-word;
+        }
+      }
+  
+      .IconSettings {
+        width: 18px;
+        height: 18px;
+        position: relative;
+        overflow: hidden;
+  
+        .Vector {
+          width: 14.28px;
+          height: 15px;
+          left: 1.86px;
+          top: 1.50px;
+          position: absolute;
+          background: #696969; // Assuming this is for an SVG or an icon font, otherwise use background-image
+        }
+      }
+    }
+  }

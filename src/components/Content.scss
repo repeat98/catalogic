@@ -1,0 +1,10 @@
+.Content {
+    align-self: stretch;
+    flex: 1 1 0;
+    padding-top: 24px;
+    padding-left: 24px;
+    padding-right: 24px;
+    // padding-bottom will be implicit or could be set if needed
+    // background-color: #2f2f2f; // Example background if it's different from Main
+    overflow-y: auto; // If content is expected to scroll
+  }
