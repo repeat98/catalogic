@@ -58,7 +58,7 @@ const WaveformPreview = ({
         barWidth: 1,
         barGap: 1,
         responsive: true,
-        normalize: true,
+        normalize: false,
         interact: true,
         hideScrollbar: true,
         fillParent: true,
@@ -134,13 +134,10 @@ const WaveformPreview = ({
 
   useEffect(() => {
     if (isInViewport) {
-      initTimeoutRef.current = setTimeout(() => {
-        if (isInViewport && !isDestroyedRef.current) initializeWaveform();
-      }, 100);
+      if (isInViewport && !isDestroyedRef.current) initializeWaveform();
     } else {
       cleanupWaveform();
     }
-    return () => clearTimeout(initTimeoutRef.current);
   }, [isInViewport, initializeWaveform, cleanupWaveform]);
 
   useEffect(() => {

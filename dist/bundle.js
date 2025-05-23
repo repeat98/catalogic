@@ -1588,7 +1588,7 @@ var WaveformPreview = function WaveformPreview(_ref) {
             barWidth: 1,
             barGap: 1,
             responsive: true,
-            normalize: true,
+            normalize: false,
             interact: true,
             hideScrollbar: true,
             fillParent: true,
@@ -1667,15 +1667,10 @@ var WaveformPreview = function WaveformPreview(_ref) {
   }, []);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     if (isInViewport) {
-      initTimeoutRef.current = setTimeout(function () {
-        if (isInViewport && !isDestroyedRef.current) initializeWaveform();
-      }, 100);
+      if (isInViewport && !isDestroyedRef.current) initializeWaveform();
     } else {
       cleanupWaveform();
     }
-    return function () {
-      return clearTimeout(initTimeoutRef.current);
-    };
   }, [isInViewport, initializeWaveform, cleanupWaveform]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     return function () {
