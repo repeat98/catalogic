@@ -367,29 +367,27 @@ function Main() {
     // if track data is large and changes often in ways not relevant to playback.
     // currentPlayingTrack.id is sufficient for changes related to the current track.
   }, [audioPlayerRef, currentPlayingTrack === null || currentPlayingTrack === void 0 ? void 0 : currentPlayingTrack.id]);
-  return (
-    /*#__PURE__*/
-    // The className is "Main" to match Main.scss
-    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "Main"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Navbar__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Content__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      filteredTracks: filteredTracks,
-      selectedTrackId: selectedTrackId,
-      currentPlayingTrack: currentPlayingTrack,
-      isPlaying: isPlaying,
-      audioError: audioError,
-      onTrackSelect: handleTrackSelect,
-      onPlayTrack: handlePlayTrack,
-      onSearch: handleSearch,
-      isLoading: isLoading,
-      error: error
-    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Player__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      audioPlayerRef: audioPlayerRef,
-      currentPlayingTrack: currentPlayingTrack,
-      isPlaying: isPlaying,
-      audioError: audioError
-    }))
-  );
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "Main"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Navbar__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "MainContent"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Content__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    filteredTracks: filteredTracks,
+    selectedTrackId: selectedTrackId,
+    currentPlayingTrack: currentPlayingTrack,
+    isPlaying: isPlaying,
+    audioError: audioError,
+    onTrackSelect: handleTrackSelect,
+    onPlayTrack: handlePlayTrack,
+    onSearch: handleSearch,
+    isLoading: isLoading,
+    error: error
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Player__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    audioPlayerRef: audioPlayerRef,
+    currentPlayingTrack: currentPlayingTrack,
+    isPlaying: isPlaying,
+    audioError: audioError
+  }));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Main);
 
@@ -1567,7 +1565,18 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Main {
   align-items: stretch;
   overflow: hidden;
   background: #292929;
-}`, "",{"version":3,"sources":["webpack://./src/components/Main.scss"],"names":[],"mappings":"AACA;EACI,sBAAA;EACA,YAAA;EACA,cAAA;EACA,cAAA;EACA,mBAAA;EACA,aAAA;EACA,sBAAA;EACA,oBAAA;EACA,gBAAA;EACA,mBAAA;AAAJ","sourceRoot":""}]);
+  height: 100%;
+  background-color: #1C1C1C;
+  color: #DADADA;
+}
+
+.MainContent {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}`, "",{"version":3,"sources":["webpack://./src/components/Main.scss"],"names":[],"mappings":"AACA;EACI,sBAAA;EACA,YAAA;EACA,cAAA;EACA,cAAA;EACA,mBAAA;EACA,aAAA;EACA,sBAAA;EACA,oBAAA;EACA,gBAAA;EACA,mBAAA;EACA,YAAA;EACA,yBAAA;EACA,cAAA;AAAJ;;AAIA;EACE,OAAA;EACA,gBAAA;EACA,kBAAA;EACA,aAAA;EACA,sBAAA;AADF","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -1965,17 +1974,29 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
 ___CSS_LOADER_EXPORT___.push([module.id, `.Player {
-  align-self: stretch;
-  height: 52px;
-  background: #1C1C1C;
-  justify-content: flex-start;
+  position: relative;
+  width: 100%;
+  height: 60px;
+  background-color: #2C2C2C;
+  border-top: 1px solid #383838;
+  display: flex;
   align-items: center;
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  padding-left: 24px;
-  padding-right: 24px;
-}`, "",{"version":3,"sources":["webpack://./src/components/Player.scss"],"names":[],"mappings":"AAAA;EACI,mBAAA;EACA,YAAA;EACA,mBAAA;EACA,2BAAA;EACA,mBAAA;EACA,oBAAA;EACA,eAAA;EACA,yBAAA;EACA,kBAAA;EACA,mBAAA;AACJ","sourceRoot":""}]);
+  box-sizing: border-box;
+  z-index: 100;
+}
+
+.MiniPlayerInfo {
+  color: #DADADA;
+  font-size: 14px;
+  font-family: "Inter", sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.AudioErrorText {
+  color: #FF5A16;
+}`, "",{"version":3,"sources":["webpack://./src/components/Player.scss"],"names":[],"mappings":"AAAA;EACE,kBAAA;EACA,WAAA;EACA,YAAA;EACA,yBAAA;EACA,6BAAA;EACA,aAAA;EACA,mBAAA;EACA,sBAAA;EACA,YAAA;AACF;;AAEA;EACE,cAAA;EACA,eAAA;EACA,gCAAA;EACA,mBAAA;EACA,gBAAA;EACA,uBAAA;AACF;;AAEA;EACE,cAAA;AACF","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

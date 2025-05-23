@@ -132,21 +132,22 @@ function Main() {
   }, [audioPlayerRef, currentPlayingTrack?.id]); 
 
   return (
-    // The className is "Main" to match Main.scss
     <div className="Main">
       <Navbar />
-      <Content
-        filteredTracks={filteredTracks}
-        selectedTrackId={selectedTrackId}
-        currentPlayingTrack={currentPlayingTrack}
-        isPlaying={isPlaying}
-        audioError={audioError}
-        onTrackSelect={handleTrackSelect}
-        onPlayTrack={handlePlayTrack}
-        onSearch={handleSearch}
-        isLoading={isLoading}
-        error={error}
-      />
+      <div className="MainContent">
+        <Content
+          filteredTracks={filteredTracks}
+          selectedTrackId={selectedTrackId}
+          currentPlayingTrack={currentPlayingTrack}
+          isPlaying={isPlaying}
+          audioError={audioError}
+          onTrackSelect={handleTrackSelect}
+          onPlayTrack={handlePlayTrack}
+          onSearch={handleSearch}
+          isLoading={isLoading}
+          error={error}
+        />
+      </div>
       <Player
         audioPlayerRef={audioPlayerRef}
         currentPlayingTrack={currentPlayingTrack}
