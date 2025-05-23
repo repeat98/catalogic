@@ -184,11 +184,11 @@ const WaveformPreview = ({
   return (
     <div ref={containerRef} className="WaveformPreview">
       <div ref={waveformRef} className="WaveformContainer" />
-      {!isInViewport && (
+      {/* {!isInViewport && (
         <div className="WaveformOverlay scroll-to-load">
           <div className="WaveformLoading">Scroll to load</div>
         </div>
-      )}
+      )} */}
       {isInViewport && (isLoading || error) && (
         <div className="WaveformOverlay">
           {/* {isLoading ? <div className="WaveformLoading">Loading...</div> :  */}

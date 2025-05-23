@@ -1718,11 +1718,7 @@ var WaveformPreview = function WaveformPreview(_ref) {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     ref: waveformRef,
     className: "WaveformContainer"
-  }), !isInViewport && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "WaveformOverlay scroll-to-load"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "WaveformLoading"
-  }, "Scroll to load")), isInViewport && (isLoading || error) && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }), isInViewport && (isLoading || error) && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "WaveformOverlay"
   }, error ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "WaveformLoading"
