@@ -7,6 +7,7 @@
     overflow: hidden;
     justify-content: space-between;
     align-items: center;
+    min-height: 24px;
     display: inline-flex; // Note: In a flex column parent, this might behave unexpectedly. Usually display: flex;
   
     .NavbarMenu {

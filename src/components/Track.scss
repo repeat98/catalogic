@@ -1,0 +1,104 @@
+.TrackRow {
+    border-bottom: 1px solid #383838;
+    cursor: pointer;
+  
+    &.Selected {
+      background-color: #505050;
+      color: #ffffff;
+    }
+    &.CurrentPlayingTrack {
+      // Optional: distinct style for the currently loaded/playing track row
+      background-color: #5a6a7a; // A different highlight
+      color: #ffffff;
+      font-weight: 500;
+  
+      .TrackCell.Cell-title { // Make title bold for current track
+          font-weight: 700;
+      }
+    }
+  
+  
+    &:last-child {
+      .TrackCell {
+        border-bottom: none;
+      }
+    }
+  }
+  
+  .TrackCell {
+    padding: 8px 12px;
+    vertical-align: middle;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  
+    &.Cell-artwork_thumbnail_path {
+      width: 50px; // Initial fixed width
+      padding: 4px 8px;
+    }
+  
+    &:first-child {
+      padding-left: 16px;
+    }
+    // Removed last-child padding-right as play button cell handles its own
+  }
+  
+  .TrackArtworkThumbnail {
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+    border-radius: 3px;
+    display: block;
+    background-color: #404040;
+  }
+  
+  .PlayButton {
+    background: none;
+    border: none;
+    color: #a0a0a0;
+    cursor: pointer;
+    font-size: 1rem; /* Ensure this is large enough for ❚❚ */
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px; /* Give it some fixed width */
+    height: 30px; /* Give it some fixed height */
+    line-height: 1; /* Important for vertical centering of text symbols */
+  
+  
+    &:hover {
+      color: #ffffff;
+    }
+  
+    .TrackRow.Selected &,
+    .TrackRow.CurrentPlayingTrack & {
+      color: #ffffff;
+    }
+  }
+  
+  .Cell-title {
+    font-weight: 500;
+  }
+  
+  .Cell-bpm,
+  .Cell-key,
+  .Cell-time,
+  .Cell-year {
+    // text-align: right; // This is now handled by th style
+    color: #b0b0b0;
+  }
+  
+  .TrackRow.Selected, .TrackRow.CurrentPlayingTrack {
+    .Cell-bpm,
+    .Cell-key,
+    .Cell-time,
+    .Cell-year {
+      color: #e0e0e0;
+    }
+  }
+  
+  .TrackCell.Cell-playAction {
+      padding: 0; // Remove padding for the play button cell
+      text-align: center; // Center the button
+  }

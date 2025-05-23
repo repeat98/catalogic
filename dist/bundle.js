@@ -49,15 +49,240 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Content_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Content.scss */ "./src/components/Content.scss");
+/* harmony import */ var _Tracklist__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Tracklist */ "./src/components/Tracklist.jsx");
+/* harmony import */ var _Content_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Content.scss */ "./src/components/Content.scss");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return r; }; var t, r = {}, e = Object.prototype, n = e.hasOwnProperty, o = "function" == typeof Symbol ? Symbol : {}, i = o.iterator || "@@iterator", a = o.asyncIterator || "@@asyncIterator", u = o.toStringTag || "@@toStringTag"; function c(t, r, e, n) { return Object.defineProperty(t, r, { value: e, enumerable: !n, configurable: !n, writable: !n }); } try { c({}, ""); } catch (t) { c = function c(t, r, e) { return t[r] = e; }; } function h(r, e, n, o) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype); return c(a, "_invoke", function (r, e, n) { var o = 1; return function (i, a) { if (3 === o) throw Error("Generator is already running"); if (4 === o) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var u = n.delegate; if (u) { var c = d(u, n); if (c) { if (c === f) continue; return c; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (1 === o) throw o = 4, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = 3; var h = s(r, e, n); if ("normal" === h.type) { if (o = n.done ? 4 : 2, h.arg === f) continue; return { value: h.arg, done: n.done }; } "throw" === h.type && (o = 4, n.method = "throw", n.arg = h.arg); } }; }(r, n, new Context(o || [])), !0), a; } function s(t, r, e) { try { return { type: "normal", arg: t.call(r, e) }; } catch (t) { return { type: "throw", arg: t }; } } r.wrap = h; var f = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var l = {}; c(l, i, function () { return this; }); var p = Object.getPrototypeOf, y = p && p(p(x([]))); y && y !== e && n.call(y, i) && (l = y); var v = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(l); function g(t) { ["next", "throw", "return"].forEach(function (r) { c(t, r, function (t) { return this._invoke(r, t); }); }); } function AsyncIterator(t, r) { function e(o, i, a, u) { var c = s(t[o], t, i); if ("throw" !== c.type) { var h = c.arg, f = h.value; return f && "object" == _typeof(f) && n.call(f, "__await") ? r.resolve(f.__await).then(function (t) { e("next", t, a, u); }, function (t) { e("throw", t, a, u); }) : r.resolve(f).then(function (t) { h.value = t, a(h); }, function (t) { return e("throw", t, a, u); }); } u(c.arg); } var o; c(this, "_invoke", function (t, n) { function i() { return new r(function (r, o) { e(t, n, r, o); }); } return o = o ? o.then(i, i) : i(); }, !0); } function d(r, e) { var n = e.method, o = r.i[n]; if (o === t) return e.delegate = null, "throw" === n && r.i["return"] && (e.method = "return", e.arg = t, d(r, e), "throw" === e.method) || "return" !== n && (e.method = "throw", e.arg = new TypeError("The iterator does not provide a '" + n + "' method")), f; var i = s(o, r.i, e.arg); if ("throw" === i.type) return e.method = "throw", e.arg = i.arg, e.delegate = null, f; var a = i.arg; return a ? a.done ? (e[r.r] = a.value, e.next = r.n, "return" !== e.method && (e.method = "next", e.arg = t), e.delegate = null, f) : a : (e.method = "throw", e.arg = new TypeError("iterator result is not an object"), e.delegate = null, f); } function w(t) { this.tryEntries.push(t); } function m(r) { var e = r[4] || {}; e.type = "normal", e.arg = t, r[4] = e; } function Context(t) { this.tryEntries = [[-1]], t.forEach(w, this), this.reset(!0); } function x(r) { if (null != r) { var e = r[i]; if (e) return e.call(r); if ("function" == typeof r.next) return r; if (!isNaN(r.length)) { var o = -1, a = function e() { for (; ++o < r.length;) if (n.call(r, o)) return e.value = r[o], e.done = !1, e; return e.value = t, e.done = !0, e; }; return a.next = a; } } throw new TypeError(_typeof(r) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, c(v, "constructor", GeneratorFunctionPrototype), c(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = c(GeneratorFunctionPrototype, u, "GeneratorFunction"), r.isGeneratorFunction = function (t) { var r = "function" == typeof t && t.constructor; return !!r && (r === GeneratorFunction || "GeneratorFunction" === (r.displayName || r.name)); }, r.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, c(t, u, "GeneratorFunction")), t.prototype = Object.create(v), t; }, r.awrap = function (t) { return { __await: t }; }, g(AsyncIterator.prototype), c(AsyncIterator.prototype, a, function () { return this; }), r.AsyncIterator = AsyncIterator, r.async = function (t, e, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(h(t, e, n, o), i); return r.isGeneratorFunction(e) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, g(v), c(v, u, "Generator"), c(v, i, function () { return this; }), c(v, "toString", function () { return "[object Generator]"; }), r.keys = function (t) { var r = Object(t), e = []; for (var n in r) e.unshift(n); return function t() { for (; e.length;) if ((n = e.pop()) in r) return t.value = n, t.done = !1, t; return t.done = !0, t; }; }, r.values = x, Context.prototype = { constructor: Context, reset: function reset(r) { if (this.prev = this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(m), !r) for (var e in this) "t" === e.charAt(0) && n.call(this, e) && !isNaN(+e.slice(1)) && (this[e] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0][4]; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(r) { if (this.done) throw r; var e = this; function n(t) { a.type = "throw", a.arg = r, e.next = t; } for (var o = e.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i[4], u = this.prev, c = i[1], h = i[2]; if (-1 === i[0]) return n("end"), !1; if (!c && !h) throw Error("try statement without catch or finally"); if (null != i[0] && i[0] <= u) { if (u < c) return this.method = "next", this.arg = t, n(c), !0; if (u < h) return n(h), !1; } } }, abrupt: function abrupt(t, r) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var n = this.tryEntries[e]; if (n[0] > -1 && n[0] <= this.prev && this.prev < n[2]) { var o = n; break; } } o && ("break" === t || "continue" === t) && o[0] <= r && r <= o[2] && (o = null); var i = o ? o[4] : {}; return i.type = t, i.arg = r, o ? (this.method = "next", this.next = o[2], f) : this.complete(i); }, complete: function complete(t, r) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && r && (this.next = r), f; }, finish: function finish(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[2] === t) return this.complete(e[4], e[3]), m(e), f; } }, "catch": function _catch(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[0] === t) { var n = e[4]; if ("throw" === n.type) { var o = n.arg; m(e); } return o; } } throw Error("illegal catch attempt"); }, delegateYield: function delegateYield(r, e, n) { return this.delegate = { i: x(r), r: e, n: n }, "next" === this.method && (this.arg = t), f; } }, r; }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+ // Added useRef
 
 
-var Content = function Content(_ref) {
-  var children = _ref.children;
+var Content = function Content() {
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState2 = _slicedToArray(_useState, 2),
+    allTracks = _useState2[0],
+    setAllTracks = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState4 = _slicedToArray(_useState3, 2),
+    selectedTrackId = _useState4[0],
+    setSelectedTrackId = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState6 = _slicedToArray(_useState5, 2),
+    currentPlayingTrack = _useState6[0],
+    setCurrentPlayingTrack = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState8 = _slicedToArray(_useState7, 2),
+    error = _useState8[0],
+    setError = _useState8[1];
+  var _useState9 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true),
+    _useState10 = _slicedToArray(_useState9, 2),
+    isLoading = _useState10[0],
+    setIsLoading = _useState10[1];
+
+  // --- Audio Player State & Ref ---
+  var _useState11 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState12 = _slicedToArray(_useState11, 2),
+    isPlaying = _useState12[0],
+    setIsPlaying = _useState12[1];
+  var audioPlayerRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null); // Ref for the audio element
+  var _useState13 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState14 = _slicedToArray(_useState13, 2),
+    audioError = _useState14[0],
+    setAudioError = _useState14[1];
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    var fetchTracks = /*#__PURE__*/function () {
+      var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        var response, errorMessage, errorBody, data, processedTracks;
+        return _regeneratorRuntime().wrap(function _callee$(_context) {
+          while (1) switch (_context.prev = _context.next) {
+            case 0:
+              setIsLoading(true);
+              setError(null);
+              _context.prev = 2;
+              _context.next = 5;
+              return fetch('http://localhost:3000/tracks');
+            case 5:
+              response = _context.sent;
+              if (response.ok) {
+                _context.next = 19;
+                break;
+              }
+              errorMessage = "HTTP error! status: ".concat(response.status);
+              _context.prev = 8;
+              _context.next = 11;
+              return response.json();
+            case 11:
+              errorBody = _context.sent;
+              // Try to get more info from body
+              errorMessage += " - ".concat(errorBody.error || response.statusText);
+              _context.next = 18;
+              break;
+            case 15:
+              _context.prev = 15;
+              _context.t0 = _context["catch"](8);
+              errorMessage += " - ".concat(response.statusText);
+            case 18:
+              throw new Error(errorMessage);
+            case 19:
+              _context.next = 21;
+              return response.json();
+            case 21:
+              data = _context.sent;
+              processedTracks = data.map(function (track) {
+                var artworkPath = 'assets/default-artwork.png'; // Updated default path
+
+                if (track.artwork_thumbnail_path) {
+                  // Assuming artwork_thumbnail_path might be a direct URL or resolvable path
+                  // If it's a local file system path, it needs special handling in Electron as discussed
+                  artworkPath = track.artwork_thumbnail_path;
+                }
+                return _objectSpread(_objectSpread({}, track), {}, {
+                  artwork_thumbnail_path: artworkPath
+                });
+              });
+              setAllTracks(processedTracks);
+              _context.next = 30;
+              break;
+            case 26:
+              _context.prev = 26;
+              _context.t1 = _context["catch"](2);
+              console.error("Failed to fetch tracks:", _context.t1);
+              setError(_context.t1.message);
+            case 30:
+              _context.prev = 30;
+              setIsLoading(false);
+              return _context.finish(30);
+            case 33:
+            case "end":
+              return _context.stop();
+          }
+        }, _callee, null, [[2, 26, 30, 33], [8, 15]]);
+      }));
+      return function fetchTracks() {
+        return _ref.apply(this, arguments);
+      };
+    }();
+    fetchTracks();
+  }, []);
+  var handleTrackSelect = function handleTrackSelect(trackId) {
+    setSelectedTrackId(trackId);
+  };
+  var handlePlayTrack = function handlePlayTrack(track) {
+    if (!track || !track.id) {
+      console.error("Invalid track object passed to handlePlayTrack:", track);
+      return;
+    }
+    setAudioError(''); // Clear previous audio errors
+    var audioUrl = "http://localhost:3000/audio/".concat(track.id);
+    if (currentPlayingTrack && currentPlayingTrack.id === track.id && audioPlayerRef.current) {
+      // If it's the same track, toggle play/pause
+      if (isPlaying) {
+        audioPlayerRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        audioPlayerRef.current.play()["catch"](function (e) {
+          console.error("Error playing audio:", e);
+          setAudioError("Cannot play: ".concat(track.title, ". ").concat(e.message));
+          setIsPlaying(false);
+        });
+        setIsPlaying(true);
+      }
+    } else {
+      // New track or no track was playing
+      setCurrentPlayingTrack(track);
+      if (audioPlayerRef.current) {
+        audioPlayerRef.current.src = audioUrl;
+        audioPlayerRef.current.load(); // Important to load new source
+        audioPlayerRef.current.play().then(function () {
+          setIsPlaying(true);
+        })["catch"](function (e) {
+          console.error("Error playing audio:", e);
+          setAudioError("Cannot play: ".concat(track.title, ". ").concat(e.message));
+          setIsPlaying(false);
+        });
+      }
+    }
+  };
+
+  // Audio element event handlers
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    var audioEl = audioPlayerRef.current;
+    if (!audioEl) return;
+    var handleAudioPlay = function handleAudioPlay() {
+      return setIsPlaying(true);
+    };
+    var handleAudioPause = function handleAudioPause() {
+      return setIsPlaying(false);
+    };
+    var handleAudioEnded = function handleAudioEnded() {
+      setIsPlaying(false);
+      // Optional: play next track
+      // const currentIndex = allTracks.findIndex(t => t.id === currentPlayingTrack?.id);
+      // if (currentIndex !== -1 && currentIndex < allTracks.length - 1) {
+      //   handlePlayTrack(allTracks[currentIndex + 1]);
+      // } else {
+      //   setCurrentPlayingTrack(null);
+      // }
+    };
+    var handleAudioError = function handleAudioError(e) {
+      console.error("Audio Element Error:", e);
+      setAudioError("Error with audio: ".concat((currentPlayingTrack === null || currentPlayingTrack === void 0 ? void 0 : currentPlayingTrack.title) || 'current track', "."));
+      setIsPlaying(false);
+    };
+    audioEl.addEventListener('play', handleAudioPlay);
+    audioEl.addEventListener('pause', handleAudioPause);
+    audioEl.addEventListener('ended', handleAudioEnded);
+    audioEl.addEventListener('error', handleAudioError);
+    return function () {
+      audioEl.removeEventListener('play', handleAudioPlay);
+      audioEl.removeEventListener('pause', handleAudioPause);
+      audioEl.removeEventListener('ended', handleAudioEnded);
+      audioEl.removeEventListener('error', handleAudioError);
+    };
+  }, [audioPlayerRef, currentPlayingTrack === null || currentPlayingTrack === void 0 ? void 0 : currentPlayingTrack.id, allTracks]);
+  if (isLoading) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "ContentLoading"
+    }, "Loading tracks...");
+  }
+  if (error) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "ContentError"
+    }, "Error loading tracks: ", error, ". Make sure the backend server is running.");
+  }
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     "data-layer": "content",
     className: "Content"
-  }, children);
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Tracklist__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    tracks: allTracks,
+    selectedTrackId: selectedTrackId,
+    onTrackSelect: handleTrackSelect,
+    onPlayTrack: handlePlayTrack // Pass the refined handler
+    ,
+    currentPlayingTrackId: currentPlayingTrack === null || currentPlayingTrack === void 0 ? void 0 : currentPlayingTrack.id,
+    isAudioPlaying: isPlaying
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("audio", {
+    ref: audioPlayerRef,
+    style: {
+      display: 'none'
+    }
+  }), (currentPlayingTrack || audioError) && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "MiniPlayerInfo"
+  }, audioError ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    className: "AudioErrorText"
+  }, audioError) : currentPlayingTrack ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, "Now ", isPlaying ? 'Playing' : 'Paused', ": ", currentPlayingTrack.title, " - ", currentPlayingTrack.artist) : null));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Content);
 
@@ -708,6 +933,337 @@ var Sidebar = function Sidebar() {
 
 /***/ }),
 
+/***/ "./src/components/Track.jsx":
+/*!**********************************!*\
+  !*** ./src/components/Track.jsx ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Track_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Track.scss */ "./src/components/Track.scss");
+
+
+
+// Helper to format time from seconds or MM:SS string
+var formatTime = function formatTime(time) {
+  if (typeof time === 'number') {
+    var minutes = Math.floor(time / 60);
+    var seconds = Math.floor(time % 60).toString().padStart(2, '0');
+    return "".concat(minutes, ":").concat(seconds);
+  }
+  if (typeof time === 'string' && time.includes(':')) {
+    return time;
+  }
+  return time || '-';
+};
+var Track = function Track(_ref) {
+  var track = _ref.track,
+    columns = _ref.columns,
+    isSelected = _ref.isSelected,
+    onTrackClick = _ref.onTrackClick,
+    onPlayClick = _ref.onPlayClick,
+    isPlaying = _ref.isPlaying,
+    isCurrentTrack = _ref.isCurrentTrack;
+  var handleMainClick = function handleMainClick() {
+    if (onTrackClick) {
+      onTrackClick();
+    }
+  };
+  var handleDoubleClick = function handleDoubleClick(e) {
+    if (onPlayClick) {
+      e.stopPropagation(); // Prevent row selection from firing again if it's already selected
+      onPlayClick(e);
+    }
+  };
+  var handlePlayButtonClick = function handlePlayButtonClick(e) {
+    if (onPlayClick) {
+      e.stopPropagation(); // Prevent row selection
+      onPlayClick(e);
+    }
+  };
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", {
+    className: "TrackRow ".concat(isSelected ? 'Selected' : '', " ").concat(isCurrentTrack ? 'CurrentPlayingTrack' : ''),
+    onClick: handleMainClick,
+    onDoubleClick: handleDoubleClick
+  }, columns.map(function (col) {
+    var content = track[col.key] !== undefined && track[col.key] !== null ? track[col.key] : '-';
+    if (col.key === 'time') {
+      content = formatTime(track[col.key]);
+    }
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
+      key: col.key,
+      className: "TrackCell Cell-".concat(col.key),
+      style: {
+        width: col.currentWidth || col.width
+      }
+    }, col.type === 'image' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("img", {
+      src: track[col.key] || 'assets/default-artwork.png' // Updated default path
+      ,
+      alt: "artwork",
+      className: "TrackArtworkThumbnail",
+      onError: function onError(e) {
+        e.target.src = 'assets/default-artwork.png';
+      } // Updated fallback
+    }) : content);
+  }), onPlayClick && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
+    className: "TrackCell Cell-playAction",
+    style: {
+      width: '50px'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    onClick: handlePlayButtonClick,
+    className: "PlayButton",
+    "aria-label": "Play ".concat(track.title)
+  }, isCurrentTrack && isPlaying ? '❚❚' : '▶')));
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Track);
+
+/***/ }),
+
+/***/ "./src/components/Tracklist.jsx":
+/*!**************************************!*\
+  !*** ./src/components/Tracklist.jsx ***!
+  \**************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Track__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Track */ "./src/components/Track.jsx");
+/* harmony import */ var _Tracklist_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Tracklist.scss */ "./src/components/Tracklist.scss");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+
+
+// Define the initial columns configuration
+// Widths here are initial/fallback widths. Actual widths will be managed in state.
+var initialColumnsConfig = [{
+  key: 'artwork_thumbnail_path',
+  header: '',
+  type: 'image',
+  width: '50px',
+  minWidth: 40,
+  resizable: false
+}, {
+  key: 'title',
+  header: 'Title',
+  width: '30%',
+  minWidth: 100,
+  resizable: true
+}, {
+  key: 'artist',
+  header: 'Artist',
+  width: '20%',
+  minWidth: 80,
+  resizable: true
+}, {
+  key: 'album',
+  header: 'Album',
+  width: '20%',
+  minWidth: 80,
+  resizable: true
+}, {
+  key: 'time',
+  header: 'Time',
+  width: '70px',
+  minWidth: 60,
+  textAlign: 'right',
+  resizable: true
+}, {
+  key: 'bpm',
+  header: 'BPM',
+  width: '70px',
+  minWidth: 50,
+  textAlign: 'right',
+  resizable: true
+}, {
+  key: 'key',
+  header: 'Key',
+  width: '70px',
+  minWidth: 50,
+  textAlign: 'right',
+  resizable: true
+}, {
+  key: 'year',
+  header: 'Year',
+  width: '70px',
+  minWidth: 50,
+  textAlign: 'right',
+  resizable: true
+}];
+var Tracklist = function Tracklist(_ref) {
+  var _ref$tracks = _ref.tracks,
+    tracks = _ref$tracks === void 0 ? [] : _ref$tracks,
+    onTrackSelect = _ref.onTrackSelect,
+    selectedTrackId = _ref.selectedTrackId,
+    onPlayTrack = _ref.onPlayTrack,
+    currentPlayingTrackId = _ref.currentPlayingTrackId,
+    isAudioPlaying = _ref.isAudioPlaying;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(initialColumnsConfig.map(function (col) {
+      return _objectSpread(_objectSpread({}, col), {}, {
+        currentWidth: col.width
+      });
+    }) // resizable flag is directly from initialConfig
+    ),
+    _useState2 = _slicedToArray(_useState, 2),
+    columnConfig = _useState2[0],
+    setColumnConfig = _useState2[1];
+  var tableRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  var currentlyResizingColRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null); // { key, startingX, startingWidth }
+
+  var handleMouseDown = function handleMouseDown(e, columnKey) {
+    e.preventDefault(); // Prevent text selection
+    var columnToResize = columnConfig.find(function (col) {
+      return col.key === columnKey;
+    });
+    if (!columnToResize || !columnToResize.resizable) return;
+    var thElement = e.target.closest('th');
+    var startingWidth = thElement.offsetWidth;
+    currentlyResizingColRef.current = {
+      key: columnKey,
+      startingX: e.clientX,
+      startingWidth: startingWidth
+    };
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  };
+  var handleMouseMove = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (e) {
+    if (!currentlyResizingColRef.current) return;
+    e.preventDefault();
+    var _currentlyResizingCol = currentlyResizingColRef.current,
+      key = _currentlyResizingCol.key,
+      startingX = _currentlyResizingCol.startingX,
+      startingWidth = _currentlyResizingCol.startingWidth;
+    var deltaX = e.clientX - startingX;
+    var newWidth = startingWidth + deltaX;
+    var columnIndex = columnConfig.findIndex(function (col) {
+      return col.key === key;
+    });
+    var column = columnConfig[columnIndex];
+    if (column.minWidth && newWidth < column.minWidth) {
+      newWidth = column.minWidth;
+    }
+
+    // Update the width for the specific column
+    setColumnConfig(function (prevConfig) {
+      return prevConfig.map(function (col) {
+        return col.key === key ? _objectSpread(_objectSpread({}, col), {}, {
+          currentWidth: "".concat(newWidth, "px")
+        }) : col;
+      });
+    });
+  }, [columnConfig]); // Dependency: columnConfig
+
+  var handleMouseUp = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    if (!currentlyResizingColRef.current) return;
+    currentlyResizingColRef.current = null;
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
+    // Here you could save the columnConfig to localStorage if desired
+  }, [handleMouseMove]); // Dependency: handleMouseMove
+
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    // Cleanup listeners if component unmounts while resizing
+    return function () {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [handleMouseMove, handleMouseUp]);
+  var handleTrackClick = function handleTrackClick(track) {
+    if (onTrackSelect) {
+      onTrackSelect(track.id);
+    }
+  };
+  var handlePlayClickPassthrough = function handlePlayClickPassthrough(e, track) {
+    e.stopPropagation();
+    if (onPlayTrack) {
+      onPlayTrack(track);
+    }
+  };
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "TracklistContainer"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("table", {
+    className: "TracklistTable",
+    ref: tableRef
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("colgroup", null, columnConfig.map(function (col) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("col", {
+      key: col.key,
+      style: {
+        width: col.currentWidth || col.width
+      }
+    });
+  }), onPlayTrack && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("col", {
+    style: {
+      width: '50px'
+    }
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", null, columnConfig.map(function (col) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
+      key: col.key,
+      style: {
+        width: col.currentWidth || col.width,
+        textAlign: col.textAlign || 'left'
+      }
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "ThContent"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, col.header), col.resizable && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+      className: "ResizeHandle",
+      onMouseDown: function onMouseDown(e) {
+        return handleMouseDown(e, col.key);
+      },
+      role: "separator",
+      "aria-orientation": "vertical",
+      "aria-label": "Resize ".concat(col.header, " column")
+    })));
+  }), onPlayTrack && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
+    style: {
+      width: '50px'
+    },
+    "aria-label": "Play column"
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tbody", null, tracks.length > 0 ? tracks.map(function (track) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Track__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      key: track.id,
+      track: track,
+      columns: columnConfig // Pass the stateful config with currentWidths
+      ,
+      isSelected: selectedTrackId === track.id,
+      onTrackClick: function onTrackClick() {
+        return handleTrackClick(track);
+      },
+      onPlayClick: onPlayTrack ? function (e) {
+        return handlePlayClickPassthrough(e, track);
+      } : undefined,
+      isCurrentTrack: currentPlayingTrackId === track.id,
+      isPlaying: isAudioPlaying && currentPlayingTrackId === track.id
+    });
+  }) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
+    colSpan: columnConfig.length + (onPlayTrack ? 1 : 0),
+    className: "NoTracksMessage"
+  }, "No tracks found. Add music to your library.")))));
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Tracklist);
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/App.scss":
 /*!***************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/App.scss ***!
@@ -785,14 +1341,55 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, `.Content {
-  align-self: stretch;
-  flex: 1 1 0;
-  padding-top: 24px;
-  padding-left: 24px;
-  padding-right: 24px;
-  overflow-y: auto;
-}`, "",{"version":3,"sources":["webpack://./src/components/Content.scss"],"names":[],"mappings":"AAAA;EACI,mBAAA;EACA,WAAA;EACA,iBAAA;EACA,kBAAA;EACA,mBAAA;EAGA,gBAAA;AADJ","sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.id, `/* Content.scss */
+.Content {
+  flex-grow: 1;
+  padding: 0px;
+  background-color: #2e2e2e;
+  color: #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.ContentLoading,
+.ContentError {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 1.2rem;
+  color: #aaa;
+  padding: 20px;
+  text-align: center;
+}
+
+.ContentError {
+  color: #ff6b6b;
+}
+
+.MiniPlayerInfo {
+  padding: 10px 15px;
+  background-color: #1c1c1c;
+  color: #f0f0f0;
+  font-size: 0.9rem;
+  text-align: center;
+  border-top: 1px solid #3a3a3a;
+  /* position: sticky; // Keep if you want it at the bottom of scrollable area in Content
+  bottom: 0; */
+  width: 100%;
+  z-index: 100;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.AudioErrorText {
+  color: #ff8a80;
+  font-weight: 500;
+}`, "",{"version":3,"sources":["webpack://./src/components/Content.scss"],"names":[],"mappings":"AAAA,iBAAA;AACA;EACE,YAAA;EACA,YAAA;EACA,yBAAA;EACA,cAAA;EACA,aAAA;EACA,sBAAA;EACA,gBAAA;EACA,kBAAA;AACF;;AAEA;;EAEE,aAAA;EACA,uBAAA;EACA,mBAAA;EACA,YAAA;EACA,iBAAA;EACA,WAAA;EACA,aAAA;EACA,kBAAA;AACF;;AAEA;EACE,cAAA;AACF;;AAEA;EACE,kBAAA;EACA,yBAAA;EACA,cAAA;EACA,iBAAA;EACA,kBAAA;EACA,6BAAA;EACA;cAAA;EAEA,WAAA;EACA,YAAA;EACA,gBAAA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;AACF;;AAEA;EACE,cAAA;EACA,gBAAA;AACF","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -1158,6 +1755,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Navbar {
   overflow: hidden;
   justify-content: space-between;
   align-items: center;
+  min-height: 24px;
   display: inline-flex;
 }
 .Navbar .NavbarMenu {
@@ -1251,7 +1849,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Navbar {
   background: #9C9C9C;
   margin-left: 4px;
   margin-right: 4px;
-}`, "",{"version":3,"sources":["webpack://./src/components/Navbar.scss"],"names":[],"mappings":"AAAA;EACI,mBAAA;EACA,kBAAA;EACA,mBAAA;EACA,iBAAA;EACA,oBAAA;EACA,gBAAA;EACA,8BAAA;EACA,mBAAA;EACA,oBAAA;AACJ;AACI;EACE,2BAAA;EACA,mBAAA;EACA,SAAA;EACA,aAAA;AACN;AACM;EACE,YAAA;EACA,eAAA;EACA,gCAAA;EACA,gBAAA;EACA,iBAAA;EACA,qBAAA;EACA,eAAA;AACR;AACQ;EACE,gBAAA;AACV;AAII;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,aAAA;EACA,mBAAA;AAFN;AAIM;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EACA,eAAA;AAFR;AAQQ;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EAoBC,oEAAA;AAzBX;AAOU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AALZ;AAQU;EACE,WAAA;EACA,YAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AANZ;AAUU;EACE,UAAA;EACA,YAAA;EACA,UAAA,EAAA,6CAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AARZ;AAYQ;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;AAVV;AAYU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AAVZ;AAaU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,SAAA;EACA,kBAAA;EACA,mBAAA;AAXZ;AAeM;EACE,UAAA;EACA,YAAA;EACA,mBAAA;EACA,gBAAA;EACA,iBAAA;AAbR","sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/components/Navbar.scss"],"names":[],"mappings":"AAAA;EACI,mBAAA;EACA,kBAAA;EACA,mBAAA;EACA,iBAAA;EACA,oBAAA;EACA,gBAAA;EACA,8BAAA;EACA,mBAAA;EACA,gBAAA;EACA,oBAAA;AACJ;AACI;EACE,2BAAA;EACA,mBAAA;EACA,SAAA;EACA,aAAA;AACN;AACM;EACE,YAAA;EACA,eAAA;EACA,gCAAA;EACA,gBAAA;EACA,iBAAA;EACA,qBAAA;EACA,eAAA;AACR;AACQ;EACE,gBAAA;AACV;AAII;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,aAAA;EACA,mBAAA;AAFN;AAIM;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EACA,eAAA;AAFR;AAQQ;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EAoBC,oEAAA;AAzBX;AAOU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AALZ;AAQU;EACE,WAAA;EACA,YAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AANZ;AAUU;EACE,UAAA;EACA,YAAA;EACA,UAAA,EAAA,6CAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AARZ;AAYQ;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;AAVV;AAYU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AAVZ;AAaU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,SAAA;EACA,kBAAA;EACA,mBAAA;AAXZ;AAeM;EACE,UAAA;EACA,YAAA;EACA,mBAAA;EACA,gBAAA;EACA,iBAAA;AAbR","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -1478,6 +2076,205 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Sidebar {
   position: absolute;
   background: #696969;
 }`, "",{"version":3,"sources":["webpack://./src/components/Sidebar.scss"],"names":[],"mappings":"AAEA;EACE,YAAA;EACA,mBAAA;EACA,mBAAA;EACA,gBAAA;EACA,sBAAA;EACA,2BAAA;EACA,uBAAA;EACA,aAAA;AADF;AAGE;EACE,mBAAA;EACA,YAAA;EACA,sBAAA;EACA,2BAAA;EACA,uBAAA;EACA,aAAA;AADJ;AAGI;EACE,YAAA;EACA,kBAAA;EACA,mBAAA;EACA,2BAAA;EACA,mBAAA;EACA,QAAA;EACA,aAAA;AADN;AAGM;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,oBAAA;EACA,sCAAA;AADR;AAGM;EAAS,mBAAA;AAAf;AACM;EAAY,mBAAA;AAElB;AADM;EAAQ,mBAAA;AAId;AAAE;EACE,mBAAA;EACA,WAAA;EACA,sBAAA;EACA,2BAAA;EACA,uBAAA;EACA,aAAA;EACA,WAAA;AAEJ;AAAI;EACE,mBAAA;EACA,kBAAA;EACA,mBAAA;EACA,gBAAA;EACA,mBAAA;EACA,gBAAA;EACA,sBAAA;EACA,2BAAA;EACA,uBAAA;EACA,QAAA;EACA,aAAA;EACA,WAAA;EACA,sBAAA;AAEN;AAAM;EACE,mBAAA;EACA,aAAA;EACA,8BAAA;EACA,mBAAA;EACA,YAAA;AAER;AACM;EACE,WAAA;EAEA,cAAA;EACA,eAAA;EACA,gCAAA;EACA,gBAAA;EACA,iBAAA;EACA,qBAAA;EACA,yBAAA;AAAR;AAGM;EACE,uBAAA;EACA,YAAA;EACA,cAAA;EACA,eAAA;EACA,UAAA;EACA,WAAA;EACA,YAAA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;EACA,kBAAA;EACA,uDAAA;AADR;AAGQ;EACE,yBAAA;EACA,cAAA;AADV;AAIQ;EACE,yBAAA;AAFV;AAKQ;EACE,eAAA;EACA,iBAAA;EACA,cAAA;AAHV;AAQI;EACE,mBAAA;EACA,WAAA;EACA,mBAAA;EACA,gBAAA;AANN;AAUE;EACE,mBAAA;EACA,kBAAA;EACA,mBAAA;EACA,iBAAA;EACA,oBAAA;EACA,gBAAA;EACA,8BAAA;EACA,mBAAA;EACA,aAAA;AARJ;AAUI;EACE,uBAAA;EACA,mBAAA;EACA,SAAA;EACA,aAAA;AARN;AAUM;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,yBAAA;AARR;AAWM;EACE,WAAA;EACA,YAAA;EACA,cAAA;EACA,eAAA;EACA,gCAAA;EACA,gBAAA;EACA,iBAAA;EACA,qBAAA;AATR;AAaI;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EACA,eAAA;AAXN;AAaM;EACE,cAAA;EACA,YAAA;EACA,YAAA;EACA,UAAA;EACA,kBAAA;EACA,mBAAA;AAXR","sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Track.scss":
+/*!****************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Track.scss ***!
+  \****************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `@charset "UTF-8";
+.TrackRow {
+  border-bottom: 1px solid #383838;
+  cursor: pointer;
+}
+.TrackRow.Selected {
+  background-color: #505050;
+  color: #ffffff;
+}
+.TrackRow.CurrentPlayingTrack {
+  background-color: #5a6a7a;
+  color: #ffffff;
+  font-weight: 500;
+}
+.TrackRow.CurrentPlayingTrack .TrackCell.Cell-title {
+  font-weight: 700;
+}
+.TrackRow:last-child .TrackCell {
+  border-bottom: none;
+}
+
+.TrackCell {
+  padding: 8px 12px;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.TrackCell.Cell-artwork_thumbnail_path {
+  width: 50px;
+  padding: 4px 8px;
+}
+.TrackCell:first-child {
+  padding-left: 16px;
+}
+
+.TrackArtworkThumbnail {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 3px;
+  display: block;
+  background-color: #404040;
+}
+
+.PlayButton {
+  background: none;
+  border: none;
+  color: #a0a0a0;
+  cursor: pointer;
+  font-size: 1rem; /* Ensure this is large enough for ❚❚ */
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; /* Give it some fixed width */
+  height: 30px; /* Give it some fixed height */
+  line-height: 1; /* Important for vertical centering of text symbols */
+}
+.PlayButton:hover {
+  color: #ffffff;
+}
+.TrackRow.Selected .PlayButton, .TrackRow.CurrentPlayingTrack .PlayButton {
+  color: #ffffff;
+}
+
+.Cell-title {
+  font-weight: 500;
+}
+
+.Cell-bpm,
+.Cell-key,
+.Cell-time,
+.Cell-year {
+  color: #b0b0b0;
+}
+
+.TrackRow.Selected .Cell-bpm,
+.TrackRow.Selected .Cell-key,
+.TrackRow.Selected .Cell-time,
+.TrackRow.Selected .Cell-year, .TrackRow.CurrentPlayingTrack .Cell-bpm,
+.TrackRow.CurrentPlayingTrack .Cell-key,
+.TrackRow.CurrentPlayingTrack .Cell-time,
+.TrackRow.CurrentPlayingTrack .Cell-year {
+  color: #e0e0e0;
+}
+
+.TrackCell.Cell-playAction {
+  padding: 0;
+  text-align: center;
+}`, "",{"version":3,"sources":["webpack://./src/components/Track.scss"],"names":[],"mappings":"AAAA,gBAAgB;AAAhB;EACI,gCAAA;EACA,eAAA;AAEJ;AAAI;EACE,yBAAA;EACA,cAAA;AAEN;AAAI;EAEE,yBAAA;EACA,cAAA;EACA,gBAAA;AACN;AACM;EACI,gBAAA;AACV;AAKM;EACE,mBAAA;AAHR;;AAQE;EACE,iBAAA;EACA,sBAAA;EACA,mBAAA;EACA,gBAAA;EACA,uBAAA;AALJ;AAOI;EACE,WAAA;EACA,gBAAA;AALN;AAQI;EACE,kBAAA;AANN;;AAWE;EACE,WAAA;EACA,YAAA;EACA,iBAAA;EACA,kBAAA;EACA,cAAA;EACA,yBAAA;AARJ;;AAWE;EACE,gBAAA;EACA,YAAA;EACA,cAAA;EACA,eAAA;EACA,eAAA,EAAA,uCAAA;EACA,YAAA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;EACA,WAAA,EAAA,6BAAA;EACA,YAAA,EAAA,8BAAA;EACA,cAAA,EAAA,qDAAA;AARJ;AAWI;EACE,cAAA;AATN;AAYI;EAEE,cAAA;AAXN;;AAeE;EACE,gBAAA;AAZJ;;AAeE;;;;EAKE,cAAA;AAbJ;;AAiBI;;;;;;;EAIE,cAAA;AAXN;;AAeE;EACI,UAAA;EACA,kBAAA;AAZN","sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Tracklist.scss":
+/*!********************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Tracklist.scss ***!
+  \********************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.TracklistContainer {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background-color: #2e2e2e;
+  color: #e0e0e0;
+}
+
+.TracklistTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  table-layout: fixed;
+}
+.TracklistTable thead {
+  background-color: #3a3a3a;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.TracklistTable th {
+  padding: 0;
+  text-align: left;
+  font-weight: 600;
+  color: #b0b0b0;
+  border-bottom: 1px solid #4a4a4a;
+  white-space: nowrap;
+  position: relative;
+}
+.TracklistTable th .ThContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.TracklistTable th:first-child .ThContent {
+  padding-left: 16px;
+}
+.TracklistTable .ResizeHandle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  cursor: col-resize;
+  z-index: 1;
+}
+.TracklistTable tbody tr:hover {
+  background-color: #454545;
+}
+.TracklistTable .NoTracksMessage {
+  text-align: center;
+  padding: 40px;
+  color: #888;
+  font-style: italic;
+}`, "",{"version":3,"sources":["webpack://./src/components/Tracklist.scss"],"names":[],"mappings":"AAAA;EACI,WAAA;EACA,YAAA;EACA,gBAAA;EACA,yBAAA;EACA,cAAA;AACJ;;AAEE;EACE,WAAA;EACA,yBAAA;EACA,mBAAA;EACA,mBAAA;AACJ;AACI;EACE,yBAAA;EACA,gBAAA;EACA,MAAA;EACA,WAAA;AACN;AAEI;EACE,UAAA;EACA,gBAAA;EACA,gBAAA;EACA,cAAA;EACA,gCAAA;EACA,mBAAA;EACA,kBAAA;AAAN;AAEM;EACE,aAAA;EACA,mBAAA;EACA,8BAAA;EACA,kBAAA;EACA,gBAAA;EACA,uBAAA;AAAR;AAGM;EACE,kBAAA;AADR;AAQI;EACE,kBAAA;EACA,QAAA;EACA,MAAA;EACA,SAAA;EACA,UAAA;EACA,kBAAA;EACA,UAAA;AANN;AAsBQ;EACE,yBAAA;AApBV;AAyBI;EACE,kBAAA;EACA,aAAA;EACA,WAAA;EACA,kBAAA;AAvBN","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -35527,6 +36324,110 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 
        /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Sidebar_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Sidebar_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Sidebar_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./src/components/Track.scss":
+/*!***********************************!*\
+  !*** ./src/components/Track.scss ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Track_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../node_modules/css-loader/dist/cjs.js!../../node_modules/sass-loader/dist/cjs.js!./Track.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Track.scss");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Track_scss__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Track_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Track_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Track_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./src/components/Tracklist.scss":
+/*!***************************************!*\
+  !*** ./src/components/Tracklist.scss ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Tracklist_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../node_modules/css-loader/dist/cjs.js!../../node_modules/sass-loader/dist/cjs.js!./Tracklist.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Tracklist.scss");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Tracklist_scss__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Tracklist_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Tracklist_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Tracklist_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
 
 
 /***/ }),

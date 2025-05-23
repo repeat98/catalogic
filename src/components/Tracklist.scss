@@ -1,0 +1,86 @@
+.TracklistContainer {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #2e2e2e;
+    color: #e0e0e0;
+  }
+  
+  .TracklistTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    table-layout: fixed; // Important for resizable columns to work predictably
+  
+    thead {
+      background-color: #3a3a3a;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+  
+    th {
+      padding: 0; // Remove padding from th, will be on ThContent
+      text-align: left;
+      font-weight: 600;
+      color: #b0b0b0;
+      border-bottom: 1px solid #4a4a4a;
+      white-space: nowrap;
+      position: relative; // For absolute positioning of ResizeHandle
+  
+      .ThContent {
+        display: flex;
+        align-items: center;
+        justify-content: space-between; // Pushes handle to the right if text is short
+        padding: 10px 12px; // Apply padding here
+        overflow: hidden; // Prevent text from overflowing into handle
+        text-overflow: ellipsis;
+      }
+  
+      &:first-child .ThContent {
+        padding-left: 16px;
+      }
+      &:last-child .ThContent {
+         // No special padding for last child needed if play button column is separate
+      }
+    }
+  
+    .ResizeHandle {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 8px; // Wider, easier to grab
+      cursor: col-resize;
+      z-index: 1; // Above ThContent text if it overflows
+  
+      // Optional: Visual indicator for the handle
+      // &::after {
+      //   content: '';
+      //   position: absolute;
+      //   right: 3px;
+      //   top: 25%;
+      //   bottom: 25%;
+      //   width: 1px;
+      //   background-color: #555; // A subtle line
+      // }
+    }
+  
+    tbody {
+      tr {
+        &:hover {
+          background-color: #454545;
+        }
+      }
+    }
+  
+    .NoTracksMessage {
+      text-align: center;
+      padding: 40px;
+      color: #888;
+      font-style: italic;
+    }
+  }
+  
+  // Ensure colgroup widths are respected in Track.jsx cells
+  // The `style` prop on `<td>` in Track.jsx should handle this.

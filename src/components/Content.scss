@@ -1,10 +1,49 @@
+/* Content.scss */
 .Content {
-    align-self: stretch;
-    flex: 1 1 0;
-    padding-top: 24px;
-    padding-left: 24px;
-    padding-right: 24px;
-    // padding-bottom will be implicit or could be set if needed
-    // background-color: #2f2f2f; // Example background if it's different from Main
-    overflow-y: auto; // If content is expected to scroll
-  }
+  flex-grow: 1;
+  padding: 0px;
+  background-color: #2e2e2e;
+  color: #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.ContentLoading,
+.ContentError {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 1.2rem;
+  color: #aaa;
+  padding: 20px;
+  text-align: center;
+}
+
+.ContentError {
+  color: #ff6b6b;
+}
+
+.MiniPlayerInfo {
+  padding: 10px 15px;
+  background-color: #1c1c1c;
+  color: #f0f0f0;
+  font-size: 0.9rem;
+  text-align: center;
+  border-top: 1px solid #3a3a3a;
+  /* position: sticky; // Keep if you want it at the bottom of scrollable area in Content
+  bottom: 0; */
+  width: 100%;
+  z-index: 100;
+  min-height: 40px; // Ensure it has some height
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.AudioErrorText {
+  color: #ff8a80; // More visible error color
+  font-weight: 500;
+}
