@@ -147,6 +147,135 @@ function Main() {
 
 /***/ }),
 
+/***/ "./src/components/Menu.jsx":
+/*!*********************************!*\
+  !*** ./src/components/Menu.jsx ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _MenuItem__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MenuItem */ "./src/components/MenuItem.jsx");
+/* harmony import */ var _Menu_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Menu.scss */ "./src/components/Menu.scss");
+
+
+
+var Menu = function Menu(_ref) {
+  var selectedLibraryItem = _ref.selectedLibraryItem,
+    cratesItems = _ref.cratesItems,
+    myTagsItems = _ref.myTagsItems,
+    handleLibraryItemClick = _ref.handleLibraryItemClick,
+    addItem = _ref.addItem,
+    handleOpenContextMenu = _ref.handleOpenContextMenu;
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "data-layer": "menu",
+    className: "Menu"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "data-layer": "menu-category",
+    className: "MenuCategory"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "data-layer": "category-label-wrapper",
+    className: "CategoryLabelWrapper"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "data-layer": "label",
+    className: "Label"
+  }, "LIBRARY")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_MenuItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    label: "Tracks",
+    isSelected: selectedLibraryItem === 'Tracks',
+    onClick: function onClick() {
+      return handleLibraryItemClick('Tracks');
+    }
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_MenuItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    label: "K\xFCnstler:innen",
+    isSelected: selectedLibraryItem === 'Künstler:innen',
+    onClick: function onClick() {
+      return handleLibraryItemClick('Künstler:innen');
+    }
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_MenuItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    label: "Alben",
+    isSelected: selectedLibraryItem === 'Alben',
+    onClick: function onClick() {
+      return handleLibraryItemClick('Alben');
+    },
+    showOptions: false
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "data-layer": "divider",
+    className: "Divider"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "data-layer": "menu-category",
+    className: "MenuCategory"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "data-layer": "category-label-wrapper",
+    className: "CategoryLabelWrapper"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "data-layer": "label",
+    className: "Label"
+  }, "CRATES"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    className: "AddButton",
+    onClick: function onClick() {
+      return addItem('crates');
+    },
+    "aria-label": "Add Crate",
+    title: "Add Crate"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    className: "AddIconSymbol"
+  }, "+"))), cratesItems.map(function (item) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_MenuItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      key: item.id,
+      id: item.id,
+      label: item.label
+      // isSelected={selectedCrateItem === item.id} // Implement selection if needed
+      // onClick={() => handleCrateItemClick(item.id)} // Implement selection if needed
+      ,
+      showOptions: true,
+      onOpenContextMenu: function onOpenContextMenu(e) {
+        return handleOpenContextMenu(e, item, 'crates');
+      }
+    });
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "data-layer": "divider",
+    className: "Divider"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "data-layer": "menu-category",
+    className: "MenuCategory"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "data-layer": "category-label-wrapper",
+    className: "CategoryLabelWrapper"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "data-layer": "label",
+    className: "Label"
+  }, "MY TAGS"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    className: "AddButton",
+    onClick: function onClick() {
+      return addItem('mytags');
+    },
+    "aria-label": "Add Tag",
+    title: "Add Tag"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    className: "AddIconSymbol"
+  }, "+"))), myTagsItems.map(function (item) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_MenuItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      key: item.id,
+      id: item.id,
+      label: item.label
+      // isSelected={selectedTagItem === item.id} // Implement selection if needed
+      // onClick={() => handleTagItemClick(item.id)} // Implement selection if needed
+      ,
+      showOptions: true,
+      onOpenContextMenu: function onOpenContextMenu(e) {
+        return handleOpenContextMenu(e, item, 'mytags');
+      }
+    });
+  })));
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Menu);
+
+/***/ }),
+
 /***/ "./src/components/MenuItem.jsx":
 /*!*************************************!*\
   !*** ./src/components/MenuItem.jsx ***!
@@ -352,7 +481,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _MenuItem__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MenuItem */ "./src/components/MenuItem.jsx");
+/* harmony import */ var _Menu__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Menu */ "./src/components/Menu.jsx");
 /* harmony import */ var _ContextMenu__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ContextMenu */ "./src/components/ContextMenu.jsx");
 /* harmony import */ var _Sidebar_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Sidebar.scss */ "./src/components/Sidebar.scss");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
@@ -372,8 +501,8 @@ function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length)
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
+ // Import the new Menu component
 
- // New component
 
 
 // Helper to generate simple unique IDs
@@ -493,8 +622,6 @@ var Sidebar = function Sidebar() {
   var handleOpenContextMenu = function handleOpenContextMenu(event, item, categoryType) {
     event.preventDefault(); // Prevent native context menu
     event.stopPropagation();
-
-    // Get bounds of sidebar to constrain context menu
     var sidebarRect = sidebarRef.current ? sidebarRef.current.getBoundingClientRect() : {
       top: 0,
       left: 0,
@@ -503,13 +630,10 @@ var Sidebar = function Sidebar() {
     };
     var x = event.clientX;
     var y = event.clientY;
-
-    // Basic constraint: try to keep menu within sidebar width (200px is assumed menu width)
     if (x + 200 > sidebarRect.left + sidebarRect.width) {
       x = sidebarRect.left + sidebarRect.width - 200;
     }
     if (y + 100 > sidebarRect.top + sidebarRect.height) {
-      // 100px assumed menu height
       y = sidebarRect.top + sidebarRect.height - 100;
     }
     setContextMenu({
@@ -562,106 +686,15 @@ var Sidebar = function Sidebar() {
     "data-layer": "Window Controls",
     "data-style": "Standard",
     className: "WindowControlsInner"
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    "data-layer": "menu",
-    className: "Menu"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    "data-layer": "menu-category",
-    className: "MenuCategory"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    "data-layer": "category-label-wrapper",
-    className: "CategoryLabelWrapper"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    "data-layer": "label",
-    className: "Label"
-  }, "LIBRARY")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_MenuItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    label: "Tracks",
-    isSelected: selectedLibraryItem === 'Tracks',
-    onClick: function onClick() {
-      return handleLibraryItemClick('Tracks');
-    }
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_MenuItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    label: "K\xFCnstler:innen",
-    isSelected: selectedLibraryItem === 'Künstler:innen',
-    onClick: function onClick() {
-      return handleLibraryItemClick('Künstler:innen');
-    }
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_MenuItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    label: "Alben",
-    isSelected: selectedLibraryItem === 'Alben',
-    onClick: function onClick() {
-      return handleLibraryItemClick('Alben');
-    },
-    showOptions: false
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    "data-layer": "divider",
-    className: "Divider"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Menu__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    selectedLibraryItem: selectedLibraryItem,
+    cratesItems: cratesItems,
+    myTagsItems: myTagsItems,
+    handleLibraryItemClick: handleLibraryItemClick,
+    addItem: addItem,
+    handleOpenContextMenu: handleOpenContextMenu
+    // selectedCrateItem, handleCrateItemClick, selectedTagItem, handleTagItemClick would be passed here if implemented
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    "data-layer": "menu-category",
-    className: "MenuCategory"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    "data-layer": "category-label-wrapper",
-    className: "CategoryLabelWrapper"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    "data-layer": "label",
-    className: "Label"
-  }, "CRATES"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
-    className: "AddButton",
-    onClick: function onClick() {
-      return addItem('crates');
-    },
-    "aria-label": "Add Crate",
-    title: "Add Crate"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
-    className: "AddIconSymbol"
-  }, "+"))), cratesItems.map(function (item) {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_MenuItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
-      key: item.id,
-      id: item.id,
-      label: item.label
-      // isSelected={selectedCrateItem === item.id} // Implement selection if needed
-      // onClick={() => handleCrateItemClick(item.id)} // Implement selection if needed
-      ,
-      showOptions: true,
-      onOpenContextMenu: function onOpenContextMenu(e) {
-        return handleOpenContextMenu(e, item, 'crates');
-      }
-    });
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    "data-layer": "divider",
-    className: "Divider"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    "data-layer": "menu-category",
-    className: "MenuCategory"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    "data-layer": "category-label-wrapper",
-    className: "CategoryLabelWrapper"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    "data-layer": "label",
-    className: "Label"
-  }, "MY TAGS"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
-    className: "AddButton",
-    onClick: function onClick() {
-      return addItem('mytags');
-    },
-    "aria-label": "Add Tag",
-    title: "Add Tag"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
-    className: "AddIconSymbol"
-  }, "+"))), myTagsItems.map(function (item) {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_MenuItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
-      key: item.id,
-      id: item.id,
-      label: item.label
-      // isSelected={selectedTagItem === item.id} // Implement selection if needed
-      // onClick={() => handleTagItemClick(item.id)} // Implement selection if needed
-      ,
-      showOptions: true,
-      onOpenContextMenu: function onOpenContextMenu(e) {
-        return handleOpenContextMenu(e, item, 'mytags');
-      }
-    });
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     "data-layer": "logo-container",
     className: "LogoContainer"
   }), contextMenu.isOpen && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_ContextMenu__WEBPACK_IMPORTED_MODULE_2__["default"], {
@@ -849,6 +882,80 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Main {
   overflow: hidden;
   background: #292929;
 }`, "",{"version":3,"sources":["webpack://./src/components/Main.scss"],"names":[],"mappings":"AACA;EACI,sBAAA;EACA,YAAA;EACA,cAAA;EACA,cAAA;EACA,mBAAA;EACA,aAAA;EACA,sBAAA;EACA,oBAAA;EACA,gBAAA;EACA,mBAAA;AAAJ","sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Menu.scss":
+/*!***************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Menu.scss ***!
+  \***************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `/* Styles for the Menu component and its children */
+.Menu {
+  flex-grow: 1; /* Allows the menu to take available space */
+  overflow-y: auto; /* Adds scroll if content exceeds height */
+}
+
+.MenuCategory {
+  margin-bottom: 16px; /* Space between categories */
+}
+
+.CategoryLabelWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 4px; /* Adjust as needed */
+  margin-bottom: 4px;
+}
+
+.Label {
+  font-size: 0.75rem; /* 12px */
+  font-weight: bold;
+  color: #555; /* Example color */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.AddButton {
+  background: none;
+  border: none;
+  color: #777; /* Example color */
+  cursor: pointer;
+  padding: 2px;
+  font-size: 1.2rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.AddButton:hover {
+  color: #333; /* Darker on hover */
+}
+
+.Divider {
+  height: 1px;
+  background-color: #ddd; /* Example color */
+  margin: 8px 0; /* Space around divider */
+}
+
+/* Styles for MenuItem are in MenuItem.scss */`, "",{"version":3,"sources":["webpack://./src/components/Menu.scss"],"names":[],"mappings":"AAAA,mDAAA;AACA;EACI,YAAA,EAAA,4CAAA;EACA,gBAAA,EAAA,0CAAA;AACJ;;AAEE;EACE,mBAAA,EAAA,6BAAA;AACJ;;AAEE;EACE,aAAA;EACA,8BAAA;EACA,mBAAA;EACA,gBAAA,EAAA,qBAAA;EACA,kBAAA;AACJ;;AAEE;EACE,kBAAA,EAAA,SAAA;EACA,iBAAA;EACA,WAAA,EAAA,kBAAA;EACA,yBAAA;EACA,qBAAA;AACJ;;AAEE;EACE,gBAAA;EACA,YAAA;EACA,WAAA,EAAA,kBAAA;EACA,eAAA;EACA,YAAA;EACA,iBAAA;EACA,cAAA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;AACJ;AACI;EACE,WAAA,EAAA,oBAAA;AACN;;AAQE;EACE,WAAA;EACA,sBAAA,EAAA,kBAAA;EACA,aAAA,EAAA,yBAAA;AALJ;;AAQE,6CAAA","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -35160,6 +35267,58 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 
        /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Main_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Main_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Main_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./src/components/Menu.scss":
+/*!**********************************!*\
+  !*** ./src/components/Menu.scss ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Menu_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../node_modules/css-loader/dist/cjs.js!../../node_modules/sass-loader/dist/cjs.js!./Menu.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/Menu.scss");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Menu_scss__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Menu_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Menu_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Menu_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
 
 
 /***/ }),

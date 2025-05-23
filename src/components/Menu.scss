@@ -1,0 +1,55 @@
+/* Styles for the Menu component and its children */
+.Menu {
+    flex-grow: 1; /* Allows the menu to take available space */
+    overflow-y: auto; /* Adds scroll if content exceeds height */
+  }
+  
+  .MenuCategory {
+    margin-bottom: 16px; /* Space between categories */
+  }
+  
+  .CategoryLabelWrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 4px; /* Adjust as needed */
+    margin-bottom: 4px;
+  }
+  
+  .Label {
+    font-size: 0.75rem; /* 12px */
+    font-weight: bold;
+    color: #555; /* Example color */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .AddButton {
+    background: none;
+    border: none;
+    color: #777; /* Example color */
+    cursor: pointer;
+    padding: 2px;
+    font-size: 1.2rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    &:hover {
+      color: #333; /* Darker on hover */
+    }
+  }
+  
+  .AddIconSymbol {
+    // Styles for the '+' symbol if it's not just text
+    // For example, if it was an SVG or a custom font icon
+  }
+  
+  .Divider {
+    height: 1px;
+    background-color: #ddd; /* Example color */
+    margin: 8px 0; /* Space around divider */
+  }
+  
+  /* Styles for MenuItem are in MenuItem.scss */

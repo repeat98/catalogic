@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import MenuItem from './MenuItem';
-import ContextMenu from './ContextMenu'; // New component
+import Menu from './Menu'; // Import the new Menu component
+import ContextMenu from './ContextMenu';
 import './Sidebar.scss';
 
 // Helper to generate simple unique IDs
@@ -79,20 +79,17 @@ const Sidebar = () => {
     event.preventDefault(); // Prevent native context menu
     event.stopPropagation();
 
-    // Get bounds of sidebar to constrain context menu
     const sidebarRect = sidebarRef.current ? sidebarRef.current.getBoundingClientRect() : { top: 0, left: 0, width: 256, height: window.innerHeight };
 
     let x = event.clientX;
     let y = event.clientY;
 
-    // Basic constraint: try to keep menu within sidebar width (200px is assumed menu width)
     if (x + 200 > sidebarRect.left + sidebarRect.width) {
         x = sidebarRect.left + sidebarRect.width - 200;
     }
-     if (y + 100 > sidebarRect.top + sidebarRect.height) { // 100px assumed menu height
+     if (y + 100 > sidebarRect.top + sidebarRect.height) {
         y = sidebarRect.top + sidebarRect.height - 100;
     }
-
 
     setContextMenu({
       isOpen: true,
@@ -141,74 +138,15 @@ const Sidebar = () => {
           {/* Window controls */}
         </div>
       </div>
-      <div data-layer="menu" className="Menu">
-        {/* LIBRARY Category (static items) */}
-        <div data-layer="menu-category" className="MenuCategory">
-          <div data-layer="category-label-wrapper" className="CategoryLabelWrapper">
-            <div data-layer="label" className="Label">LIBRARY</div>
-          </div>
-          <MenuItem
-            label="Tracks"
-            isSelected={selectedLibraryItem === 'Tracks'}
-            onClick={() => handleLibraryItemClick('Tracks')}
-          />
-          <MenuItem
-            label="Künstler:innen"
-            isSelected={selectedLibraryItem === 'Künstler:innen'}
-            onClick={() => handleLibraryItemClick('Künstler:innen')}
-          />
-          <MenuItem
-            label="Alben"
-            isSelected={selectedLibraryItem === 'Alben'}
-            onClick={() => handleLibraryItemClick('Alben')}
-            showOptions={false}
-          />
-        </div>
-        <div data-layer="divider" className="Divider" />
-
-        {/* CRATES Category (dynamic items) */}
-        <div data-layer="menu-category" className="MenuCategory">
-          <div data-layer="category-label-wrapper" className="CategoryLabelWrapper">
-            <div data-layer="label" className="Label">CRATES</div>
-            <button className="AddButton" onClick={() => addItem('crates')} aria-label="Add Crate" title="Add Crate">
-              <span className="AddIconSymbol">+</span>
-            </button>
-          </div>
-          {cratesItems.map(item => (
-            <MenuItem
-              key={item.id}
-              id={item.id}
-              label={item.label}
-              // isSelected={selectedCrateItem === item.id} // Implement selection if needed
-              // onClick={() => handleCrateItemClick(item.id)} // Implement selection if needed
-              showOptions={true}
-              onOpenContextMenu={(e) => handleOpenContextMenu(e, item, 'crates')}
-            />
-          ))}
-        </div>
-        <div data-layer="divider" className="Divider" />
-
-        {/* MY TAGS Category (dynamic items) */}
-        <div data-layer="menu-category" className="MenuCategory">
-          <div data-layer="category-label-wrapper" className="CategoryLabelWrapper">
-            <div data-layer="label" className="Label">MY TAGS</div>
-            <button className="AddButton" onClick={() => addItem('mytags')} aria-label="Add Tag" title="Add Tag">
-              <span className="AddIconSymbol">+</span>
-            </button>
-          </div>
-          {myTagsItems.map(item => (
-            <MenuItem
-              key={item.id}
-              id={item.id}
-              label={item.label}
-              // isSelected={selectedTagItem === item.id} // Implement selection if needed
-              // onClick={() => handleTagItemClick(item.id)} // Implement selection if needed
-              showOptions={true}
-              onOpenContextMenu={(e) => handleOpenContextMenu(e, item, 'mytags')}
-            />
-          ))}
-        </div>
-      </div>
+      <Menu
+        selectedLibraryItem={selectedLibraryItem}
+        cratesItems={cratesItems}
+        myTagsItems={myTagsItems}
+        handleLibraryItemClick={handleLibraryItemClick}
+        addItem={addItem}
+        handleOpenContextMenu={handleOpenContextMenu}
+        // selectedCrateItem, handleCrateItemClick, selectedTagItem, handleTagItemClick would be passed here if implemented
+      />
       <div data-layer="logo-container" className="LogoContainer">
         {/* Logo */}
       </div>
