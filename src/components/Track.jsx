@@ -28,13 +28,6 @@ const Track = ({ track, columns, isSelected, onTrackClick, onPlayClick, isPlayin
     }
   };
 
-  const handlePlayButtonClick = (e) => {
-    if (onPlayClick) {
-      e.stopPropagation(); // Prevent row selection
-      onPlayClick(e);
-    }
-  };
-
   return (
     <tr
       className={`TrackRow ${isSelected ? 'Selected' : ''} ${isCurrentTrack ? 'CurrentPlayingTrack' : ''}`}
@@ -71,13 +64,6 @@ const Track = ({ track, columns, isSelected, onTrackClick, onPlayClick, isPlayin
           </td>
         );
       })}
-      {onPlayClick && (
-        <td className="TrackCell Cell-playAction" style={{ width: '50px' }}>
-          <button onClick={handlePlayButtonClick} className="PlayButton" aria-label={`Play ${track.title}`}>
-            {isCurrentTrack && isPlaying ? '❚❚' : '▶'}
-          </button>
-        </td>
-      )}
     </tr>
   );
 };

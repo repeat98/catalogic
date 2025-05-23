@@ -1,5 +1,4 @@
 /******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./src/App.jsx":
@@ -8,6 +7,7 @@
   \*********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -16,22 +16,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _components_Sidebar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/Sidebar */ "./src/components/Sidebar.jsx");
 /* harmony import */ var _components_Main__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Main */ "./src/components/Main.jsx");
-/* harmony import */ var _App_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./App.scss */ "./src/App.scss");
+/* harmony import */ var _context_PlaybackContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./context/PlaybackContext */ "./src/context/PlaybackContext.jsx");
+/* harmony import */ var _App_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./App.scss */ "./src/App.scss");
 
  // Assuming Sidebar.jsx is in the same directory
  // Assuming Main.jsx is in the same directory
+
  // For AppWindow styles
 
 var App = function App() {
-  return (
-    /*#__PURE__*/
-    // The main application window container
-    // It uses flex display to arrange Sidebar and Main components side-by-side
-    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      "data-layer": "app-window",
-      className: "AppWindow"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_Sidebar__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_Main__WEBPACK_IMPORTED_MODULE_2__["default"], null))
-  );
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_context_PlaybackContext__WEBPACK_IMPORTED_MODULE_3__.PlaybackProvider, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    "data-layer": "app-window",
+    className: "AppWindow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_Sidebar__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_Main__WEBPACK_IMPORTED_MODULE_2__["default"], null)));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
 
@@ -43,6 +40,7 @@ var App = function App() {
   \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -61,9 +59,11 @@ var Content = function Content(_ref) {
     selectedTrackId = _ref.selectedTrackId,
     currentPlayingTrack = _ref.currentPlayingTrack,
     isPlaying = _ref.isPlaying,
+    currentTime = _ref.currentTime,
     audioError = _ref.audioError,
     onTrackSelect = _ref.onTrackSelect,
     onPlayTrack = _ref.onPlayTrack,
+    onSeek = _ref.onSeek,
     onSearch = _ref.onSearch,
     isLoading = _ref.isLoading,
     error = _ref.error;
@@ -95,7 +95,9 @@ var Content = function Content(_ref) {
     onPlayTrack: onPlayTrack // Pass the handler from Main
     ,
     currentPlayingTrackId: currentPlayingTrack === null || currentPlayingTrack === void 0 ? void 0 : currentPlayingTrack.id,
-    isAudioPlaying: isPlaying
+    isAudioPlaying: isPlaying,
+    currentTime: currentTime,
+    onSeek: onSeek
   }));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Content);
@@ -108,6 +110,7 @@ var Content = function Content(_ref) {
   \****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -157,6 +160,7 @@ var ContextMenu = function ContextMenu(_ref) {
   \*********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -166,7 +170,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Navbar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Navbar */ "./src/components/Navbar.jsx");
 /* harmony import */ var _Content__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Content */ "./src/components/Content.jsx");
 /* harmony import */ var _Player__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Player */ "./src/components/Player.jsx");
-/* harmony import */ var _Main_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Main.scss */ "./src/components/Main.scss");
+/* harmony import */ var _context_PlaybackContext__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../context/PlaybackContext */ "./src/context/PlaybackContext.jsx");
+/* harmony import */ var _Main_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Main.scss */ "./src/components/Main.scss");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return r; }; var t, r = {}, e = Object.prototype, n = e.hasOwnProperty, o = "function" == typeof Symbol ? Symbol : {}, i = o.iterator || "@@iterator", a = o.asyncIterator || "@@asyncIterator", u = o.toStringTag || "@@toStringTag"; function c(t, r, e, n) { return Object.defineProperty(t, r, { value: e, enumerable: !n, configurable: !n, writable: !n }); } try { c({}, ""); } catch (t) { c = function c(t, r, e) { return t[r] = e; }; } function h(r, e, n, o) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype); return c(a, "_invoke", function (r, e, n) { var o = 1; return function (i, a) { if (3 === o) throw Error("Generator is already running"); if (4 === o) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var u = n.delegate; if (u) { var c = d(u, n); if (c) { if (c === f) continue; return c; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (1 === o) throw o = 4, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = 3; var h = s(r, e, n); if ("normal" === h.type) { if (o = n.done ? 4 : 2, h.arg === f) continue; return { value: h.arg, done: n.done }; } "throw" === h.type && (o = 4, n.method = "throw", n.arg = h.arg); } }; }(r, n, new Context(o || [])), !0), a; } function s(t, r, e) { try { return { type: "normal", arg: t.call(r, e) }; } catch (t) { return { type: "throw", arg: t }; } } r.wrap = h; var f = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var l = {}; c(l, i, function () { return this; }); var p = Object.getPrototypeOf, y = p && p(p(x([]))); y && y !== e && n.call(y, i) && (l = y); var v = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(l); function g(t) { ["next", "throw", "return"].forEach(function (r) { c(t, r, function (t) { return this._invoke(r, t); }); }); } function AsyncIterator(t, r) { function e(o, i, a, u) { var c = s(t[o], t, i); if ("throw" !== c.type) { var h = c.arg, f = h.value; return f && "object" == _typeof(f) && n.call(f, "__await") ? r.resolve(f.__await).then(function (t) { e("next", t, a, u); }, function (t) { e("throw", t, a, u); }) : r.resolve(f).then(function (t) { h.value = t, a(h); }, function (t) { return e("throw", t, a, u); }); } u(c.arg); } var o; c(this, "_invoke", function (t, n) { function i() { return new r(function (r, o) { e(t, n, r, o); }); } return o = o ? o.then(i, i) : i(); }, !0); } function d(r, e) { var n = e.method, o = r.i[n]; if (o === t) return e.delegate = null, "throw" === n && r.i["return"] && (e.method = "return", e.arg = t, d(r, e), "throw" === e.method) || "return" !== n && (e.method = "throw", e.arg = new TypeError("The iterator does not provide a '" + n + "' method")), f; var i = s(o, r.i, e.arg); if ("throw" === i.type) return e.method = "throw", e.arg = i.arg, e.delegate = null, f; var a = i.arg; return a ? a.done ? (e[r.r] = a.value, e.next = r.n, "return" !== e.method && (e.method = "next", e.arg = t), e.delegate = null, f) : a : (e.method = "throw", e.arg = new TypeError("iterator result is not an object"), e.delegate = null, f); } function w(t) { this.tryEntries.push(t); } function m(r) { var e = r[4] || {}; e.type = "normal", e.arg = t, r[4] = e; } function Context(t) { this.tryEntries = [[-1]], t.forEach(w, this), this.reset(!0); } function x(r) { if (null != r) { var e = r[i]; if (e) return e.call(r); if ("function" == typeof r.next) return r; if (!isNaN(r.length)) { var o = -1, a = function e() { for (; ++o < r.length;) if (n.call(r, o)) return e.value = r[o], e.done = !1, e; return e.value = t, e.done = !0, e; }; return a.next = a; } } throw new TypeError(_typeof(r) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, c(v, "constructor", GeneratorFunctionPrototype), c(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = c(GeneratorFunctionPrototype, u, "GeneratorFunction"), r.isGeneratorFunction = function (t) { var r = "function" == typeof t && t.constructor; return !!r && (r === GeneratorFunction || "GeneratorFunction" === (r.displayName || r.name)); }, r.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, c(t, u, "GeneratorFunction")), t.prototype = Object.create(v), t; }, r.awrap = function (t) { return { __await: t }; }, g(AsyncIterator.prototype), c(AsyncIterator.prototype, a, function () { return this; }), r.AsyncIterator = AsyncIterator, r.async = function (t, e, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(h(t, e, n, o), i); return r.isGeneratorFunction(e) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, g(v), c(v, u, "Generator"), c(v, i, function () { return this; }), c(v, "toString", function () { return "[object Generator]"; }), r.keys = function (t) { var r = Object(t), e = []; for (var n in r) e.unshift(n); return function t() { for (; e.length;) if ((n = e.pop()) in r) return t.value = n, t.done = !1, t; return t.done = !0, t; }; }, r.values = x, Context.prototype = { constructor: Context, reset: function reset(r) { if (this.prev = this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(m), !r) for (var e in this) "t" === e.charAt(0) && n.call(this, e) && !isNaN(+e.slice(1)) && (this[e] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0][4]; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(r) { if (this.done) throw r; var e = this; function n(t) { a.type = "throw", a.arg = r, e.next = t; } for (var o = e.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i[4], u = this.prev, c = i[1], h = i[2]; if (-1 === i[0]) return n("end"), !1; if (!c && !h) throw Error("try statement without catch or finally"); if (null != i[0] && i[0] <= u) { if (u < c) return this.method = "next", this.arg = t, n(c), !0; if (u < h) return n(h), !1; } } }, abrupt: function abrupt(t, r) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var n = this.tryEntries[e]; if (n[0] > -1 && n[0] <= this.prev && this.prev < n[2]) { var o = n; break; } } o && ("break" === t || "continue" === t) && o[0] <= r && r <= o[2] && (o = null); var i = o ? o[4] : {}; return i.type = t, i.arg = r, o ? (this.method = "next", this.next = o[2], f) : this.complete(i); }, complete: function complete(t, r) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && r && (this.next = r), f; }, finish: function finish(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[2] === t) return this.complete(e[4], e[3]), m(e), f; } }, "catch": function _catch(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[0] === t) { var n = e[4]; if ("throw" === n.type) { var o = n.arg; m(e); } return o; } } throw Error("illegal catch attempt"); }, delegateYield: function delegateYield(r, e, n) { return this.delegate = { i: x(r), r: e, n: n }, "next" === this.method && (this.arg = t), f; } }, r; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
@@ -186,6 +191,7 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
  // Import the Navbar component
  // Import the Content component
  // Import the Player component
+
  // Styles for the .Main container
 
 function Main() {
@@ -217,11 +223,14 @@ function Main() {
     _useState14 = _slicedToArray(_useState13, 2),
     isPlaying = _useState14[0],
     setIsPlaying = _useState14[1];
-  var audioPlayerRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-  var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+  var _useState15 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0),
     _useState16 = _slicedToArray(_useState15, 2),
-    audioError = _useState16[0],
-    setAudioError = _useState16[1];
+    currentTime = _useState16[0],
+    setCurrentTime = _useState16[1];
+  var _useContext = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_context_PlaybackContext__WEBPACK_IMPORTED_MODULE_4__.PlaybackContext),
+    currentWaveSurfer = _useContext.currentWaveSurfer,
+    setContextTrack = _useContext.setCurrentTrack;
+  var timeUpdateIntervalRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     var fetchTracks = /*#__PURE__*/function () {
       var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
@@ -306,67 +315,88 @@ function Main() {
   };
   var handlePlayTrack = function handlePlayTrack(track) {
     if (!track || !track.id) {
-      console.error("Invalid track object passed to handlePlayTrack:", track);
+      console.error("[Main] Invalid track object passed to handlePlayTrack:", track);
       return;
     }
-    setAudioError('');
-    var audioUrl = "http://localhost:3000/audio/".concat(track.id);
-    if (currentPlayingTrack && currentPlayingTrack.id === track.id && audioPlayerRef.current) {
-      if (isPlaying) {
-        audioPlayerRef.current.pause();
-      } else {
-        audioPlayerRef.current.play()["catch"](function (e) {
-          console.error("Error playing audio:", e);
-          setAudioError("Cannot play: ".concat(track.title, ". ").concat(e.message));
-        });
-      }
-      // setIsPlaying will be handled by audio element events
+    if (currentPlayingTrack && currentPlayingTrack.id === track.id) {
+      setIsPlaying(function (prev) {
+        return !prev;
+      });
     } else {
       setCurrentPlayingTrack(track);
-      if (audioPlayerRef.current) {
-        audioPlayerRef.current.src = audioUrl;
-        audioPlayerRef.current.load();
-        audioPlayerRef.current.play()["catch"](function (e) {
-          console.error("Error playing audio:", e);
-          setAudioError("Cannot play: ".concat(track.title, ". ").concat(e.message));
-          setIsPlaying(false); // Explicitly set to false on new track error
-        });
-      }
+      setContextTrack(track);
+      setIsPlaying(true);
+      setCurrentTime(0);
+    }
+  };
+  var handleSeek = function handleSeek(newTime) {
+    if (currentWaveSurfer.current) {
+      try {
+        var duration = currentWaveSurfer.current.getDuration();
+        if (duration > 0) {
+          var seekPosition = Math.min(1, Math.max(0, newTime / duration));
+          currentWaveSurfer.current.seekTo(seekPosition);
+        }
+      } catch (e) {/* console.warn("Error in handleSeek", e) */}
     }
   };
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    var audioEl = audioPlayerRef.current;
-    if (!audioEl) return;
-    var handleAudioPlay = function handleAudioPlay() {
-      return setIsPlaying(true);
-    };
-    var handleAudioPause = function handleAudioPause() {
-      return setIsPlaying(false);
-    };
-    var handleAudioEnded = function handleAudioEnded() {
-      setIsPlaying(false);
-      // Optional: play next track logic can be added here
-    };
-    var handleAudioError = function handleAudioError(e) {
-      console.error("Audio Element Error:", e);
-      // More specific error can be set if currentPlayingTrack is available
-      setAudioError("Audio error: ".concat((currentPlayingTrack === null || currentPlayingTrack === void 0 ? void 0 : currentPlayingTrack.title) || 'track', "."));
-      setIsPlaying(false);
-    };
-    audioEl.addEventListener('play', handleAudioPlay);
-    audioEl.addEventListener('pause', handleAudioPause);
-    audioEl.addEventListener('ended', handleAudioEnded);
-    audioEl.addEventListener('error', handleAudioError);
+    if (currentWaveSurfer.current) {
+      try {
+        if (isPlaying) {
+          currentWaveSurfer.current.setVolume(1);
+          currentWaveSurfer.current.play();
+        } else {
+          currentWaveSurfer.current.pause();
+        }
+      } catch (e) {
+        console.warn("[Main] Error in play/pause effect", e);
+      }
+    }
+  }, [isPlaying, currentWaveSurfer.current]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (timeUpdateIntervalRef.current) {
+      clearInterval(timeUpdateIntervalRef.current);
+    }
+    if (currentWaveSurfer.current && isPlaying) {
+      timeUpdateIntervalRef.current = setInterval(function () {
+        if (currentWaveSurfer.current) {
+          try {
+            var newTime = currentWaveSurfer.current.getCurrentTime();
+            var duration = currentWaveSurfer.current.getDuration();
+            if (newTime >= 0 && duration > 0 && newTime <= duration) {
+              setCurrentTime(newTime);
+            }
+          } catch (e) {/* console.warn('Error getting current time from WaveSurfer:', e); */}
+        }
+      }, 100);
+    }
     return function () {
-      audioEl.removeEventListener('play', handleAudioPlay);
-      audioEl.removeEventListener('pause', handleAudioPause);
-      audioEl.removeEventListener('ended', handleAudioEnded);
-      audioEl.removeEventListener('error', handleAudioError);
+      return clearInterval(timeUpdateIntervalRef.current);
     };
-    // Removed allTracks from dependency array as it might cause unnecessary re-renders
-    // if track data is large and changes often in ways not relevant to playback.
-    // currentPlayingTrack.id is sufficient for changes related to the current track.
-  }, [audioPlayerRef, currentPlayingTrack === null || currentPlayingTrack === void 0 ? void 0 : currentPlayingTrack.id]);
+  }, [currentWaveSurfer.current, isPlaying]);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (!currentWaveSurfer.current) return;
+    var activeWs = currentWaveSurfer.current;
+    var handleFinish = function handleFinish() {
+      setIsPlaying(false);
+      setCurrentTime(0);
+    };
+    var handleSeekEvent = function handleSeekEvent() {
+      if (activeWs) {
+        try {
+          var newTime = activeWs.getCurrentTime();
+          setCurrentTime(newTime);
+        } catch (e) {/* console.warn('Error getting time on seek:', e); */}
+      }
+    };
+    activeWs.on('finish', handleFinish);
+    activeWs.on('seek', handleSeekEvent);
+    return function () {
+      activeWs.un('finish', handleFinish);
+      activeWs.un('seek', handleSeekEvent);
+    };
+  }, [currentWaveSurfer.current]);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "Main"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Navbar__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -376,17 +406,17 @@ function Main() {
     selectedTrackId: selectedTrackId,
     currentPlayingTrack: currentPlayingTrack,
     isPlaying: isPlaying,
-    audioError: audioError,
+    currentTime: currentTime,
     onTrackSelect: handleTrackSelect,
     onPlayTrack: handlePlayTrack,
+    onSeek: handleSeek,
     onSearch: handleSearch,
     isLoading: isLoading,
     error: error
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Player__WEBPACK_IMPORTED_MODULE_3__["default"], {
-    audioPlayerRef: audioPlayerRef,
     currentPlayingTrack: currentPlayingTrack,
     isPlaying: isPlaying,
-    audioError: audioError
+    currentTime: currentTime
   }));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Main);
@@ -399,6 +429,7 @@ function Main() {
   \*********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -528,6 +559,7 @@ var Menu = function Menu(_ref) {
   \*************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -620,6 +652,7 @@ var MenuItem = function MenuItem(_ref) {
   \***********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -691,38 +724,109 @@ var Navbar = function Navbar() {
   \***********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Player_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Player.scss */ "./src/components/Player.scss");
+/* harmony import */ var _context_PlaybackContext__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../context/PlaybackContext */ "./src/context/PlaybackContext.jsx");
+/* harmony import */ var _Player_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Player.scss */ "./src/components/Player.scss");
+
 
  // Imports styles for the Player component
 
 var Player = function Player(_ref) {
   var currentPlayingTrack = _ref.currentPlayingTrack,
     isPlaying = _ref.isPlaying,
-    audioError = _ref.audioError,
-    audioPlayerRef = _ref.audioPlayerRef;
-  return (
-    /*#__PURE__*/
-    // The main container for the player, styled by Player.scss
-    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      "data-layer": "player",
-      className: "Player"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("audio", {
-      ref: audioPlayerRef,
-      style: {
-        display: 'none'
+    currentTime = _ref.currentTime;
+  var _useContext = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_context_PlaybackContext__WEBPACK_IMPORTED_MODULE_1__.PlaybackContext),
+    currentWaveSurfer = _useContext.currentWaveSurfer;
+  var formatTime = function formatTime(seconds) {
+    if (!seconds || seconds < 0) return '0:00';
+    var minutes = Math.floor(seconds / 60);
+    var remainingSeconds = Math.floor(seconds % 60);
+    return "".concat(minutes, ":").concat(remainingSeconds.toString().padStart(2, '0'));
+  };
+  var getDuration = function getDuration() {
+    if (currentWaveSurfer.current) {
+      try {
+        var duration = currentWaveSurfer.current.getDuration();
+        return duration > 0 ? duration : 0;
+      } catch (error) {
+        return 0;
       }
-    }), (currentPlayingTrack || audioError) && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-      className: "MiniPlayerInfo"
-    }, audioError ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
-      className: "AudioErrorText"
-    }, audioError) : currentPlayingTrack ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, "Now ", isPlaying ? 'Playing' : 'Paused', ": ", currentPlayingTrack.title, " - ", currentPlayingTrack.artist) : null))
-  );
+    }
+    return 0;
+  };
+  var getProgress = function getProgress() {
+    var duration = getDuration();
+    if (duration > 0 && currentTime >= 0) {
+      return Math.min(currentTime / duration * 100, 100);
+    }
+    return 0;
+  };
+  var handlePlayPause = function handlePlayPause() {
+    if (currentWaveSurfer.current) {
+      try {
+        if (isPlaying) {
+          currentWaveSurfer.current.pause();
+        } else {
+          currentWaveSurfer.current.play();
+        }
+      } catch (error) {
+        console.warn('Error controlling playback:', error);
+      }
+    }
+  };
+  var handleSeek = function handleSeek(e) {
+    if (!currentWaveSurfer.current || !currentPlayingTrack) return;
+    try {
+      var rect = e.currentTarget.getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      var percentage = Math.max(0, Math.min(1, x / rect.width));
+      console.log('Player seeking to percentage:', percentage);
+      currentWaveSurfer.current.seekTo(percentage);
+    } catch (error) {
+      console.warn('Error seeking:', error);
+    }
+  };
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "Player"
+  }, currentPlayingTrack ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement((react__WEBPACK_IMPORTED_MODULE_0___default().Fragment), null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "PlayerInfo"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("img", {
+    src: currentPlayingTrack.artwork_thumbnail_path || 'assets/default-artwork.png',
+    alt: "artwork",
+    className: "PlayerArtwork",
+    onError: function onError(e) {
+      e.target.src = 'assets/default-artwork.png';
+    }
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "TrackInfo"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "TrackTitle"
+  }, currentPlayingTrack.title), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "TrackArtist"
+  }, currentPlayingTrack.artist))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "PlayerControls"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    className: "PlayPauseButton",
+    onClick: handlePlayPause
+  }, isPlaying ? '⏸' : '▶'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "TimeInfo"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, formatTime(currentTime)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "ProgressBar",
+    onClick: handleSeek
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "ProgressFill",
+    style: {
+      width: "".concat(getProgress(), "%")
+    }
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, formatTime(getDuration()))))) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "NoTrackMessage"
+  }, "No track selected"));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Player);
 
@@ -734,6 +838,7 @@ var Player = function Player(_ref) {
   \********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -786,6 +891,7 @@ var SearchComponent = function SearchComponent(_ref) {
   \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -1025,6 +1131,7 @@ var Sidebar = function Sidebar() {
   \**********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -1067,12 +1174,6 @@ var Track = function Track(_ref) {
       onPlayClick(e);
     }
   };
-  var handlePlayButtonClick = function handlePlayButtonClick(e) {
-    if (onPlayClick) {
-      e.stopPropagation(); // Prevent row selection
-      onPlayClick(e);
-    }
-  };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", {
     className: "TrackRow ".concat(isSelected ? 'Selected' : '', " ").concat(isCurrentTrack ? 'CurrentPlayingTrack' : ''),
     onClick: handleMainClick,
@@ -1106,16 +1207,7 @@ var Track = function Track(_ref) {
         width: col.currentWidth || col.width
       }
     }, content);
-  }), onPlayClick && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
-    className: "TrackCell Cell-playAction",
-    style: {
-      width: '50px'
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
-    onClick: handlePlayButtonClick,
-    className: "PlayButton",
-    "aria-label": "Play ".concat(track.title)
-  }, isCurrentTrack && isPlaying ? '❚❚' : '▶')));
+  }));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Track);
 
@@ -1127,6 +1219,7 @@ var Track = function Track(_ref) {
   \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -1343,10 +1436,6 @@ var Tracklist = function Tracklist(_ref) {
         width: col.currentWidth || col.width
       }
     });
-  }), onPlayTrack && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("col", {
-    style: {
-      width: '50px'
-    }
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", null, columnConfig.map(function (col) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
       key: col.key,
@@ -1365,17 +1454,11 @@ var Tracklist = function Tracklist(_ref) {
       "aria-orientation": "vertical",
       "aria-label": "Resize ".concat(col.header, " column")
     })));
-  }), onPlayTrack && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("th", {
-    style: {
-      width: '50px'
-    },
-    "aria-label": "Play column"
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tbody", null, tracks.length > 0 ? tracks.map(function (track) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Track__WEBPACK_IMPORTED_MODULE_1__["default"], {
       key: track.id,
       track: track,
-      columns: columnConfig // Pass the stateful config with currentWidths
-      ,
+      columns: columnConfig,
       isSelected: selectedTrackId === track.id,
       onTrackClick: function onTrackClick() {
         return handleTrackClick(track);
@@ -1388,7 +1471,7 @@ var Tracklist = function Tracklist(_ref) {
       renderCell: renderCell
     });
   }) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
-    colSpan: columnConfig.length + (onPlayTrack ? 1 : 0),
+    colSpan: columnConfig.length,
     className: "NoTracksMessage"
   }, "No tracks found. Add music to your library.")))));
 };
@@ -1402,6 +1485,7 @@ var Tracklist = function Tracklist(_ref) {
   \********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -1409,8 +1493,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var wavesurfer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! wavesurfer.js */ "./node_modules/wavesurfer.js/dist/wavesurfer.esm.js");
-/* harmony import */ var _utils_waveformCache__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/waveformCache */ "./src/utils/waveformCache.js");
-/* harmony import */ var _hooks_useInViewport__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../hooks/useInViewport */ "./src/hooks/useInViewport.js");
+/* harmony import */ var _hooks_useInViewport__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../hooks/useInViewport */ "./src/hooks/useInViewport.js");
+/* harmony import */ var _context_PlaybackContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../context/PlaybackContext */ "./src/context/PlaybackContext.jsx");
 /* harmony import */ var _WaveformPreview_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./WaveformPreview.scss */ "./src/components/WaveformPreview.scss");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return r; }; var t, r = {}, e = Object.prototype, n = e.hasOwnProperty, o = "function" == typeof Symbol ? Symbol : {}, i = o.iterator || "@@iterator", a = o.asyncIterator || "@@asyncIterator", u = o.toStringTag || "@@toStringTag"; function c(t, r, e, n) { return Object.defineProperty(t, r, { value: e, enumerable: !n, configurable: !n, writable: !n }); } try { c({}, ""); } catch (t) { c = function c(t, r, e) { return t[r] = e; }; } function h(r, e, n, o) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype); return c(a, "_invoke", function (r, e, n) { var o = 1; return function (i, a) { if (3 === o) throw Error("Generator is already running"); if (4 === o) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var u = n.delegate; if (u) { var c = d(u, n); if (c) { if (c === f) continue; return c; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (1 === o) throw o = 4, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = 3; var h = s(r, e, n); if ("normal" === h.type) { if (o = n.done ? 4 : 2, h.arg === f) continue; return { value: h.arg, done: n.done }; } "throw" === h.type && (o = 4, n.method = "throw", n.arg = h.arg); } }; }(r, n, new Context(o || [])), !0), a; } function s(t, r, e) { try { return { type: "normal", arg: t.call(r, e) }; } catch (t) { return { type: "throw", arg: t }; } } r.wrap = h; var f = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var l = {}; c(l, i, function () { return this; }); var p = Object.getPrototypeOf, y = p && p(p(x([]))); y && y !== e && n.call(y, i) && (l = y); var v = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(l); function g(t) { ["next", "throw", "return"].forEach(function (r) { c(t, r, function (t) { return this._invoke(r, t); }); }); } function AsyncIterator(t, r) { function e(o, i, a, u) { var c = s(t[o], t, i); if ("throw" !== c.type) { var h = c.arg, f = h.value; return f && "object" == _typeof(f) && n.call(f, "__await") ? r.resolve(f.__await).then(function (t) { e("next", t, a, u); }, function (t) { e("throw", t, a, u); }) : r.resolve(f).then(function (t) { h.value = t, a(h); }, function (t) { return e("throw", t, a, u); }); } u(c.arg); } var o; c(this, "_invoke", function (t, n) { function i() { return new r(function (r, o) { e(t, n, r, o); }); } return o = o ? o.then(i, i) : i(); }, !0); } function d(r, e) { var n = e.method, o = r.i[n]; if (o === t) return e.delegate = null, "throw" === n && r.i["return"] && (e.method = "return", e.arg = t, d(r, e), "throw" === e.method) || "return" !== n && (e.method = "throw", e.arg = new TypeError("The iterator does not provide a '" + n + "' method")), f; var i = s(o, r.i, e.arg); if ("throw" === i.type) return e.method = "throw", e.arg = i.arg, e.delegate = null, f; var a = i.arg; return a ? a.done ? (e[r.r] = a.value, e.next = r.n, "return" !== e.method && (e.method = "next", e.arg = t), e.delegate = null, f) : a : (e.method = "throw", e.arg = new TypeError("iterator result is not an object"), e.delegate = null, f); } function w(t) { this.tryEntries.push(t); } function m(r) { var e = r[4] || {}; e.type = "normal", e.arg = t, r[4] = e; } function Context(t) { this.tryEntries = [[-1]], t.forEach(w, this), this.reset(!0); } function x(r) { if (null != r) { var e = r[i]; if (e) return e.call(r); if ("function" == typeof r.next) return r; if (!isNaN(r.length)) { var o = -1, a = function e() { for (; ++o < r.length;) if (n.call(r, o)) return e.value = r[o], e.done = !1, e; return e.value = t, e.done = !0, e; }; return a.next = a; } } throw new TypeError(_typeof(r) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, c(v, "constructor", GeneratorFunctionPrototype), c(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = c(GeneratorFunctionPrototype, u, "GeneratorFunction"), r.isGeneratorFunction = function (t) { var r = "function" == typeof t && t.constructor; return !!r && (r === GeneratorFunction || "GeneratorFunction" === (r.displayName || r.name)); }, r.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, c(t, u, "GeneratorFunction")), t.prototype = Object.create(v), t; }, r.awrap = function (t) { return { __await: t }; }, g(AsyncIterator.prototype), c(AsyncIterator.prototype, a, function () { return this; }), r.AsyncIterator = AsyncIterator, r.async = function (t, e, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(h(t, e, n, o), i); return r.isGeneratorFunction(e) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, g(v), c(v, u, "Generator"), c(v, i, function () { return this; }), c(v, "toString", function () { return "[object Generator]"; }), r.keys = function (t) { var r = Object(t), e = []; for (var n in r) e.unshift(n); return function t() { for (; e.length;) if ((n = e.pop()) in r) return t.value = n, t.done = !1, t; return t.done = !0, t; }; }, r.values = x, Context.prototype = { constructor: Context, reset: function reset(r) { if (this.prev = this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(m), !r) for (var e in this) "t" === e.charAt(0) && n.call(this, e) && !isNaN(+e.slice(1)) && (this[e] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0][4]; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(r) { if (this.done) throw r; var e = this; function n(t) { a.type = "throw", a.arg = r, e.next = t; } for (var o = e.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i[4], u = this.prev, c = i[1], h = i[2]; if (-1 === i[0]) return n("end"), !1; if (!c && !h) throw Error("try statement without catch or finally"); if (null != i[0] && i[0] <= u) { if (u < c) return this.method = "next", this.arg = t, n(c), !0; if (u < h) return n(h), !1; } } }, abrupt: function abrupt(t, r) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var n = this.tryEntries[e]; if (n[0] > -1 && n[0] <= this.prev && this.prev < n[2]) { var o = n; break; } } o && ("break" === t || "continue" === t) && o[0] <= r && r <= o[2] && (o = null); var i = o ? o[4] : {}; return i.type = t, i.arg = r, o ? (this.method = "next", this.next = o[2], f) : this.complete(i); }, complete: function complete(t, r) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && r && (this.next = r), f; }, finish: function finish(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[2] === t) return this.complete(e[4], e[3]), m(e), f; } }, "catch": function _catch(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[0] === t) { var n = e[4]; if ("throw" === n.type) { var o = n.arg; m(e); } return o; } } throw Error("illegal catch attempt"); }, delegateYield: function delegateYield(r, e, n) { return this.delegate = { i: x(r), r: e, n: n }, "next" === this.method && (this.arg = t), f; } }, r; }
@@ -1443,9 +1527,11 @@ var WaveformPreview = function WaveformPreview(_ref) {
   var wavesurferRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   var isDestroyedRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(false);
   var initTimeoutRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-  var _useInViewport = (0,_hooks_useInViewport__WEBPACK_IMPORTED_MODULE_3__.useInViewport)({
+  var _useContext = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_context_PlaybackContext__WEBPACK_IMPORTED_MODULE_3__.PlaybackContext),
+    setPlayingWaveSurfer = _useContext.setPlayingWaveSurfer,
+    currentTrack = _useContext.currentTrack;
+  var _useInViewport = (0,_hooks_useInViewport__WEBPACK_IMPORTED_MODULE_2__.useInViewport)({
       rootMargin: '100px',
-      // Start loading 100px before entering viewport
       threshold: 0.1
     }),
     _useInViewport2 = _slicedToArray(_useInViewport, 2),
@@ -1455,44 +1541,43 @@ var WaveformPreview = function WaveformPreview(_ref) {
     _useState2 = _slicedToArray(_useState, 2),
     isLoading = _useState2[0],
     setIsLoading = _useState2[1];
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
     _useState4 = _slicedToArray(_useState3, 2),
-    isGenerating = _useState4[0],
-    setIsGenerating = _useState4[1];
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    error = _useState4[0],
+    setError = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
     _useState6 = _slicedToArray(_useState5, 2),
-    error = _useState6[0],
-    setError = _useState6[1];
-
-  // Debounced initialization to prevent rapid fire when scrolling
-  var initializeWaveform = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-    var isCached, wavesurfer, cachedData, audioUrl, _audioUrl, _audioUrl2, _audioUrl3;
-    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-      while (1) switch (_context2.prev = _context2.next) {
+    isReady = _useState6[0],
+    setIsReady = _useState6[1];
+  var isThisPreviewTheCurrentTrack = currentTrack && currentTrack.id === trackId;
+  var initializeWaveform = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+    var audioUrl, response, wavesurfer;
+    return _regeneratorRuntime().wrap(function _callee$(_context) {
+      while (1) switch (_context.prev = _context.next) {
         case 0:
-          if (!(!waveformRef.current || isDestroyedRef.current || !trackId)) {
-            _context2.next = 2;
+          if (!(!waveformRef.current || isDestroyedRef.current || !trackId || wavesurferRef.current)) {
+            _context.next = 2;
             break;
           }
-          return _context2.abrupt("return");
+          return _context.abrupt("return");
         case 2:
-          if (!wavesurferRef.current) {
-            _context2.next = 4;
-            break;
-          }
-          return _context2.abrupt("return");
-        case 4:
           setIsLoading(true);
           setError(null);
-          _context2.prev = 6;
-          console.log('Initializing waveform for track:', trackId);
-
-          // Check if waveform is cached
-          _context2.next = 10;
-          return (0,_utils_waveformCache__WEBPACK_IMPORTED_MODULE_2__.isWaveformCached)(trackId);
-        case 10:
-          isCached = _context2.sent;
-          console.log('Waveform cached for track', trackId, ':', isCached);
+          setIsReady(false);
+          _context.prev = 5;
+          audioUrl = "http://localhost:3000/audio/".concat(trackId);
+          _context.next = 9;
+          return fetch(audioUrl, {
+            method: 'HEAD'
+          });
+        case 9:
+          response = _context.sent;
+          if (response.ok) {
+            _context.next = 12;
+            break;
+          }
+          throw new Error("Audio file not found: ".concat(response.status, " ").concat(response.statusText));
+        case 12:
           wavesurfer = wavesurfer_js__WEBPACK_IMPORTED_MODULE_1__["default"].create({
             container: waveformRef.current,
             height: height,
@@ -1508,216 +1593,130 @@ var WaveformPreview = function WaveformPreview(_ref) {
             hideScrollbar: true,
             fillParent: true,
             minPxPerSec: 1,
-            pixelRatio: 1
+            pixelRatio: 1,
+            backend: 'MediaElement',
+            mediaType: 'audio',
+            autoScroll: false
           });
           wavesurferRef.current = wavesurfer;
-
-          // Add click handler for seeking
           wavesurfer.on('click', function (relativePos) {
-            if (onSeek) {
-              var duration = wavesurfer.getDuration();
-              var newTime = relativePos * duration;
-              onSeek(newTime);
+            if (isThisPreviewTheCurrentTrack) {
+              if (onSeek) {
+                var duration = wavesurfer.getDuration();
+                if (duration > 0) {
+                  var newTime = relativePos * duration;
+                  onSeek(newTime);
+                }
+              }
+            } else {
+              if (onPlayClick) {
+                onPlayClick();
+              }
             }
           });
-
-          // Add double-click handler for play/pause
           wavesurfer.on('dblclick', function () {
             if (onPlayClick) {
               onPlayClick();
             }
           });
-
-          // Set up event listeners
           wavesurfer.on('error', function (err) {
             console.error('WaveSurfer error for track', trackId, ':', err);
             setError('Error loading audio');
             setIsLoading(false);
-            setIsGenerating(false);
+            setIsReady(false);
           });
           wavesurfer.on('ready', function () {
-            console.log('WaveSurfer ready for track', trackId);
             setIsLoading(false);
-            setIsGenerating(false);
-          });
-          if (!isCached) {
-            _context2.next = 27;
-            break;
-          }
-          // Load from cache
-          console.log('Loading cached waveform for track', trackId);
-          _context2.next = 22;
-          return (0,_utils_waveformCache__WEBPACK_IMPORTED_MODULE_2__.getCachedWaveform)(trackId);
-        case 22:
-          cachedData = _context2.sent;
-          console.log('Retrieved cached data for track', trackId, ':', cachedData);
-          if (cachedData && Array.isArray(cachedData.peaks) && cachedData.peaks.length > 0) {
-            console.log('Using cached waveform data for track', trackId, 'Size:', cachedData.peaks.length);
+            setIsReady(true);
             try {
-              // Load audio with cached peaks
-              audioUrl = "http://localhost:3000/audio/".concat(trackId);
-              wavesurfer.load(audioUrl, cachedData.peaks);
-              setIsLoading(false);
-              console.log('Cached waveform loaded successfully for track', trackId);
-            } catch (bufferError) {
-              console.warn('Error loading from cached peaks for track', trackId, ':', bufferError);
-              // Fallback to loading audio file without peaks
-              setIsGenerating(true);
-              _audioUrl = "http://localhost:3000/audio/".concat(trackId);
-              wavesurfer.load(_audioUrl);
+              wavesurfer.setVolume(0);
+            } catch (e) {
+              console.warn('Error setting initial volume to 0 for track', trackId, e);
             }
-          } else {
-            console.log('Cache data invalid or empty for track', trackId, 'Data:', cachedData);
-            setIsGenerating(true);
-            _audioUrl2 = "http://localhost:3000/audio/".concat(trackId);
-            wavesurfer.load(_audioUrl2);
-          }
-          _context2.next = 32;
+            wavesurfer.pause();
+          });
+          _context.next = 20;
+          return wavesurfer.load(audioUrl);
+        case 20:
+          _context.next = 28;
           break;
-        case 27:
-          // Load audio and generate waveform
-          console.log('Generating new waveform for track', trackId);
-          setIsGenerating(true);
-          _audioUrl3 = "http://localhost:3000/audio/".concat(trackId); // Set up waveform-ready listener to cache the data
-          wavesurfer.on('ready', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-            var peaksArray, waveformData, cacheSuccess;
-            return _regeneratorRuntime().wrap(function _callee$(_context) {
-              while (1) switch (_context.prev = _context.next) {
-                case 0:
-                  _context.prev = 0;
-                  // Generate peaks with 1024 points (matching Waveform.jsx)
-                  peaksArray = wavesurfer.exportPeaks(1024);
-                  waveformData = {
-                    peaks: peaksArray
-                  };
-                  console.log('Caching waveform data for track', trackId, 'Size:', peaksArray.length);
-                  _context.next = 6;
-                  return (0,_utils_waveformCache__WEBPACK_IMPORTED_MODULE_2__.cacheWaveform)(trackId, waveformData);
-                case 6:
-                  cacheSuccess = _context.sent;
-                  if (cacheSuccess) {
-                    console.log('Waveform cached successfully for track', trackId);
-                  } else {
-                    console.error('Failed to cache waveform for track', trackId);
-                  }
-                  _context.next = 13;
-                  break;
-                case 10:
-                  _context.prev = 10;
-                  _context.t0 = _context["catch"](0);
-                  console.error('Error caching waveform for track', trackId, ':', _context.t0);
-                case 13:
-                case "end":
-                  return _context.stop();
-              }
-            }, _callee, null, [[0, 10]]);
-          })));
-          wavesurfer.load(_audioUrl3);
-        case 32:
-          _context2.next = 40;
-          break;
-        case 34:
-          _context2.prev = 34;
-          _context2.t0 = _context2["catch"](6);
-          console.error('Error initializing waveform:', _context2.t0);
+        case 22:
+          _context.prev = 22;
+          _context.t0 = _context["catch"](5);
+          console.error('Error initializing waveform for track:', trackId, _context.t0);
           setError('Error initializing waveform');
           setIsLoading(false);
-          setIsGenerating(false);
-        case 40:
+          setIsReady(false);
+        case 28:
         case "end":
-          return _context2.stop();
+          return _context.stop();
       }
-    }, _callee2, null, [[6, 34]]);
-  })), [trackId, height, waveColor, progressColor, onSeek, onPlayClick]);
-
-  // Cleanup waveform when leaving viewport
+    }, _callee, null, [[5, 22]]);
+  })), [trackId, height, waveColor, progressColor, onSeek, onPlayClick, isThisPreviewTheCurrentTrack]);
   var cleanupWaveform = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    if (initTimeoutRef.current) clearTimeout(initTimeoutRef.current);
     if (wavesurferRef.current) {
       try {
-        console.log('Cleaning up waveform for track:', trackId);
         wavesurferRef.current.destroy();
-        wavesurferRef.current = null;
-        setIsLoading(false);
-        setIsGenerating(false);
-        setError(null);
       } catch (error) {
-        console.warn('Error destroying wavesurfer on viewport exit:', error);
+        console.warn('Error destroying wavesurfer:', error);
       }
+      wavesurferRef.current = null;
     }
-  }, [trackId]);
-
-  // Handle viewport changes with debouncing
+    setIsReady(false);
+  }, []);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    // Clear any pending initialization
-    if (initTimeoutRef.current) {
-      clearTimeout(initTimeoutRef.current);
-    }
     if (isInViewport) {
-      // Debounce initialization to prevent rapid fire
       initTimeoutRef.current = setTimeout(function () {
-        if (isInViewport && !isDestroyedRef.current) {
-          initializeWaveform();
-        }
+        if (isInViewport && !isDestroyedRef.current) initializeWaveform();
       }, 100);
     } else {
-      // Clean up immediately when leaving viewport
       cleanupWaveform();
     }
     return function () {
-      if (initTimeoutRef.current) {
-        clearTimeout(initTimeoutRef.current);
-      }
+      return clearTimeout(initTimeoutRef.current);
     };
   }, [isInViewport, initializeWaveform, cleanupWaveform]);
-
-  // Cleanup when component unmounts
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     return function () {
       isDestroyedRef.current = true;
-      if (initTimeoutRef.current) {
-        clearTimeout(initTimeoutRef.current);
-      }
-      if (wavesurferRef.current) {
-        try {
-          wavesurferRef.current.destroy();
-        } catch (error) {
-          console.warn('Error destroying wavesurfer:', error);
-        }
-        wavesurferRef.current = null;
-      }
+      cleanupWaveform();
     };
-  }, []);
-
-  // Sync with main player's play/pause state
+  }, [cleanupWaveform]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    if (!wavesurferRef.current || isDestroyedRef.current) return;
-    try {
-      if (isPlaying) {
-        if (wavesurferRef.current.isReady()) {
-          wavesurferRef.current.play();
-        }
-      } else {
-        wavesurferRef.current.pause();
+    if (isThisPreviewTheCurrentTrack && isReady && wavesurferRef.current) {
+      setPlayingWaveSurfer(wavesurferRef.current);
+      try {
+        wavesurferRef.current.setVolume(1);
+      } catch (e) {
+        console.warn('Error setting volume to 1 for track', trackId, e);
       }
-    } catch (error) {
-      console.warn('Error controlling wavesurfer playback:', error);
+    } else if (wavesurferRef.current && isReady) {
+      try {
+        wavesurferRef.current.setVolume(0);
+        if (wavesurferRef.current.isPlaying()) {
+          wavesurferRef.current.pause();
+        }
+      } catch (e) {
+        console.warn('Error muting/pausing non-current track', trackId, e);
+      }
     }
-  }, [isPlaying]);
-
-  // Sync with main player's current time
+  }, [isThisPreviewTheCurrentTrack, isReady, setPlayingWaveSurfer, trackId]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    if (!wavesurferRef.current || !currentTime || isDestroyedRef.current) return;
-    try {
-      if (wavesurferRef.current.isReady()) {
+    if (wavesurferRef.current && isReady && currentTime !== undefined) {
+      var duration = wavesurferRef.current.getDuration();
+      if (duration > 0) {
         var currentWaveTime = wavesurferRef.current.getCurrentTime();
-        if (Math.abs(currentWaveTime - currentTime) > 0.5) {
-          wavesurferRef.current.seekTo(currentTime / wavesurferRef.current.getDuration());
+        var timeDifference = Math.abs(currentWaveTime - currentTime);
+        if (timeDifference > 0.2) {
+          if (isThisPreviewTheCurrentTrack && isPlaying) {} else {
+            var seekPosition = Math.min(1, Math.max(0, currentTime / duration));
+            wavesurferRef.current.seekTo(seekPosition);
+          }
         }
       }
-    } catch (error) {
-      console.warn('Error syncing wavesurfer time:', error);
     }
-  }, [currentTime]);
+  }, [currentTime, isReady, trackId, isThisPreviewTheCurrentTrack, isPlaying]);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     ref: containerRef,
     className: "WaveformPreview"
@@ -1728,17 +1727,113 @@ var WaveformPreview = function WaveformPreview(_ref) {
     className: "WaveformOverlay scroll-to-load"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "WaveformLoading"
-  }, "Scroll to load")), isInViewport && (isLoading || isGenerating || error) && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, "Scroll to load")), isInViewport && (isLoading || error) && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "WaveformOverlay"
   }, isLoading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "WaveformLoading"
-  }, "Loading...") : isGenerating ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "WaveformLoading"
-  }, "Generating...") : error ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, "Loading...") : error ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "WaveformLoading"
   }, error) : null));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (WaveformPreview);
+
+/***/ }),
+
+/***/ "./src/context/PlaybackContext.jsx":
+/*!*****************************************!*\
+  !*** ./src/context/PlaybackContext.jsx ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   PlaybackContext: () => (/* binding */ PlaybackContext),
+/* harmony export */   PlaybackProvider: () => (/* binding */ PlaybackProvider)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! prop-types */ "./node_modules/prop-types/index.js");
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+// src/context/PlaybackContext.jsx
+
+
+
+var PlaybackContext = /*#__PURE__*/(0,react__WEBPACK_IMPORTED_MODULE_0__.createContext)();
+var PlaybackProvider = function PlaybackProvider(_ref) {
+  var children = _ref.children;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState2 = _slicedToArray(_useState, 2),
+    currentTrack = _useState2[0],
+    setCurrentTrack = _useState2[1];
+  var currentWaveSurfer = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+
+  /**
+   * Sets the currently playing WaveSurfer instance.
+   * Pauses any previously playing instance to ensure only one plays at a time.
+   * @param {WaveSurfer} wavesurfer - The WaveSurfer instance to set as currently playing.
+   */
+  var setPlayingWaveSurfer = function setPlayingWaveSurfer(newWaveSurferInstance) {
+    if (currentWaveSurfer.current && currentWaveSurfer.current !== newWaveSurferInstance) {
+      try {
+        currentWaveSurfer.current.pause();
+        currentWaveSurfer.current.setVolume(0);
+      } catch (error) {
+        console.warn('[Context] Error pausing or muting previous WaveSurfer:', error);
+      }
+    }
+    currentWaveSurfer.current = newWaveSurferInstance;
+  };
+
+  /**
+   * Handles global keydown events.
+   * Specifically listens for the spacebar to toggle play/pause.
+   * Ensures that the event doesn't interfere when typing in inputs or textareas.
+   * @param {KeyboardEvent} e - The keyboard event.
+   */
+  var handleKeyDown = function handleKeyDown(e) {
+    if (e.code === 'Space') {
+      var activeElement = document.activeElement;
+      var isInputFocused = activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA' || activeElement.isContentEditable;
+      if (!isInputFocused && currentWaveSurfer.current) {
+        e.preventDefault();
+        try {
+          if (currentWaveSurfer.current.isPlaying()) {
+            currentWaveSurfer.current.pause();
+          } else {
+            currentWaveSurfer.current.setVolume(1);
+            currentWaveSurfer.current.play();
+          }
+        } catch (error) {
+          console.warn('[Context] Error toggling play/pause via spacebar:', error);
+        }
+      }
+    }
+  };
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    window.addEventListener('keydown', handleKeyDown);
+    return function () {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(PlaybackContext.Provider, {
+    value: {
+      currentTrack: currentTrack,
+      setCurrentTrack: setCurrentTrack,
+      currentWaveSurfer: currentWaveSurfer,
+      setPlayingWaveSurfer: setPlayingWaveSurfer
+    }
+  }, children);
+};
+PlaybackProvider.propTypes = {
+  children: (prop_types__WEBPACK_IMPORTED_MODULE_1___default().node).isRequired
+};
 
 /***/ }),
 
@@ -1748,6 +1843,7 @@ var WaveformPreview = function WaveformPreview(_ref) {
   \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
@@ -1806,187 +1902,13 @@ var useInViewport = function useInViewport() {
 
 /***/ }),
 
-/***/ "./src/utils/waveformCache.js":
-/*!************************************!*\
-  !*** ./src/utils/waveformCache.js ***!
-  \************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   cacheWaveform: () => (/* binding */ cacheWaveform),
-/* harmony export */   getCachedWaveform: () => (/* binding */ getCachedWaveform),
-/* harmony export */   isWaveformCached: () => (/* binding */ isWaveformCached)
-/* harmony export */ });
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return r; }; var t, r = {}, e = Object.prototype, n = e.hasOwnProperty, o = "function" == typeof Symbol ? Symbol : {}, i = o.iterator || "@@iterator", a = o.asyncIterator || "@@asyncIterator", u = o.toStringTag || "@@toStringTag"; function c(t, r, e, n) { return Object.defineProperty(t, r, { value: e, enumerable: !n, configurable: !n, writable: !n }); } try { c({}, ""); } catch (t) { c = function c(t, r, e) { return t[r] = e; }; } function h(r, e, n, o) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype); return c(a, "_invoke", function (r, e, n) { var o = 1; return function (i, a) { if (3 === o) throw Error("Generator is already running"); if (4 === o) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var u = n.delegate; if (u) { var c = d(u, n); if (c) { if (c === f) continue; return c; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (1 === o) throw o = 4, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = 3; var h = s(r, e, n); if ("normal" === h.type) { if (o = n.done ? 4 : 2, h.arg === f) continue; return { value: h.arg, done: n.done }; } "throw" === h.type && (o = 4, n.method = "throw", n.arg = h.arg); } }; }(r, n, new Context(o || [])), !0), a; } function s(t, r, e) { try { return { type: "normal", arg: t.call(r, e) }; } catch (t) { return { type: "throw", arg: t }; } } r.wrap = h; var f = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var l = {}; c(l, i, function () { return this; }); var p = Object.getPrototypeOf, y = p && p(p(x([]))); y && y !== e && n.call(y, i) && (l = y); var v = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(l); function g(t) { ["next", "throw", "return"].forEach(function (r) { c(t, r, function (t) { return this._invoke(r, t); }); }); } function AsyncIterator(t, r) { function e(o, i, a, u) { var c = s(t[o], t, i); if ("throw" !== c.type) { var h = c.arg, f = h.value; return f && "object" == _typeof(f) && n.call(f, "__await") ? r.resolve(f.__await).then(function (t) { e("next", t, a, u); }, function (t) { e("throw", t, a, u); }) : r.resolve(f).then(function (t) { h.value = t, a(h); }, function (t) { return e("throw", t, a, u); }); } u(c.arg); } var o; c(this, "_invoke", function (t, n) { function i() { return new r(function (r, o) { e(t, n, r, o); }); } return o = o ? o.then(i, i) : i(); }, !0); } function d(r, e) { var n = e.method, o = r.i[n]; if (o === t) return e.delegate = null, "throw" === n && r.i["return"] && (e.method = "return", e.arg = t, d(r, e), "throw" === e.method) || "return" !== n && (e.method = "throw", e.arg = new TypeError("The iterator does not provide a '" + n + "' method")), f; var i = s(o, r.i, e.arg); if ("throw" === i.type) return e.method = "throw", e.arg = i.arg, e.delegate = null, f; var a = i.arg; return a ? a.done ? (e[r.r] = a.value, e.next = r.n, "return" !== e.method && (e.method = "next", e.arg = t), e.delegate = null, f) : a : (e.method = "throw", e.arg = new TypeError("iterator result is not an object"), e.delegate = null, f); } function w(t) { this.tryEntries.push(t); } function m(r) { var e = r[4] || {}; e.type = "normal", e.arg = t, r[4] = e; } function Context(t) { this.tryEntries = [[-1]], t.forEach(w, this), this.reset(!0); } function x(r) { if (null != r) { var e = r[i]; if (e) return e.call(r); if ("function" == typeof r.next) return r; if (!isNaN(r.length)) { var o = -1, a = function e() { for (; ++o < r.length;) if (n.call(r, o)) return e.value = r[o], e.done = !1, e; return e.value = t, e.done = !0, e; }; return a.next = a; } } throw new TypeError(_typeof(r) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, c(v, "constructor", GeneratorFunctionPrototype), c(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = c(GeneratorFunctionPrototype, u, "GeneratorFunction"), r.isGeneratorFunction = function (t) { var r = "function" == typeof t && t.constructor; return !!r && (r === GeneratorFunction || "GeneratorFunction" === (r.displayName || r.name)); }, r.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, c(t, u, "GeneratorFunction")), t.prototype = Object.create(v), t; }, r.awrap = function (t) { return { __await: t }; }, g(AsyncIterator.prototype), c(AsyncIterator.prototype, a, function () { return this; }), r.AsyncIterator = AsyncIterator, r.async = function (t, e, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(h(t, e, n, o), i); return r.isGeneratorFunction(e) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, g(v), c(v, u, "Generator"), c(v, i, function () { return this; }), c(v, "toString", function () { return "[object Generator]"; }), r.keys = function (t) { var r = Object(t), e = []; for (var n in r) e.unshift(n); return function t() { for (; e.length;) if ((n = e.pop()) in r) return t.value = n, t.done = !1, t; return t.done = !0, t; }; }, r.values = x, Context.prototype = { constructor: Context, reset: function reset(r) { if (this.prev = this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(m), !r) for (var e in this) "t" === e.charAt(0) && n.call(this, e) && !isNaN(+e.slice(1)) && (this[e] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0][4]; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(r) { if (this.done) throw r; var e = this; function n(t) { a.type = "throw", a.arg = r, e.next = t; } for (var o = e.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i[4], u = this.prev, c = i[1], h = i[2]; if (-1 === i[0]) return n("end"), !1; if (!c && !h) throw Error("try statement without catch or finally"); if (null != i[0] && i[0] <= u) { if (u < c) return this.method = "next", this.arg = t, n(c), !0; if (u < h) return n(h), !1; } } }, abrupt: function abrupt(t, r) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var n = this.tryEntries[e]; if (n[0] > -1 && n[0] <= this.prev && this.prev < n[2]) { var o = n; break; } } o && ("break" === t || "continue" === t) && o[0] <= r && r <= o[2] && (o = null); var i = o ? o[4] : {}; return i.type = t, i.arg = r, o ? (this.method = "next", this.next = o[2], f) : this.complete(i); }, complete: function complete(t, r) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && r && (this.next = r), f; }, finish: function finish(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[2] === t) return this.complete(e[4], e[3]), m(e), f; } }, "catch": function _catch(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[0] === t) { var n = e[4]; if ("throw" === n.type) { var o = n.arg; m(e); } return o; } } throw Error("illegal catch attempt"); }, delegateYield: function delegateYield(r, e, n) { return this.delegate = { i: x(r), r: e, n: n }, "next" === this.method && (this.arg = t), f; } }, r; }
-function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
-function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
-/**
- * Utility functions for caching and retrieving waveform data
- */
-
-/**
- * Check if a waveform is cached for a given track ID
- * @param {string} trackId - The ID of the track
- * @returns {Promise<boolean>} - Whether the waveform is cached
- */
-var isWaveformCached = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(trackId) {
-    var response, isCached;
-    return _regeneratorRuntime().wrap(function _callee$(_context) {
-      while (1) switch (_context.prev = _context.next) {
-        case 0:
-          _context.prev = 0;
-          console.log('Checking if waveform is cached for track:', trackId);
-          _context.next = 4;
-          return fetch("http://localhost:3000/waveforms/".concat(trackId));
-        case 4:
-          response = _context.sent;
-          isCached = response.ok;
-          console.log('Waveform cache check result for track', trackId, ':', isCached);
-          return _context.abrupt("return", isCached);
-        case 10:
-          _context.prev = 10;
-          _context.t0 = _context["catch"](0);
-          console.error('Error checking waveform cache for track', trackId, ':', _context.t0);
-          return _context.abrupt("return", false);
-        case 14:
-        case "end":
-          return _context.stop();
-      }
-    }, _callee, null, [[0, 10]]);
-  }));
-  return function isWaveformCached(_x) {
-    return _ref.apply(this, arguments);
-  };
-}();
-
-/**
- * Get cached waveform data for a track
- * @param {string} trackId - The ID of the track
- * @returns {Promise<Object|null>} - The cached waveform data or null if not found
- */
-var getCachedWaveform = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(trackId) {
-    var response, data;
-    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-      while (1) switch (_context2.prev = _context2.next) {
-        case 0:
-          _context2.prev = 0;
-          console.log('Getting cached waveform for track:', trackId);
-          _context2.next = 4;
-          return fetch("http://localhost:3000/waveforms/".concat(trackId));
-        case 4:
-          response = _context2.sent;
-          if (response.ok) {
-            _context2.next = 8;
-            break;
-          }
-          console.log('No cached waveform found for track', trackId);
-          return _context2.abrupt("return", null);
-        case 8:
-          _context2.next = 10;
-          return response.json();
-        case 10:
-          data = _context2.sent;
-          console.log('Retrieved cached waveform data for track', trackId, ':', data);
-          return _context2.abrupt("return", data);
-        case 15:
-          _context2.prev = 15;
-          _context2.t0 = _context2["catch"](0);
-          console.error('Error getting cached waveform for track', trackId, ':', _context2.t0);
-          return _context2.abrupt("return", null);
-        case 19:
-        case "end":
-          return _context2.stop();
-      }
-    }, _callee2, null, [[0, 15]]);
-  }));
-  return function getCachedWaveform(_x2) {
-    return _ref2.apply(this, arguments);
-  };
-}();
-
-/**
- * Cache waveform data for a track
- * @param {string} trackId - The ID of the track
- * @param {Object} waveformData - The waveform data to cache
- * @returns {Promise<boolean>} - Whether the caching was successful
- */
-var cacheWaveform = /*#__PURE__*/function () {
-  var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(trackId, waveformData) {
-    var response, success, result;
-    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-      while (1) switch (_context3.prev = _context3.next) {
-        case 0:
-          _context3.prev = 0;
-          console.log('Caching waveform for track:', trackId);
-
-          // Validate waveform data
-          if (!(!waveformData || !Array.isArray(waveformData.peaks) || waveformData.peaks.length === 0)) {
-            _context3.next = 5;
-            break;
-          }
-          console.error('Invalid waveform data format for track', trackId, ':', waveformData);
-          return _context3.abrupt("return", false);
-        case 5:
-          _context3.next = 7;
-          return fetch("http://localhost:3000/waveforms/".concat(trackId), {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(waveformData)
-          });
-        case 7:
-          response = _context3.sent;
-          success = response.ok;
-          if (!success) {
-            _context3.next = 16;
-            break;
-          }
-          _context3.next = 12;
-          return response.json();
-        case 12:
-          result = _context3.sent;
-          console.log('Waveform cached successfully for track', trackId, ':', result);
-          _context3.next = 22;
-          break;
-        case 16:
-          _context3.t0 = console;
-          _context3.t1 = trackId;
-          _context3.next = 20;
-          return response.text();
-        case 20:
-          _context3.t2 = _context3.sent;
-          _context3.t0.error.call(_context3.t0, 'Failed to cache waveform for track', _context3.t1, ':', _context3.t2);
-        case 22:
-          return _context3.abrupt("return", success);
-        case 25:
-          _context3.prev = 25;
-          _context3.t3 = _context3["catch"](0);
-          console.error('Error caching waveform for track', trackId, ':', _context3.t3);
-          return _context3.abrupt("return", false);
-        case 29:
-        case "end":
-          return _context3.stop();
-      }
-    }, _callee3, null, [[0, 25]]);
-  }));
-  return function cacheWaveform(_x3, _x4) {
-    return _ref3.apply(this, arguments);
-  };
-}();
-
-/***/ }),
-
 /***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/App.scss":
 /*!***************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/App.scss ***!
   \***************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -2045,6 +1967,7 @@ body {
   \******************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -2120,6 +2043,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* Content.scss */
   \**********************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -2172,6 +2096,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.ContextMenu {
   \***************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -2220,6 +2145,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Main {
   \***************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -2294,6 +2220,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* Styles for the Menu component and i
   \*******************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -2462,6 +2389,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.MenuItemInstance {
   \*****************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -2591,6 +2519,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Navbar {
   \*****************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -2605,15 +2534,109 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
 ___CSS_LOADER_EXPORT___.push([module.id, `.Player {
-  position: relative;
-  width: 100%;
-  height: 60px;
-  background-color: #2C2C2C;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #1a1a1a;
   border-top: 1px solid #383838;
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+}
+
+.PlayerInfo {
   display: flex;
   align-items: center;
-  box-sizing: border-box;
-  z-index: 100;
+  gap: 16px;
+}
+
+.PlayerArtwork {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.TrackInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.TrackTitle {
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.TrackArtist {
+  color: #b0b0b0;
+  font-size: 0.9em;
+}
+
+.PlayerControls {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex: 1;
+  max-width: 600px;
+  margin: 0 24px;
+}
+
+.PlayPauseButton {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+.PlayPauseButton:hover {
+  background-color: #383838;
+}
+
+.TimeInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  color: #b0b0b0;
+  font-size: 0.9em;
+}
+
+.ProgressBar {
+  flex: 1;
+  height: 4px;
+  background-color: #383838;
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: height 0.2s;
+}
+.ProgressBar:hover {
+  height: 6px;
+}
+
+.ProgressFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background-color: #1db954;
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+.NoTrackMessage {
+  color: #b0b0b0;
+  text-align: center;
+  width: 100%;
 }
 
 .MiniPlayerInfo {
@@ -2627,7 +2650,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Player {
 
 .AudioErrorText {
   color: #FF5A16;
-}`, "",{"version":3,"sources":["webpack://./src/components/Player.scss"],"names":[],"mappings":"AAAA;EACE,kBAAA;EACA,WAAA;EACA,YAAA;EACA,yBAAA;EACA,6BAAA;EACA,aAAA;EACA,mBAAA;EACA,sBAAA;EACA,YAAA;AACF;;AAEA;EACE,cAAA;EACA,eAAA;EACA,gCAAA;EACA,mBAAA;EACA,gBAAA;EACA,uBAAA;AACF;;AAEA;EACE,cAAA;AACF","sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/components/Player.scss"],"names":[],"mappings":"AAAA;EACE,eAAA;EACA,SAAA;EACA,OAAA;EACA,QAAA;EACA,yBAAA;EACA,6BAAA;EACA,kBAAA;EACA,aAAA;EACA,8BAAA;EACA,mBAAA;EACA,aAAA;AACF;;AAEA;EACE,aAAA;EACA,mBAAA;EACA,SAAA;AACF;;AAEA;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,iBAAA;AACF;;AAEA;EACE,aAAA;EACA,sBAAA;AACF;;AAEA;EACE,gBAAA;EACA,cAAA;AACF;;AAEA;EACE,cAAA;EACA,gBAAA;AACF;;AAEA;EACE,aAAA;EACA,mBAAA;EACA,SAAA;EACA,OAAA;EACA,gBAAA;EACA,cAAA;AACF;;AAEA;EACE,gBAAA;EACA,YAAA;EACA,cAAA;EACA,eAAA;EACA,eAAA;EACA,YAAA;EACA,kBAAA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;EACA,iCAAA;AACF;AACE;EACE,yBAAA;AACJ;;AAGA;EACE,aAAA;EACA,mBAAA;EACA,SAAA;EACA,OAAA;EACA,cAAA;EACA,gBAAA;AAAF;;AAGA;EACE,OAAA;EACA,WAAA;EACA,yBAAA;EACA,kBAAA;EACA,eAAA;EACA,kBAAA;EACA,uBAAA;AAAF;AAEE;EACE,WAAA;AAAJ;;AAIA;EACE,kBAAA;EACA,OAAA;EACA,MAAA;EACA,YAAA;EACA,yBAAA;EACA,kBAAA;EACA,6BAAA;AADF;;AAIA;EACE,cAAA;EACA,kBAAA;EACA,WAAA;AADF;;AAIA;EACE,cAAA;EACA,eAAA;EACA,gCAAA;EACA,mBAAA;EACA,gBAAA;EACA,uBAAA;AADF;;AAIA;EACE,cAAA;AADF","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2640,6 +2663,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Player {
   \**************************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -2699,6 +2723,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.SearchForm {
   \******************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -2915,6 +2940,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Sidebar {
   \****************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -2928,8 +2954,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, `@charset "UTF-8";
-.TrackRow {
+___CSS_LOADER_EXPORT___.push([module.id, `.TrackRow {
   border-bottom: 1px solid #383838;
   cursor: pointer;
 }
@@ -2973,27 +2998,6 @@ ___CSS_LOADER_EXPORT___.push([module.id, `@charset "UTF-8";
   background-color: #404040;
 }
 
-.PlayButton {
-  background: none;
-  border: none;
-  color: #a0a0a0;
-  cursor: pointer;
-  font-size: 1rem; /* Ensure this is large enough for ❚❚ */
-  padding: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px; /* Give it some fixed width */
-  height: 30px; /* Give it some fixed height */
-  line-height: 1; /* Important for vertical centering of text symbols */
-}
-.PlayButton:hover {
-  color: #ffffff;
-}
-.TrackRow.Selected .PlayButton, .TrackRow.CurrentPlayingTrack .PlayButton {
-  color: #ffffff;
-}
-
 .Cell-title {
   font-weight: 500;
 }
@@ -3013,12 +3017,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `@charset "UTF-8";
 .TrackRow.CurrentPlayingTrack .Cell-time,
 .TrackRow.CurrentPlayingTrack .Cell-year {
   color: #e0e0e0;
-}
-
-.TrackCell.Cell-playAction {
-  padding: 0;
-  text-align: center;
-}`, "",{"version":3,"sources":["webpack://./src/components/Track.scss"],"names":[],"mappings":"AAAA,gBAAgB;AAAhB;EACI,gCAAA;EACA,eAAA;AAEJ;AAAI;EACE,yBAAA;EACA,cAAA;AAEN;AAAI;EAEE,yBAAA;EACA,cAAA;EACA,gBAAA;AACN;AACM;EACI,gBAAA;AACV;AAKM;EACE,mBAAA;AAHR;;AAQE;EACE,iBAAA;EACA,sBAAA;EACA,mBAAA;EACA,gBAAA;EACA,uBAAA;AALJ;AAOI;EACE,WAAA;EACA,gBAAA;AALN;AAQI;EACE,kBAAA;AANN;;AAWE;EACE,WAAA;EACA,YAAA;EACA,iBAAA;EACA,kBAAA;EACA,cAAA;EACA,yBAAA;AARJ;;AAWE;EACE,gBAAA;EACA,YAAA;EACA,cAAA;EACA,eAAA;EACA,eAAA,EAAA,uCAAA;EACA,YAAA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;EACA,WAAA,EAAA,6BAAA;EACA,YAAA,EAAA,8BAAA;EACA,cAAA,EAAA,qDAAA;AARJ;AAWI;EACE,cAAA;AATN;AAYI;EAEE,cAAA;AAXN;;AAeE;EACE,gBAAA;AAZJ;;AAeE;;;;EAKE,cAAA;AAbJ;;AAiBI;;;;;;;EAIE,cAAA;AAXN;;AAeE;EACI,UAAA;EACA,kBAAA;AAZN","sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/components/Track.scss"],"names":[],"mappings":"AAAA;EACI,gCAAA;EACA,eAAA;AACJ;AACI;EACE,yBAAA;EACA,cAAA;AACN;AACI;EAEE,yBAAA;EACA,cAAA;EACA,gBAAA;AAAN;AAEM;EACI,gBAAA;AAAV;AAMM;EACE,mBAAA;AAJR;;AASE;EACE,iBAAA;EACA,sBAAA;EACA,mBAAA;EACA,gBAAA;EACA,uBAAA;AANJ;AAQI;EACE,WAAA;EACA,gBAAA;AANN;AASI;EACE,kBAAA;AAPN;;AAYE;EACE,WAAA;EACA,YAAA;EACA,iBAAA;EACA,kBAAA;EACA,cAAA;EACA,yBAAA;AATJ;;AAYE;EACE,gBAAA;AATJ;;AAYE;;;;EAKE,cAAA;AAVJ;;AAcI;;;;;;;EAIE,cAAA;AARN","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -3031,6 +3030,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `@charset "UTF-8";
   \********************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -3114,6 +3114,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.TracklistContainer {
   \**************************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -3181,6 +3182,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.WaveformPreview {
   \*************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -3213,6 +3215,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `body {
   \*****************************************************/
 /***/ ((module) => {
 
+"use strict";
 
 
 /*
@@ -3307,6 +3310,7 @@ module.exports = function (cssWithMappingToString) {
   \************************************************************/
 /***/ ((module) => {
 
+"use strict";
 
 
 module.exports = function (item) {
@@ -3326,12 +3330,908 @@ module.exports = function (item) {
 
 /***/ }),
 
+/***/ "./node_modules/object-assign/index.js":
+/*!*********************************************!*\
+  !*** ./node_modules/object-assign/index.js ***!
+  \*********************************************/
+/***/ ((module) => {
+
+"use strict";
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
+
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (getOwnPropertySymbols) {
+			symbols = getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/prop-types/checkPropTypes.js":
+/*!***************************************************!*\
+  !*** ./node_modules/prop-types/checkPropTypes.js ***!
+  \***************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+
+var printWarning = function() {};
+
+if (true) {
+  var ReactPropTypesSecret = __webpack_require__(/*! ./lib/ReactPropTypesSecret */ "./node_modules/prop-types/lib/ReactPropTypesSecret.js");
+  var loggedTypeFailures = {};
+  var has = __webpack_require__(/*! ./lib/has */ "./node_modules/prop-types/lib/has.js");
+
+  printWarning = function(text) {
+    var message = 'Warning: ' + text;
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) { /**/ }
+  };
+}
+
+/**
+ * Assert that the values match with the type specs.
+ * Error messages are memorized and will only be shown once.
+ *
+ * @param {object} typeSpecs Map of name to a ReactPropType
+ * @param {object} values Runtime values that need to be type-checked
+ * @param {string} location e.g. "prop", "context", "child context"
+ * @param {string} componentName Name of the component for error messages.
+ * @param {?Function} getStack Returns the component stack.
+ * @private
+ */
+function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
+  if (true) {
+    for (var typeSpecName in typeSpecs) {
+      if (has(typeSpecs, typeSpecName)) {
+        var error;
+        // Prop type validation may throw. In case they do, we don't want to
+        // fail the render phase where it didn't fail before. So we log it.
+        // After these have been cleaned up, we'll let them throw.
+        try {
+          // This is intentionally an invariant that gets caught. It's the same
+          // behavior as without this statement except with a better message.
+          if (typeof typeSpecs[typeSpecName] !== 'function') {
+            var err = Error(
+              (componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' +
+              'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.' +
+              'This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.'
+            );
+            err.name = 'Invariant Violation';
+            throw err;
+          }
+          error = typeSpecs[typeSpecName](values, typeSpecName, componentName, location, null, ReactPropTypesSecret);
+        } catch (ex) {
+          error = ex;
+        }
+        if (error && !(error instanceof Error)) {
+          printWarning(
+            (componentName || 'React class') + ': type specification of ' +
+            location + ' `' + typeSpecName + '` is invalid; the type checker ' +
+            'function must return `null` or an `Error` but returned a ' + typeof error + '. ' +
+            'You may have forgotten to pass an argument to the type checker ' +
+            'creator (arrayOf, instanceOf, objectOf, oneOf, oneOfType, and ' +
+            'shape all require an argument).'
+          );
+        }
+        if (error instanceof Error && !(error.message in loggedTypeFailures)) {
+          // Only monitor this failure once because there tends to be a lot of the
+          // same error.
+          loggedTypeFailures[error.message] = true;
+
+          var stack = getStack ? getStack() : '';
+
+          printWarning(
+            'Failed ' + location + ' type: ' + error.message + (stack != null ? stack : '')
+          );
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Resets warning cache when testing.
+ *
+ * @private
+ */
+checkPropTypes.resetWarningCache = function() {
+  if (true) {
+    loggedTypeFailures = {};
+  }
+}
+
+module.exports = checkPropTypes;
+
+
+/***/ }),
+
+/***/ "./node_modules/prop-types/factoryWithTypeCheckers.js":
+/*!************************************************************!*\
+  !*** ./node_modules/prop-types/factoryWithTypeCheckers.js ***!
+  \************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+
+var ReactIs = __webpack_require__(/*! react-is */ "./node_modules/react-is/index.js");
+var assign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
+
+var ReactPropTypesSecret = __webpack_require__(/*! ./lib/ReactPropTypesSecret */ "./node_modules/prop-types/lib/ReactPropTypesSecret.js");
+var has = __webpack_require__(/*! ./lib/has */ "./node_modules/prop-types/lib/has.js");
+var checkPropTypes = __webpack_require__(/*! ./checkPropTypes */ "./node_modules/prop-types/checkPropTypes.js");
+
+var printWarning = function() {};
+
+if (true) {
+  printWarning = function(text) {
+    var message = 'Warning: ' + text;
+    if (typeof console !== 'undefined') {
+      console.error(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+}
+
+function emptyFunctionThatReturnsNull() {
+  return null;
+}
+
+module.exports = function(isValidElement, throwOnDirectAccess) {
+  /* global Symbol */
+  var ITERATOR_SYMBOL = typeof Symbol === 'function' && Symbol.iterator;
+  var FAUX_ITERATOR_SYMBOL = '@@iterator'; // Before Symbol spec.
+
+  /**
+   * Returns the iterator method function contained on the iterable object.
+   *
+   * Be sure to invoke the function with the iterable as context:
+   *
+   *     var iteratorFn = getIteratorFn(myIterable);
+   *     if (iteratorFn) {
+   *       var iterator = iteratorFn.call(myIterable);
+   *       ...
+   *     }
+   *
+   * @param {?object} maybeIterable
+   * @return {?function}
+   */
+  function getIteratorFn(maybeIterable) {
+    var iteratorFn = maybeIterable && (ITERATOR_SYMBOL && maybeIterable[ITERATOR_SYMBOL] || maybeIterable[FAUX_ITERATOR_SYMBOL]);
+    if (typeof iteratorFn === 'function') {
+      return iteratorFn;
+    }
+  }
+
+  /**
+   * Collection of methods that allow declaration and validation of props that are
+   * supplied to React components. Example usage:
+   *
+   *   var Props = require('ReactPropTypes');
+   *   var MyArticle = React.createClass({
+   *     propTypes: {
+   *       // An optional string prop named "description".
+   *       description: Props.string,
+   *
+   *       // A required enum prop named "category".
+   *       category: Props.oneOf(['News','Photos']).isRequired,
+   *
+   *       // A prop named "dialog" that requires an instance of Dialog.
+   *       dialog: Props.instanceOf(Dialog).isRequired
+   *     },
+   *     render: function() { ... }
+   *   });
+   *
+   * A more formal specification of how these methods are used:
+   *
+   *   type := array|bool|func|object|number|string|oneOf([...])|instanceOf(...)
+   *   decl := ReactPropTypes.{type}(.isRequired)?
+   *
+   * Each and every declaration produces a function with the same signature. This
+   * allows the creation of custom validation functions. For example:
+   *
+   *  var MyLink = React.createClass({
+   *    propTypes: {
+   *      // An optional string or URI prop named "href".
+   *      href: function(props, propName, componentName) {
+   *        var propValue = props[propName];
+   *        if (propValue != null && typeof propValue !== 'string' &&
+   *            !(propValue instanceof URI)) {
+   *          return new Error(
+   *            'Expected a string or an URI for ' + propName + ' in ' +
+   *            componentName
+   *          );
+   *        }
+   *      }
+   *    },
+   *    render: function() {...}
+   *  });
+   *
+   * @internal
+   */
+
+  var ANONYMOUS = '<<anonymous>>';
+
+  // Important!
+  // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
+  var ReactPropTypes = {
+    array: createPrimitiveTypeChecker('array'),
+    bigint: createPrimitiveTypeChecker('bigint'),
+    bool: createPrimitiveTypeChecker('boolean'),
+    func: createPrimitiveTypeChecker('function'),
+    number: createPrimitiveTypeChecker('number'),
+    object: createPrimitiveTypeChecker('object'),
+    string: createPrimitiveTypeChecker('string'),
+    symbol: createPrimitiveTypeChecker('symbol'),
+
+    any: createAnyTypeChecker(),
+    arrayOf: createArrayOfTypeChecker,
+    element: createElementTypeChecker(),
+    elementType: createElementTypeTypeChecker(),
+    instanceOf: createInstanceTypeChecker,
+    node: createNodeChecker(),
+    objectOf: createObjectOfTypeChecker,
+    oneOf: createEnumTypeChecker,
+    oneOfType: createUnionTypeChecker,
+    shape: createShapeTypeChecker,
+    exact: createStrictShapeTypeChecker,
+  };
+
+  /**
+   * inlined Object.is polyfill to avoid requiring consumers ship their own
+   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
+   */
+  /*eslint-disable no-self-compare*/
+  function is(x, y) {
+    // SameValue algorithm
+    if (x === y) {
+      // Steps 1-5, 7-10
+      // Steps 6.b-6.e: +0 != -0
+      return x !== 0 || 1 / x === 1 / y;
+    } else {
+      // Step 6.a: NaN == NaN
+      return x !== x && y !== y;
+    }
+  }
+  /*eslint-enable no-self-compare*/
+
+  /**
+   * We use an Error-like object for backward compatibility as people may call
+   * PropTypes directly and inspect their output. However, we don't use real
+   * Errors anymore. We don't inspect their stack anyway, and creating them
+   * is prohibitively expensive if they are created too often, such as what
+   * happens in oneOfType() for any type before the one that matched.
+   */
+  function PropTypeError(message, data) {
+    this.message = message;
+    this.data = data && typeof data === 'object' ? data: {};
+    this.stack = '';
+  }
+  // Make `instanceof Error` still work for returned errors.
+  PropTypeError.prototype = Error.prototype;
+
+  function createChainableTypeChecker(validate) {
+    if (true) {
+      var manualPropTypeCallCache = {};
+      var manualPropTypeWarningCount = 0;
+    }
+    function checkType(isRequired, props, propName, componentName, location, propFullName, secret) {
+      componentName = componentName || ANONYMOUS;
+      propFullName = propFullName || propName;
+
+      if (secret !== ReactPropTypesSecret) {
+        if (throwOnDirectAccess) {
+          // New behavior only for users of `prop-types` package
+          var err = new Error(
+            'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
+            'Use `PropTypes.checkPropTypes()` to call them. ' +
+            'Read more at http://fb.me/use-check-prop-types'
+          );
+          err.name = 'Invariant Violation';
+          throw err;
+        } else if ( true && typeof console !== 'undefined') {
+          // Old behavior for people using React.PropTypes
+          var cacheKey = componentName + ':' + propName;
+          if (
+            !manualPropTypeCallCache[cacheKey] &&
+            // Avoid spamming the console because they are often not actionable except for lib authors
+            manualPropTypeWarningCount < 3
+          ) {
+            printWarning(
+              'You are manually calling a React.PropTypes validation ' +
+              'function for the `' + propFullName + '` prop on `' + componentName + '`. This is deprecated ' +
+              'and will throw in the standalone `prop-types` package. ' +
+              'You may be seeing this warning due to a third-party PropTypes ' +
+              'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.'
+            );
+            manualPropTypeCallCache[cacheKey] = true;
+            manualPropTypeWarningCount++;
+          }
+        }
+      }
+      if (props[propName] == null) {
+        if (isRequired) {
+          if (props[propName] === null) {
+            return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required ' + ('in `' + componentName + '`, but its value is `null`.'));
+          }
+          return new PropTypeError('The ' + location + ' `' + propFullName + '` is marked as required in ' + ('`' + componentName + '`, but its value is `undefined`.'));
+        }
+        return null;
+      } else {
+        return validate(props, propName, componentName, location, propFullName);
+      }
+    }
+
+    var chainedCheckType = checkType.bind(null, false);
+    chainedCheckType.isRequired = checkType.bind(null, true);
+
+    return chainedCheckType;
+  }
+
+  function createPrimitiveTypeChecker(expectedType) {
+    function validate(props, propName, componentName, location, propFullName, secret) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== expectedType) {
+        // `propValue` being instance of, say, date/regexp, pass the 'object'
+        // check, but we can offer a more precise error message here rather than
+        // 'of type `object`'.
+        var preciseType = getPreciseType(propValue);
+
+        return new PropTypeError(
+          'Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'),
+          {expectedType: expectedType}
+        );
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createAnyTypeChecker() {
+    return createChainableTypeChecker(emptyFunctionThatReturnsNull);
+  }
+
+  function createArrayOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside arrayOf.');
+      }
+      var propValue = props[propName];
+      if (!Array.isArray(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an array.'));
+      }
+      for (var i = 0; i < propValue.length; i++) {
+        var error = typeChecker(propValue, i, componentName, location, propFullName + '[' + i + ']', ReactPropTypesSecret);
+        if (error instanceof Error) {
+          return error;
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createElementTypeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      if (!isValidElement(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createElementTypeTypeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      if (!ReactIs.isValidElementType(propValue)) {
+        var propType = getPropType(propValue);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected a single ReactElement type.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createInstanceTypeChecker(expectedClass) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!(props[propName] instanceof expectedClass)) {
+        var expectedClassName = expectedClass.name || ANONYMOUS;
+        var actualClassName = getClassName(props[propName]);
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + actualClassName + '` supplied to `' + componentName + '`, expected ') + ('instance of `' + expectedClassName + '`.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createEnumTypeChecker(expectedValues) {
+    if (!Array.isArray(expectedValues)) {
+      if (true) {
+        if (arguments.length > 1) {
+          printWarning(
+            'Invalid arguments supplied to oneOf, expected an array, got ' + arguments.length + ' arguments. ' +
+            'A common mistake is to write oneOf(x, y, z) instead of oneOf([x, y, z]).'
+          );
+        } else {
+          printWarning('Invalid argument supplied to oneOf, expected an array.');
+        }
+      }
+      return emptyFunctionThatReturnsNull;
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      for (var i = 0; i < expectedValues.length; i++) {
+        if (is(propValue, expectedValues[i])) {
+          return null;
+        }
+      }
+
+      var valuesString = JSON.stringify(expectedValues, function replacer(key, value) {
+        var type = getPreciseType(value);
+        if (type === 'symbol') {
+          return String(value);
+        }
+        return value;
+      });
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of value `' + String(propValue) + '` ' + ('supplied to `' + componentName + '`, expected one of ' + valuesString + '.'));
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createObjectOfTypeChecker(typeChecker) {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (typeof typeChecker !== 'function') {
+        return new PropTypeError('Property `' + propFullName + '` of component `' + componentName + '` has invalid PropType notation inside objectOf.');
+      }
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + propType + '` supplied to `' + componentName + '`, expected an object.'));
+      }
+      for (var key in propValue) {
+        if (has(propValue, key)) {
+          var error = typeChecker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+          if (error instanceof Error) {
+            return error;
+          }
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createUnionTypeChecker(arrayOfTypeCheckers) {
+    if (!Array.isArray(arrayOfTypeCheckers)) {
+       true ? printWarning('Invalid argument supplied to oneOfType, expected an instance of array.') : 0;
+      return emptyFunctionThatReturnsNull;
+    }
+
+    for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+      var checker = arrayOfTypeCheckers[i];
+      if (typeof checker !== 'function') {
+        printWarning(
+          'Invalid argument supplied to oneOfType. Expected an array of check functions, but ' +
+          'received ' + getPostfixForTypeWarning(checker) + ' at index ' + i + '.'
+        );
+        return emptyFunctionThatReturnsNull;
+      }
+    }
+
+    function validate(props, propName, componentName, location, propFullName) {
+      var expectedTypes = [];
+      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
+        var checker = arrayOfTypeCheckers[i];
+        var checkerResult = checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret);
+        if (checkerResult == null) {
+          return null;
+        }
+        if (checkerResult.data && has(checkerResult.data, 'expectedType')) {
+          expectedTypes.push(checkerResult.data.expectedType);
+        }
+      }
+      var expectedTypesMessage = (expectedTypes.length > 0) ? ', expected one of type [' + expectedTypes.join(', ') + ']': '';
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`' + expectedTypesMessage + '.'));
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createNodeChecker() {
+    function validate(props, propName, componentName, location, propFullName) {
+      if (!isNode(props[propName])) {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`, expected a ReactNode.'));
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function invalidValidatorError(componentName, location, propFullName, key, type) {
+    return new PropTypeError(
+      (componentName || 'React class') + ': ' + location + ' type `' + propFullName + '.' + key + '` is invalid; ' +
+      'it must be a function, usually from the `prop-types` package, but received `' + type + '`.'
+    );
+  }
+
+  function createShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      }
+      for (var key in shapeTypes) {
+        var checker = shapeTypes[key];
+        if (typeof checker !== 'function') {
+          return invalidValidatorError(componentName, location, propFullName, key, getPreciseType(checker));
+        }
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+        if (error) {
+          return error;
+        }
+      }
+      return null;
+    }
+    return createChainableTypeChecker(validate);
+  }
+
+  function createStrictShapeTypeChecker(shapeTypes) {
+    function validate(props, propName, componentName, location, propFullName) {
+      var propValue = props[propName];
+      var propType = getPropType(propValue);
+      if (propType !== 'object') {
+        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
+      }
+      // We need to check all keys in case some are required but missing from props.
+      var allKeys = assign({}, props[propName], shapeTypes);
+      for (var key in allKeys) {
+        var checker = shapeTypes[key];
+        if (has(shapeTypes, key) && typeof checker !== 'function') {
+          return invalidValidatorError(componentName, location, propFullName, key, getPreciseType(checker));
+        }
+        if (!checker) {
+          return new PropTypeError(
+            'Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' +
+            '\nBad object: ' + JSON.stringify(props[propName], null, '  ') +
+            '\nValid keys: ' + JSON.stringify(Object.keys(shapeTypes), null, '  ')
+          );
+        }
+        var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
+        if (error) {
+          return error;
+        }
+      }
+      return null;
+    }
+
+    return createChainableTypeChecker(validate);
+  }
+
+  function isNode(propValue) {
+    switch (typeof propValue) {
+      case 'number':
+      case 'string':
+      case 'undefined':
+        return true;
+      case 'boolean':
+        return !propValue;
+      case 'object':
+        if (Array.isArray(propValue)) {
+          return propValue.every(isNode);
+        }
+        if (propValue === null || isValidElement(propValue)) {
+          return true;
+        }
+
+        var iteratorFn = getIteratorFn(propValue);
+        if (iteratorFn) {
+          var iterator = iteratorFn.call(propValue);
+          var step;
+          if (iteratorFn !== propValue.entries) {
+            while (!(step = iterator.next()).done) {
+              if (!isNode(step.value)) {
+                return false;
+              }
+            }
+          } else {
+            // Iterator will provide entry [k,v] tuples rather than values.
+            while (!(step = iterator.next()).done) {
+              var entry = step.value;
+              if (entry) {
+                if (!isNode(entry[1])) {
+                  return false;
+                }
+              }
+            }
+          }
+        } else {
+          return false;
+        }
+
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  function isSymbol(propType, propValue) {
+    // Native Symbol.
+    if (propType === 'symbol') {
+      return true;
+    }
+
+    // falsy value can't be a Symbol
+    if (!propValue) {
+      return false;
+    }
+
+    // 19.4.3.5 Symbol.prototype[@@toStringTag] === 'Symbol'
+    if (propValue['@@toStringTag'] === 'Symbol') {
+      return true;
+    }
+
+    // Fallback for non-spec compliant Symbols which are polyfilled.
+    if (typeof Symbol === 'function' && propValue instanceof Symbol) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // Equivalent of `typeof` but with special handling for array and regexp.
+  function getPropType(propValue) {
+    var propType = typeof propValue;
+    if (Array.isArray(propValue)) {
+      return 'array';
+    }
+    if (propValue instanceof RegExp) {
+      // Old webkits (at least until Android 4.0) return 'function' rather than
+      // 'object' for typeof a RegExp. We'll normalize this here so that /bla/
+      // passes PropTypes.object.
+      return 'object';
+    }
+    if (isSymbol(propType, propValue)) {
+      return 'symbol';
+    }
+    return propType;
+  }
+
+  // This handles more types than `getPropType`. Only used for error messages.
+  // See `createPrimitiveTypeChecker`.
+  function getPreciseType(propValue) {
+    if (typeof propValue === 'undefined' || propValue === null) {
+      return '' + propValue;
+    }
+    var propType = getPropType(propValue);
+    if (propType === 'object') {
+      if (propValue instanceof Date) {
+        return 'date';
+      } else if (propValue instanceof RegExp) {
+        return 'regexp';
+      }
+    }
+    return propType;
+  }
+
+  // Returns a string that is postfixed to a warning about an invalid type.
+  // For example, "undefined" or "of type array"
+  function getPostfixForTypeWarning(value) {
+    var type = getPreciseType(value);
+    switch (type) {
+      case 'array':
+      case 'object':
+        return 'an ' + type;
+      case 'boolean':
+      case 'date':
+      case 'regexp':
+        return 'a ' + type;
+      default:
+        return type;
+    }
+  }
+
+  // Returns class name of the object, if any.
+  function getClassName(propValue) {
+    if (!propValue.constructor || !propValue.constructor.name) {
+      return ANONYMOUS;
+    }
+    return propValue.constructor.name;
+  }
+
+  ReactPropTypes.checkPropTypes = checkPropTypes;
+  ReactPropTypes.resetWarningCache = checkPropTypes.resetWarningCache;
+  ReactPropTypes.PropTypes = ReactPropTypes;
+
+  return ReactPropTypes;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/prop-types/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/prop-types/index.js ***!
+  \******************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+if (true) {
+  var ReactIs = __webpack_require__(/*! react-is */ "./node_modules/react-is/index.js");
+
+  // By explicitly using `prop-types` you are opting into new development behavior.
+  // http://fb.me/prop-types-in-prod
+  var throwOnDirectAccess = true;
+  module.exports = __webpack_require__(/*! ./factoryWithTypeCheckers */ "./node_modules/prop-types/factoryWithTypeCheckers.js")(ReactIs.isElement, throwOnDirectAccess);
+} else {}
+
+
+/***/ }),
+
+/***/ "./node_modules/prop-types/lib/ReactPropTypesSecret.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/prop-types/lib/ReactPropTypesSecret.js ***!
+  \*************************************************************/
+/***/ ((module) => {
+
+"use strict";
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+
+var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
+
+module.exports = ReactPropTypesSecret;
+
+
+/***/ }),
+
+/***/ "./node_modules/prop-types/lib/has.js":
+/*!********************************************!*\
+  !*** ./node_modules/prop-types/lib/has.js ***!
+  \********************************************/
+/***/ ((module) => {
+
+module.exports = Function.call.bind(Object.prototype.hasOwnProperty);
+
+
+/***/ }),
+
 /***/ "./node_modules/react-dom/cjs/react-dom.development.js":
 /*!*************************************************************!*\
   !*** ./node_modules/react-dom/cjs/react-dom.development.js ***!
   \*************************************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 /**
  * @license React
  * react-dom.development.js
@@ -33260,6 +34160,7 @@ if (
   \******************************************/
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 
 var m = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
@@ -33292,6 +34193,7 @@ if (false) {} else {
   \*****************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+"use strict";
 
 
 function checkDCE() {
@@ -33329,12 +34231,221 @@ if (false) {} else {
 
 /***/ }),
 
+/***/ "./node_modules/react-is/cjs/react-is.development.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/react-is/cjs/react-is.development.js ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+/** @license React v16.13.1
+ * react-is.development.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+
+
+
+
+if (true) {
+  (function() {
+'use strict';
+
+// The Symbol used to tag the ReactElement-like types. If there is no native Symbol
+// nor polyfill, then a plain number is used for performance.
+var hasSymbol = typeof Symbol === 'function' && Symbol.for;
+var REACT_ELEMENT_TYPE = hasSymbol ? Symbol.for('react.element') : 0xeac7;
+var REACT_PORTAL_TYPE = hasSymbol ? Symbol.for('react.portal') : 0xeaca;
+var REACT_FRAGMENT_TYPE = hasSymbol ? Symbol.for('react.fragment') : 0xeacb;
+var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol.for('react.strict_mode') : 0xeacc;
+var REACT_PROFILER_TYPE = hasSymbol ? Symbol.for('react.profiler') : 0xead2;
+var REACT_PROVIDER_TYPE = hasSymbol ? Symbol.for('react.provider') : 0xeacd;
+var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for('react.context') : 0xeace; // TODO: We don't use AsyncMode or ConcurrentMode anymore. They were temporary
+// (unstable) APIs that have been removed. Can we remove the symbols?
+
+var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol.for('react.async_mode') : 0xeacf;
+var REACT_CONCURRENT_MODE_TYPE = hasSymbol ? Symbol.for('react.concurrent_mode') : 0xeacf;
+var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for('react.forward_ref') : 0xead0;
+var REACT_SUSPENSE_TYPE = hasSymbol ? Symbol.for('react.suspense') : 0xead1;
+var REACT_SUSPENSE_LIST_TYPE = hasSymbol ? Symbol.for('react.suspense_list') : 0xead8;
+var REACT_MEMO_TYPE = hasSymbol ? Symbol.for('react.memo') : 0xead3;
+var REACT_LAZY_TYPE = hasSymbol ? Symbol.for('react.lazy') : 0xead4;
+var REACT_BLOCK_TYPE = hasSymbol ? Symbol.for('react.block') : 0xead9;
+var REACT_FUNDAMENTAL_TYPE = hasSymbol ? Symbol.for('react.fundamental') : 0xead5;
+var REACT_RESPONDER_TYPE = hasSymbol ? Symbol.for('react.responder') : 0xead6;
+var REACT_SCOPE_TYPE = hasSymbol ? Symbol.for('react.scope') : 0xead7;
+
+function isValidElementType(type) {
+  return typeof type === 'string' || typeof type === 'function' || // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
+  type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE || type.$$typeof === REACT_BLOCK_TYPE);
+}
+
+function typeOf(object) {
+  if (typeof object === 'object' && object !== null) {
+    var $$typeof = object.$$typeof;
+
+    switch ($$typeof) {
+      case REACT_ELEMENT_TYPE:
+        var type = object.type;
+
+        switch (type) {
+          case REACT_ASYNC_MODE_TYPE:
+          case REACT_CONCURRENT_MODE_TYPE:
+          case REACT_FRAGMENT_TYPE:
+          case REACT_PROFILER_TYPE:
+          case REACT_STRICT_MODE_TYPE:
+          case REACT_SUSPENSE_TYPE:
+            return type;
+
+          default:
+            var $$typeofType = type && type.$$typeof;
+
+            switch ($$typeofType) {
+              case REACT_CONTEXT_TYPE:
+              case REACT_FORWARD_REF_TYPE:
+              case REACT_LAZY_TYPE:
+              case REACT_MEMO_TYPE:
+              case REACT_PROVIDER_TYPE:
+                return $$typeofType;
+
+              default:
+                return $$typeof;
+            }
+
+        }
+
+      case REACT_PORTAL_TYPE:
+        return $$typeof;
+    }
+  }
+
+  return undefined;
+} // AsyncMode is deprecated along with isAsyncMode
+
+var AsyncMode = REACT_ASYNC_MODE_TYPE;
+var ConcurrentMode = REACT_CONCURRENT_MODE_TYPE;
+var ContextConsumer = REACT_CONTEXT_TYPE;
+var ContextProvider = REACT_PROVIDER_TYPE;
+var Element = REACT_ELEMENT_TYPE;
+var ForwardRef = REACT_FORWARD_REF_TYPE;
+var Fragment = REACT_FRAGMENT_TYPE;
+var Lazy = REACT_LAZY_TYPE;
+var Memo = REACT_MEMO_TYPE;
+var Portal = REACT_PORTAL_TYPE;
+var Profiler = REACT_PROFILER_TYPE;
+var StrictMode = REACT_STRICT_MODE_TYPE;
+var Suspense = REACT_SUSPENSE_TYPE;
+var hasWarnedAboutDeprecatedIsAsyncMode = false; // AsyncMode should be deprecated
+
+function isAsyncMode(object) {
+  {
+    if (!hasWarnedAboutDeprecatedIsAsyncMode) {
+      hasWarnedAboutDeprecatedIsAsyncMode = true; // Using console['warn'] to evade Babel and ESLint
+
+      console['warn']('The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 17+. Update your code to use ' + 'ReactIs.isConcurrentMode() instead. It has the exact same API.');
+    }
+  }
+
+  return isConcurrentMode(object) || typeOf(object) === REACT_ASYNC_MODE_TYPE;
+}
+function isConcurrentMode(object) {
+  return typeOf(object) === REACT_CONCURRENT_MODE_TYPE;
+}
+function isContextConsumer(object) {
+  return typeOf(object) === REACT_CONTEXT_TYPE;
+}
+function isContextProvider(object) {
+  return typeOf(object) === REACT_PROVIDER_TYPE;
+}
+function isElement(object) {
+  return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+}
+function isForwardRef(object) {
+  return typeOf(object) === REACT_FORWARD_REF_TYPE;
+}
+function isFragment(object) {
+  return typeOf(object) === REACT_FRAGMENT_TYPE;
+}
+function isLazy(object) {
+  return typeOf(object) === REACT_LAZY_TYPE;
+}
+function isMemo(object) {
+  return typeOf(object) === REACT_MEMO_TYPE;
+}
+function isPortal(object) {
+  return typeOf(object) === REACT_PORTAL_TYPE;
+}
+function isProfiler(object) {
+  return typeOf(object) === REACT_PROFILER_TYPE;
+}
+function isStrictMode(object) {
+  return typeOf(object) === REACT_STRICT_MODE_TYPE;
+}
+function isSuspense(object) {
+  return typeOf(object) === REACT_SUSPENSE_TYPE;
+}
+
+exports.AsyncMode = AsyncMode;
+exports.ConcurrentMode = ConcurrentMode;
+exports.ContextConsumer = ContextConsumer;
+exports.ContextProvider = ContextProvider;
+exports.Element = Element;
+exports.ForwardRef = ForwardRef;
+exports.Fragment = Fragment;
+exports.Lazy = Lazy;
+exports.Memo = Memo;
+exports.Portal = Portal;
+exports.Profiler = Profiler;
+exports.StrictMode = StrictMode;
+exports.Suspense = Suspense;
+exports.isAsyncMode = isAsyncMode;
+exports.isConcurrentMode = isConcurrentMode;
+exports.isContextConsumer = isContextConsumer;
+exports.isContextProvider = isContextProvider;
+exports.isElement = isElement;
+exports.isForwardRef = isForwardRef;
+exports.isFragment = isFragment;
+exports.isLazy = isLazy;
+exports.isMemo = isMemo;
+exports.isPortal = isPortal;
+exports.isProfiler = isProfiler;
+exports.isStrictMode = isStrictMode;
+exports.isSuspense = isSuspense;
+exports.isValidElementType = isValidElementType;
+exports.typeOf = typeOf;
+  })();
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/react-is/index.js":
+/*!****************************************!*\
+  !*** ./node_modules/react-is/index.js ***!
+  \****************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+if (false) {} else {
+  module.exports = __webpack_require__(/*! ./cjs/react-is.development.js */ "./node_modules/react-is/cjs/react-is.development.js");
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/react/cjs/react.development.js":
 /*!*****************************************************!*\
   !*** ./node_modules/react/cjs/react.development.js ***!
   \*****************************************************/
 /***/ ((module, exports, __webpack_require__) => {
 
+"use strict";
 /* module decorator */ module = __webpack_require__.nmd(module);
 /**
  * @license React
@@ -36086,6 +37197,7 @@ if (
   \*************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+"use strict";
 
 
 if (false) {} else {
@@ -36101,6 +37213,7 @@ if (false) {} else {
   \*************************************************************/
 /***/ ((__unused_webpack_module, exports) => {
 
+"use strict";
 /**
  * @license React
  * scheduler.development.js
@@ -36745,6 +37858,7 @@ if (
   \*****************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+"use strict";
 
 
 if (false) {} else {
@@ -36760,6 +37874,7 @@ if (false) {} else {
   \**********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -36812,6 +37927,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -36864,6 +37980,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*****************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -36916,6 +38033,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \**********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -36968,6 +38086,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \**********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -37020,6 +38139,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \**************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -37072,6 +38192,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -37124,6 +38245,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -37176,6 +38298,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -37228,6 +38351,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -37280,6 +38404,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \***********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -37332,6 +38457,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \***************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -37384,6 +38510,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \*********************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -37436,6 +38563,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
@@ -37488,6 +38616,7 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
   \****************************************************************************/
 /***/ ((module) => {
 
+"use strict";
 
 
 var stylesInDOM = [];
@@ -37581,6 +38710,7 @@ module.exports = function (list, options) {
   \********************************************************************/
 /***/ ((module) => {
 
+"use strict";
 
 
 var memo = {};
@@ -37624,6 +38754,7 @@ module.exports = insertBySelector;
   \**********************************************************************/
 /***/ ((module) => {
 
+"use strict";
 
 
 /* istanbul ignore next  */
@@ -37643,6 +38774,7 @@ module.exports = insertStyleElement;
   \**********************************************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+"use strict";
 
 
 /* istanbul ignore next  */
@@ -37662,6 +38794,7 @@ module.exports = setAttributesWithoutAttributes;
   \***************************************************************/
 /***/ ((module) => {
 
+"use strict";
 
 
 /* istanbul ignore next  */
@@ -37732,6 +38865,7 @@ module.exports = domAPI;
   \*********************************************************************/
 /***/ ((module) => {
 
+"use strict";
 
 
 /* istanbul ignore next  */
@@ -37755,6 +38889,7 @@ module.exports = styleTagTransform;
   \***********************************************************/
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ u)
@@ -37850,6 +38985,9 @@ function t(t,e,i,s){return new(i||(i=Promise))((function(n,r){function o(t){try{
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+(() => {
+"use strict";
 /*!**********************!*\
   !*** ./src/index.js ***!
   \**********************/
@@ -37870,6 +39008,8 @@ if (typeof window === 'undefined') {
 
 var root = react_dom_client__WEBPACK_IMPORTED_MODULE_1__.createRoot(document.getElementById('root'));
 root.render(/*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_App__WEBPACK_IMPORTED_MODULE_2__["default"], null));
+})();
+
 /******/ })()
 ;
 //# sourceMappingURL=bundle.js.map

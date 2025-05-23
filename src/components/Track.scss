@@ -52,31 +52,6 @@
     background-color: #404040;
   }
   
-  .PlayButton {
-    background: none;
-    border: none;
-    color: #a0a0a0;
-    cursor: pointer;
-    font-size: 1rem; /* Ensure this is large enough for ❚❚ */
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px; /* Give it some fixed width */
-    height: 30px; /* Give it some fixed height */
-    line-height: 1; /* Important for vertical centering of text symbols */
-  
-  
-    &:hover {
-      color: #ffffff;
-    }
-  
-    .TrackRow.Selected &,
-    .TrackRow.CurrentPlayingTrack & {
-      color: #ffffff;
-    }
-  }
-  
   .Cell-title {
     font-weight: 500;
   }
@@ -96,9 +71,4 @@
     .Cell-year {
       color: #e0e0e0;
     }
-  }
-  
-  .TrackCell.Cell-playAction {
-      padding: 0; // Remove padding for the play button cell
-      text-align: center; // Center the button
   }

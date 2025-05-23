@@ -8,9 +8,11 @@ const Content = ({ // Destructure props passed from Main
   selectedTrackId,
   currentPlayingTrack,
   isPlaying,
+  currentTime,
   audioError,
   onTrackSelect,
   onPlayTrack,
+  onSeek,
   onSearch,
   isLoading,
   error
@@ -39,6 +41,8 @@ const Content = ({ // Destructure props passed from Main
         onPlayTrack={onPlayTrack} // Pass the handler from Main
         currentPlayingTrackId={currentPlayingTrack?.id}
         isAudioPlaying={isPlaying}
+        currentTime={currentTime}
+        onSeek={onSeek}
       />
       {/* Removed: <audio> element and MiniPlayerInfo */}
     </div>

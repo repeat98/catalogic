@@ -14,11 +14,16 @@ export const PlaybackProvider = ({ children }) => {
    * Pauses any previously playing instance to ensure only one plays at a time.
    * @param {WaveSurfer} wavesurfer - The WaveSurfer instance to set as currently playing.
    */
-  const setPlayingWaveSurfer = (wavesurfer) => {
-    if (currentWaveSurfer.current && currentWaveSurfer.current !== wavesurfer) {
-      currentWaveSurfer.current.pause();
+  const setPlayingWaveSurfer = (newWaveSurferInstance) => {
+    if (currentWaveSurfer.current && currentWaveSurfer.current !== newWaveSurferInstance) {
+      try {
+        currentWaveSurfer.current.pause();
+        currentWaveSurfer.current.setVolume(0);
+      } catch (error) {
+        console.warn('[Context] Error pausing or muting previous WaveSurfer:', error);
+      }
     }
-    currentWaveSurfer.current = wavesurfer;
+    currentWaveSurfer.current = newWaveSurferInstance;
   };
 
   /**
@@ -35,24 +40,24 @@ export const PlaybackProvider = ({ children }) => {
         activeElement.tagName === 'TEXTAREA' ||
         activeElement.isContentEditable;
 
-      if (!isInputFocused) {
-        e.preventDefault(); // Prevent default spacebar actions like scrolling
-        if (currentWaveSurfer.current) {
+      if (!isInputFocused && currentWaveSurfer.current) {
+        e.preventDefault();
+        try {
           if (currentWaveSurfer.current.isPlaying()) {
             currentWaveSurfer.current.pause();
           } else {
+            currentWaveSurfer.current.setVolume(1);
             currentWaveSurfer.current.play();
           }
+        } catch (error) {
+          console.warn('[Context] Error toggling play/pause via spacebar:', error);
         }
       }
     }
   };
 
   useEffect(() => {
-    // Add the keydown event listener when the component mounts
     window.addEventListener('keydown', handleKeyDown);
-
-    // Clean up the event listener when the component unmounts
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
@@ -63,6 +68,7 @@ export const PlaybackProvider = ({ children }) => {
       value={{
         currentTrack,
         setCurrentTrack,
+        currentWaveSurfer,
         setPlayingWaveSurfer,
       }}
     >

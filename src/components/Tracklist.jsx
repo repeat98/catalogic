@@ -136,11 +136,11 @@ const Tracklist = ({
   return (
     <div className="TracklistContainer">
       <table className="TracklistTable" ref={tableRef}>
-        <colgroup>{/* No whitespace or comments directly here */}
-          {columnConfig.map(col => <col key={col.key} style={{ width: col.currentWidth || col.width }} />)}{onPlayTrack && <col style={{ width: '50px' }} />}
+        <colgroup>
+          {columnConfig.map(col => <col key={col.key} style={{ width: col.currentWidth || col.width }} />)}
         </colgroup>
         <thead>
-          <tr>{/* No whitespace or comments directly here */}
+          <tr>
             {columnConfig.map((col) => (
               <th
                 key={col.key}
@@ -159,7 +159,7 @@ const Tracklist = ({
                   )}
                 </div>
               </th>
-            ))}{onPlayTrack && <th style={{ width: '50px' }} aria-label="Play column"></th>}
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -168,7 +168,7 @@ const Tracklist = ({
               <Track
                 key={track.id}
                 track={track}
-                columns={columnConfig} // Pass the stateful config with currentWidths
+                columns={columnConfig}
                 isSelected={selectedTrackId === track.id}
                 onTrackClick={() => handleTrackClick(track)}
                 onPlayClick={onPlayTrack ? (e) => handlePlayClickPassthrough(e, track) : undefined}
@@ -179,7 +179,7 @@ const Tracklist = ({
             ))
           ) : (
             <tr>
-              <td colSpan={columnConfig.length + (onPlayTrack ? 1 : 0)} className="NoTracksMessage">
+              <td colSpan={columnConfig.length} className="NoTracksMessage">
                 No tracks found. Add music to your library.
               </td>
             </tr>

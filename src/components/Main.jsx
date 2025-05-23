@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import Navbar from './Navbar';   // Import the Navbar component
 import Content from './Content'; // Import the Content component
 import Player from './Player';   // Import the Player component
+import { PlaybackContext } from '../context/PlaybackContext';
 import './Main.scss';         // Styles for the .Main container
 
 function Main() {
@@ -12,8 +13,9 @@ function Main() {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
-  const audioPlayerRef = useRef(null);
-  const [audioError, setAudioError] = useState('');
+  const [currentTime, setCurrentTime] = useState(0);
+  const { currentWaveSurfer, setCurrentTrack: setContextTrack } = useContext(PlaybackContext);
+  const timeUpdateIntervalRef = useRef(null);
 
   useEffect(() => {
     const fetchTracks = async () => {
@@ -68,68 +70,93 @@ function Main() {
 
   const handlePlayTrack = (track) => {
     if (!track || !track.id) {
-      console.error("Invalid track object passed to handlePlayTrack:", track);
+      console.error("[Main] Invalid track object passed to handlePlayTrack:", track);
       return;
     }
-    setAudioError('');
-    const audioUrl = `http://localhost:3000/audio/${track.id}`;
 
-    if (currentPlayingTrack && currentPlayingTrack.id === track.id && audioPlayerRef.current) {
-      if (isPlaying) {
-        audioPlayerRef.current.pause();
-      } else {
-        audioPlayerRef.current.play().catch(e => {
-          console.error("Error playing audio:", e);
-          setAudioError(`Cannot play: ${track.title}. ${e.message}`);
-        });
-      }
-      // setIsPlaying will be handled by audio element events
+    if (currentPlayingTrack && currentPlayingTrack.id === track.id) {
+      setIsPlaying(prev => !prev);
     } else {
       setCurrentPlayingTrack(track);
-      if (audioPlayerRef.current) {
-        audioPlayerRef.current.src = audioUrl;
-        audioPlayerRef.current.load();
-        audioPlayerRef.current.play().catch(e => {
-          console.error("Error playing audio:", e);
-          setAudioError(`Cannot play: ${track.title}. ${e.message}`);
-          setIsPlaying(false); // Explicitly set to false on new track error
-        });
-      }
+      setContextTrack(track);
+      setIsPlaying(true);
+      setCurrentTime(0);
+    }
+  };
+
+  const handleSeek = (newTime) => {
+    if (currentWaveSurfer.current) {
+      try {
+        const duration = currentWaveSurfer.current.getDuration();
+        if (duration > 0) {
+          const seekPosition = Math.min(1, Math.max(0, newTime / duration));
+          currentWaveSurfer.current.seekTo(seekPosition);
+        }
+      } catch(e) { /* console.warn("Error in handleSeek", e) */ }
     }
   };
 
   useEffect(() => {
-    const audioEl = audioPlayerRef.current;
-    if (!audioEl) return;
+    if (currentWaveSurfer.current) {
+      try {
+        if (isPlaying) {
+          currentWaveSurfer.current.setVolume(1);
+          currentWaveSurfer.current.play();
+        } else {
+          currentWaveSurfer.current.pause();
+        }
+      } catch(e) { console.warn("[Main] Error in play/pause effect", e) }
+    }
+  }, [isPlaying, currentWaveSurfer.current]);
 
-    const handleAudioPlay = () => setIsPlaying(true);
-    const handleAudioPause = () => setIsPlaying(false);
-    const handleAudioEnded = () => {
+  useEffect(() => {
+    if (timeUpdateIntervalRef.current) {
+      clearInterval(timeUpdateIntervalRef.current);
+    }
+
+    if (currentWaveSurfer.current && isPlaying) {
+      timeUpdateIntervalRef.current = setInterval(() => {
+        if (currentWaveSurfer.current) {
+          try {
+            const newTime = currentWaveSurfer.current.getCurrentTime();
+            const duration = currentWaveSurfer.current.getDuration();
+            if (newTime >= 0 && duration > 0 && newTime <= duration) {
+              setCurrentTime(newTime);
+            }
+          } catch (e) { /* console.warn('Error getting current time from WaveSurfer:', e); */ }
+        }
+      }, 100);
+    }
+    return () => clearInterval(timeUpdateIntervalRef.current);
+  }, [currentWaveSurfer.current, isPlaying]);
+
+  useEffect(() => {
+    if (!currentWaveSurfer.current) return;
+
+    const activeWs = currentWaveSurfer.current;
+
+    const handleFinish = () => {
       setIsPlaying(false);
-      // Optional: play next track logic can be added here
-    };
-    const handleAudioError = (e) => {
-      console.error("Audio Element Error:", e);
-      // More specific error can be set if currentPlayingTrack is available
-      setAudioError(`Audio error: ${currentPlayingTrack?.title || 'track'}.`);
-      setIsPlaying(false);
+      setCurrentTime(0);
     };
 
-    audioEl.addEventListener('play', handleAudioPlay);
-    audioEl.addEventListener('pause', handleAudioPause);
-    audioEl.addEventListener('ended', handleAudioEnded);
-    audioEl.addEventListener('error', handleAudioError);
+    const handleSeekEvent = () => {
+      if (activeWs) {
+        try {
+          const newTime = activeWs.getCurrentTime();
+          setCurrentTime(newTime);
+        } catch (e) { /* console.warn('Error getting time on seek:', e); */ }
+      }
+    };
+    
+    activeWs.on('finish', handleFinish);
+    activeWs.on('seek', handleSeekEvent); 
 
     return () => {
-      audioEl.removeEventListener('play', handleAudioPlay);
-      audioEl.removeEventListener('pause', handleAudioPause);
-      audioEl.removeEventListener('ended', handleAudioEnded);
-      audioEl.removeEventListener('error', handleAudioError);
+      activeWs.un('finish', handleFinish);
+      activeWs.un('seek', handleSeekEvent);
     };
-  // Removed allTracks from dependency array as it might cause unnecessary re-renders
-  // if track data is large and changes often in ways not relevant to playback.
-  // currentPlayingTrack.id is sufficient for changes related to the current track.
-  }, [audioPlayerRef, currentPlayingTrack?.id]); 
+  }, [currentWaveSurfer.current]);
 
   return (
     <div className="Main">
@@ -140,19 +167,19 @@ function Main() {
           selectedTrackId={selectedTrackId}
           currentPlayingTrack={currentPlayingTrack}
           isPlaying={isPlaying}
-          audioError={audioError}
+          currentTime={currentTime}
           onTrackSelect={handleTrackSelect}
           onPlayTrack={handlePlayTrack}
+          onSeek={handleSeek}
           onSearch={handleSearch}
           isLoading={isLoading}
           error={error}
         />
       </div>
       <Player
-        audioPlayerRef={audioPlayerRef}
         currentPlayingTrack={currentPlayingTrack}
         isPlaying={isPlaying}
-        audioError={audioError}
+        currentTime={currentTime}
       />
     </div>
   );
