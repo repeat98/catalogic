@@ -1,0 +1,156 @@
+// MenuItem.scss
+
+// This class is applied to the root of the MenuItem component.
+// It can be used for layout purposes by the parent (Sidebar.scss -> MenuCategory).
+.MenuItemInstance {
+  display: flex; // Ensures it behaves as a block-like flex container
+  // width: 100%; // Uncomment if you want the item's clickable area to span full width of MenuCategory (minus padding)
+                  // This would override the fixed width from itemStateBase.
+  // Or, rely on align-items: flex-start in MenuCategory and the fixed width below.
+}
+
+// Mixin for base styles common to all item states
+@mixin itemStateBase {
+  width: 211px; // Fixed width as per your original %itemStateBase
+  // height: 28px; // Can be set if fixed height is desired, otherwise determined by content + padding
+  min-height: 28px; // Ensure a minimum height
+  padding: 4px 8px; // Adjusted padding for a slightly more spacious feel, original was 2px 6px
+  border-radius: 5px;
+  align-items: center;
+  gap: 8px; // Gap between icon/title group and dots
+  display: flex;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif; // Apply base font family here
+  transition: background-color 0.2s ease-in-out; // Smooth background transition
+}
+
+.Property1Default {
+  @include itemStateBase;
+  background-color: transparent; // Explicitly transparent default background
+
+  &:hover {
+    background-color: #434343; // Hover background from original .Property1Hover
+  }
+
+  .Dots { // Default state for dots in a non-selected, non-options-focused item
+    .Ellipse38, .Ellipse39, .Ellipse40 {
+      background: transparent; // Dots usually only appear for 'Options' variants
+    }
+  }
+}
+
+.Property1Selected {
+  @include itemStateBase;
+  background-color: #434343; // Background for selected item
+
+  .LibraryTitle {
+    font-weight: 700; // Handled by .LibraryTitle-Selected in JSX
+  }
+  // No hover state change defined for already selected item, but can be added if needed
+}
+
+.Property1Options {
+  @include itemStateBase;
+  justify-content: space-between; // Pushes Title group and Dots to opposite ends
+  background-color: transparent;
+
+  .Dots {
+    .Ellipse38, .Ellipse39, .Ellipse40 {
+      background: #4F4F4F; // Ellipse-Dark for default options state
+    }
+  }
+
+  &:hover {
+    background-color: #434343; // Hover background from original .Property1OptionsHover
+    .Dots {
+      .Ellipse38, .Ellipse39, .Ellipse40 {
+        background: #AEAEAE; // Ellipse-Light on hover
+      }
+    }
+  }
+}
+
+.Property1OptionSelected {
+  @include itemStateBase;
+  justify-content: space-between;
+  background-color: #434343; // Background for selected item with options
+
+  .LibraryTitle {
+    font-weight: 700; // Handled by .LibraryTitle-Selected in JSX
+  }
+
+  .Dots {
+    .Ellipse38, .Ellipse39, .Ellipse40 {
+      background: #AEAEAE; // Ellipse-Light for selected options state
+    }
+  }
+  // No specific hover state for already selected option item regarding dot color,
+  // background hover is implicitly same as selected.
+}
+
+// Inner common elements styling
+.Title {
+  display: flex;
+  align-items: center;
+  gap: 6px; // Gap between icon and library title text
+  flex-grow: 1; // Allows title to take available space before dots
+  overflow: hidden; // Prevents text from breaking layout
+}
+
+.Icons {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0; // Prevents icon from shrinking
+}
+
+.Vector { // Default icon style
+  width: 14.25px;
+  height: 10.50px;
+  background-color: #9C9C9C; // Icon color
+  // If using SVG:
+  // fill: #9C9C9C;
+  // background-color: transparent;
+}
+
+.LibraryTitle {
+  color: #DADADA;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 20px; // Ensures text is vertically centered within its space
+  white-space: nowrap; // Prevents text wrapping
+  overflow: hidden; // Hides overflow
+  text-overflow: ellipsis; // Adds ellipsis for overflowed text
+
+  &.LibraryTitle-Selected { // Applied in JSX when item isSelected
+    font-weight: 700;
+    color: #FFFFFF; // Brighter color for selected text
+  }
+}
+
+.Dots {
+  width: auto; // Or a fixed small width e.g., 4px
+  height: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between; // Distributes dots vertically evenly
+  flex-shrink: 0; // Prevents dots from shrinking
+  padding: 3px 0; // Adds some vertical padding to ensure dots are spaced within 18px height
+}
+
+%ellipseBase {
+  width: 3px; // Slightly larger dots
+  height: 3px;
+  border-radius: 50%;
+}
+
+.Ellipse38 { @extend %ellipseBase; }
+.Ellipse39 { @extend %ellipseBase; }
+.Ellipse40 { @extend %ellipseBase; }
+
+// .Ellipse-Dark and .Ellipse-Light are now handled by context within .Property1Options and .Property1OptionSelected
+// No need for these as separate utility classes for dots if structured as above.
