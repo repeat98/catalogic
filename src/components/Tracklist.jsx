@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Track from './Track';
+import WaveformPreview from './WaveformPreview';
 import './Tracklist.scss';
 
 // Define the initial columns configuration
 // Widths here are initial/fallback widths. Actual widths will be managed in state.
 const initialColumnsConfig = [
   { key: 'artwork_thumbnail_path', header: '', type: 'image', width: '50px', minWidth: 40, resizable: false },
-  { key: 'title', header: 'Title', width: '30%', minWidth: 100, resizable: true },
+  { key: 'title', header: 'Title', width: '25%', minWidth: 100, resizable: true },
   { key: 'artist', header: 'Artist', width: '20%', minWidth: 80, resizable: true },
   { key: 'album', header: 'Album', width: '20%', minWidth: 80, resizable: true },
+  { key: 'waveform', header: 'Preview', width: '20%', type: 'waveform', minWidth: 100, resizable: true },
   { key: 'time', header: 'Time', width: '70px', minWidth: 60, textAlign: 'right', resizable: true },
   { key: 'bpm', header: 'BPM', width: '70px', minWidth: 50, textAlign: 'right', resizable: true },
   { key: 'key', header: 'Key', width: '70px', minWidth: 50, textAlign: 'right', resizable: true },
@@ -21,7 +23,9 @@ const Tracklist = ({
   selectedTrackId,
   onPlayTrack,
   currentPlayingTrackId,
-  isAudioPlaying
+  isAudioPlaying,
+  currentTime,
+  onSeek
 }) => {
   const [columnConfig, setColumnConfig] = useState(
     initialColumnsConfig.map(col => ({ ...col, currentWidth: col.width })) // resizable flag is directly from initialConfig
@@ -100,6 +104,35 @@ const Tracklist = ({
     }
   };
 
+  const renderCell = (track, col) => {
+    if (col.type === 'image') {
+      return (
+        <img
+          src={track[col.key] || 'assets/default-artwork.png'}
+          alt="artwork"
+          className="TrackArtworkThumbnail"
+          onError={(e) => {
+            e.target.src = 'assets/default-artwork.png';
+          }}
+        />
+      );
+    }
+
+    if (col.type === 'waveform') {
+      return (
+        <WaveformPreview
+          trackId={track.id}
+          isPlaying={currentPlayingTrackId === track.id && isAudioPlaying}
+          currentTime={currentPlayingTrackId === track.id ? currentTime : 0}
+          onSeek={onSeek}
+          onPlayClick={() => onPlayTrack && onPlayTrack(track)}
+        />
+      );
+    }
+
+    return track[col.key] !== undefined && track[col.key] !== null ? track[col.key] : '-';
+  };
+
   return (
     <div className="TracklistContainer">
       <table className="TracklistTable" ref={tableRef}>
@@ -141,6 +174,7 @@ const Tracklist = ({
                 onPlayClick={onPlayTrack ? (e) => handlePlayClickPassthrough(e, track) : undefined}
                 isCurrentTrack={currentPlayingTrackId === track.id}
                 isPlaying={isAudioPlaying && currentPlayingTrackId === track.id}
+                renderCell={renderCell}
               />
             ))
           ) : (

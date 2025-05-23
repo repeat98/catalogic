@@ -14,7 +14,7 @@ const formatTime = (time) => {
   return time || '-';
 };
 
-const Track = ({ track, columns, isSelected, onTrackClick, onPlayClick, isPlaying, isCurrentTrack }) => {
+const Track = ({ track, columns, isSelected, onTrackClick, onPlayClick, isPlaying, isCurrentTrack, renderCell }) => {
   const handleMainClick = () => {
     if (onTrackClick) {
       onTrackClick();
@@ -42,23 +42,32 @@ const Track = ({ track, columns, isSelected, onTrackClick, onPlayClick, isPlayin
       onDoubleClick={handleDoubleClick}
     >
       {columns.map((col) => {
-        let content = track[col.key] !== undefined && track[col.key] !== null ? track[col.key] : '-';
-        if (col.key === 'time') {
-          content = formatTime(track[col.key]);
+        let content;
+        
+        // Use renderCell function if provided, otherwise use default rendering
+        if (renderCell) {
+          content = renderCell(track, col);
+        } else {
+          content = track[col.key] !== undefined && track[col.key] !== null ? track[col.key] : '-';
+          if (col.key === 'time') {
+            content = formatTime(track[col.key]);
+          }
+          
+          if (col.type === 'image') {
+            content = (
+              <img
+                src={track[col.key] || 'assets/default-artwork.png'}
+                alt="artwork"
+                className="TrackArtworkThumbnail"
+                onError={(e) => { e.target.src = 'assets/default-artwork.png'; }}
+              />
+            );
+          }
         }
 
         return (
           <td key={col.key} className={`TrackCell Cell-${col.key}`} style={{ width: col.currentWidth || col.width }}>
-            {col.type === 'image' ? (
-              <img
-                src={track[col.key] || 'assets/default-artwork.png'} // Updated default path
-                alt="artwork"
-                className="TrackArtworkThumbnail"
-                onError={(e) => { e.target.src = 'assets/default-artwork.png'; }} // Updated fallback
-              />
-            ) : (
-              content
-            )}
+            {content}
           </td>
         );
       })}
