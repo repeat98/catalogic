@@ -2,178 +2,191 @@
 
 .Sidebar {
   width: 256px;
-  align-self: stretch;
+  align-self: stretch; // This is fine if Sidebar is a flex item in its parent.
   background: #1C1C1C;
-  overflow: hidden;
+  overflow: hidden; // This will clip content if Sidebar is not tall enough.
+                    // Consider `overflow-y: auto;` for the .Menu if content might exceed space.
+  flex-direction: column;
+  justify-content: flex-start; // Aligns children to the top
+  align-items: stretch;       // MODIFIED: Ensures children stretch to full width by default
+  display: flex;
+  box-sizing: border-box;    // Good practice
+
+  // IMPORTANT: For the flex layout to work as intended, especially with
+  // .Menu having flex-grow: 1, the .Sidebar itself needs a defined height.
+  // For example, if it's meant to be full viewport height:
+  // height: 100vh;
+  // Or if its parent has a defined height, you might use height: 100%;
+}
+
+.Sidebar .WindowControlsOuter { // Increased specificity slightly for clarity
+  align-self: stretch;
+  height: 52px;
+  flex-shrink: 0; // Prevent this from shrinking
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
   display: flex;
+}
 
-  .WindowControlsOuter {
-    align-self: stretch;
-    height: 52px;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    display: flex;
+.Sidebar .WindowControlsOuter .WindowControlsInner {
+  height: 52px;
+  padding-left: 24px;
+  padding-right: 24px;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  display: flex;
+}
 
-    .WindowControlsInner {
-      height: 52px;
-      padding-left: 24px;
-      padding-right: 24px;
-      justify-content: flex-start;
-      align-items: center;
-      gap: 8px;
-      display: flex;
+.Sidebar .WindowControlsOuter .WindowControlsInner .Close,
+.Sidebar .WindowControlsOuter .WindowControlsInner .Minimize,
+.Sidebar .WindowControlsOuter .WindowControlsInner .Zoom {
+  width: 12px;
+  height: 12px;
+  position: relative;
+  border-radius: 100px;
+  border: 0.50px rgba(0, 0, 0, 0.20) solid;
+}
+.Sidebar .WindowControlsOuter .WindowControlsInner .Close { background: #FF5F57; }
+.Sidebar .WindowControlsOuter .WindowControlsInner .Minimize { background: #FEBC2E; }
+.Sidebar .WindowControlsOuter .WindowControlsInner .Zoom { background: #28C840; }
 
-      .Close, .Minimize, .Zoom {
-        width: 12px;
-        height: 12px;
-        position: relative;
-        border-radius: 100px;
-        border: 0.50px rgba(0, 0, 0, 0.20) solid;
-      }
-      .Close { background: #FF5F57; }
-      .Minimize { background: #FEBC2E; }
-      .Zoom { background: #28C840; }
-    }
-  }
+.Sidebar .Menu {
+  align-self: stretch;
+  flex: 1 1 0; // This makes the Menu take up available vertical space
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  display: flex;
+  width: 100%;
+  overflow-y: auto; // Add this if menu content itself can be scrollable
+  overflow-x: hidden;
+}
 
-  .Menu {
-    align-self: stretch;
-    flex: 1 1 0;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    display: flex;
-    width: 100%;
+.Sidebar .Menu .MenuCategory {
+  align-self: stretch;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  overflow: hidden; // Be cautious with overflow here if content is dynamic
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 4px;
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+}
 
-    .MenuCategory {
-      align-self: stretch;
-      padding-left: 24px;
-      padding-right: 24px;
-      padding-top: 4px;
-      padding-bottom: 4px;
-      overflow: hidden;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: flex-start;
-      gap: 4px;
-      display: flex;
-      width: 100%;
-      box-sizing: border-box;
+.Sidebar .Menu .MenuCategory .CategoryLabelWrapper {
+  align-self: stretch;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 24px;
+}
 
-      .CategoryLabelWrapper {
-        align-self: stretch;
-        display: flex;
-        justify-content: space-between; // Pushes label and button to opposite ends
-        align-items: center; // Vertically aligns label and button
-        height: 24px; // Match label height for alignment
-      }
+.Sidebar .Menu .MenuCategory .Label {
+  width: auto;
+  color: #DADADA;
+  font-size: 10px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  line-height: 24px;
+  word-wrap: break-word;
+  text-transform: uppercase;
+}
 
-      .Label {
-        width: auto;
-        // height: 24px; // Height is now on CategoryLabelWrapper for alignment
-        color: #DADADA;
-        font-size: 10px;
-        font-family: 'Inter', sans-serif;
-        font-weight: 400;
-        line-height: 24px; // Ensure text is vertically centered
-        word-wrap: break-word;
-        text-transform: uppercase;
-      }
+.Sidebar .Menu .MenuCategory .AddButton {
+  background: transparent;
+  border: none;
+  color: #8A8A8A;
+  cursor: pointer;
+  padding: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
 
-      .AddButton {
-        background: transparent;
-        border: none;
-        color: #8A8A8A; // A slightly dimmer color for the icon, or use DADADA
-        cursor: pointer;
-        padding: 0; // Remove default button padding
-        width: 18px;  // Similar size to other icons like settings
-        height: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 3px; // Optional: slight rounding
-        transition: background-color 0.2s ease, color 0.2s ease;
+.Sidebar .Menu .MenuCategory .AddButton:hover {
+  background-color: #333333;
+  color: #FFFFFF;
+}
 
-        &:hover {
-          background-color: #333333; // Subtle hover background
-          color: #FFFFFF; // Brighter icon on hover
-        }
+.Sidebar .Menu .MenuCategory .AddButton:active {
+  background-color: #444444;
+}
 
-        &:active {
-          background-color: #444444; // Pressed state
-        }
+.Sidebar .Menu .MenuCategory .AddButton .AddIconSymbol {
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 1;
+}
 
-        .AddIconSymbol {
-          font-size: 16px; // Adjust size of the "+" symbol
-          font-weight: bold; // Make it a bit thicker
-          line-height: 1;  // Helps in precise centering
-        }
-      }
-    }
+.Sidebar .Menu .Divider {
+  align-self: stretch;
+  height: 2px;
+  background: #292929;
+  margin: 8px 24px; // This margin is inside the Menu
+  flex-shrink: 0;
+}
 
-    .Divider {
-      align-self: stretch;
-      height: 2px;
-      background: #292929;
-      margin: 8px 24px;
-    }
-  }
+.Sidebar .LogoContainer {
+  align-self: stretch;
+  padding: 16px 24px; // Padding defines its minimum height
+  overflow: hidden;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+  flex-shrink: 0; // Prevent this from shrinking
+  box-sizing: border-box;
+}
 
-  .LogoContainer {
-    align-self: stretch;
-    padding-left: 24px;
-    padding-right: 24px;
-    padding-top: 16px;
-    padding-bottom: 16px;
-    overflow: hidden;
-    justify-content: space-between;
-    align-items: center;
-    display: flex;
+.Sidebar .LogoContainer .LogoWrapper {
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  display: flex;
+}
 
-    .LogoWrapper {
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      display: flex;
+.Sidebar .LogoContainer .LogoWrapper .Logo {
+  width: 18px;
+  height: 17px;
+  border-radius: 5px;
+  border: 4px #FF5A16 solid; // This should be visible if LogoContainer is.
+}
 
-      .Logo {
-        width: 18px;
-        height: 17px;
-        border-radius: 5px;
-        border: 4px #FF5A16 solid;
-      }
+.Sidebar .LogoContainer .LogoWrapper .LogoText {
+  width: auto; // Let it size to content
+  height: 20px;
+  color: #DADADA;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  line-height: 20px;
+  word-wrap: break-word;
+}
 
-      .LogoText {
-        width: auto;
-        height: 20px;
-        color: #DADADA;
-        font-size: 14px;
-        font-family: 'Inter', sans-serif;
-        font-weight: 700;
-        line-height: 20px;
-        word-wrap: break-word;
-      }
-    }
+.Sidebar .LogoContainer .IconSettings {
+  width: 18px;
+  height: 18px;
+  position: relative;
+  overflow: hidden; // If .Vector is larger, it will be clipped
+  cursor: pointer;
+}
 
-    .IconSettings {
-      width: 18px;
-      height: 18px;
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-
-      .Vector {
-        width: 14.28px;
-        height: 15px;
-        left: 1.86px;
-        top: 1.50px;
-        position: absolute;
-        background: #696969;
-      }
-    }
-  }
+.Sidebar .LogoContainer .IconSettings .Vector {
+  width: 14.28px;
+  height: 15px;
+  left: 1.86px;
+  top: 1.50px;
+  position: absolute;
+  background: #696969; // This will render as a grey rectangle.
+                       // For an actual icon, use SVG, an icon font, or mask-image.
 }

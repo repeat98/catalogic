@@ -4,6 +4,9 @@ import './Navbar.scss';
 const Navbar = () => {
   return (
     <div data-layer="navbar" data-property-1="tab-bar" className="Navbar">
+      <div className="Logo">
+        <img src="assets/logo.png" alt="Catalogic Logo" className="LogoImage" />
+      </div>
       <div data-layer="navbar-menu" className="NavbarMenu">
         <div data-layer="navbar-menu-item" className="NavbarMenuItem active">Collection</div>
         <div data-layer="navbar-menu-item" className="NavbarMenuItem">Map</div>
