@@ -1724,9 +1724,7 @@ var WaveformPreview = function WaveformPreview(_ref) {
     className: "WaveformLoading"
   }, "Scroll to load")), isInViewport && (isLoading || error) && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "WaveformOverlay"
-  }, isLoading ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "WaveformLoading"
-  }, "Loading...") : error ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+  }, error ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "WaveformLoading"
   }, error) : null));
 };
@@ -3128,7 +3126,6 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.WaveformPreview {
   width: 100%;
   height: 100%;
   min-height: 30px;
-  background-color: #f5f5f5;
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
@@ -3151,11 +3148,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.WaveformPreview {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(245, 245, 245, 0.9);
   z-index: 1;
-}
-.WaveformPreview .WaveformOverlay.scroll-to-load {
-  background-color: rgba(245, 245, 245, 0.7);
 }
 .WaveformPreview .WaveformLoading {
   font-size: 12px;
@@ -3164,7 +3157,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.WaveformPreview {
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}`, "",{"version":3,"sources":["webpack://./src/components/WaveformPreview.scss"],"names":[],"mappings":"AAAA;EACE,kBAAA;EACA,WAAA;EACA,YAAA;EACA,gBAAA;EACA,yBAAA;EACA,kBAAA;EACA,gBAAA;EACA,eAAA;EACA,6BAAA;AACF;AACE;EACE,YAAA;AACJ;AAEE;EACE,WAAA;EACA,YAAA;EACA,gBAAA;AAAJ;AAGE;EACE,kBAAA;EACA,MAAA;EACA,OAAA;EACA,QAAA;EACA,SAAA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;EACA,0CAAA;EACA,UAAA;AADJ;AAGI;EACE,0CAAA;AADN;AAKE;EACE,eAAA;EACA,WAAA;EACA,gBAAA;EACA,0CAAA;EACA,kBAAA;EACA,wCAAA;AAHJ","sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/components/WaveformPreview.scss"],"names":[],"mappings":"AAAA;EACE,kBAAA;EACA,WAAA;EACA,YAAA;EACA,gBAAA;EACA,kBAAA;EACA,gBAAA;EACA,eAAA;EACA,6BAAA;AACF;AACE;EACE,YAAA;AACJ;AAEE;EACE,WAAA;EACA,YAAA;EACA,gBAAA;AAAJ;AAGE;EACE,kBAAA;EACA,MAAA;EACA,OAAA;EACA,QAAA;EACA,SAAA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;EACA,UAAA;AADJ;AAOE;EACE,eAAA;EACA,WAAA;EACA,gBAAA;EACA,0CAAA;EACA,kBAAA;EACA,wCAAA;AALJ","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

@@ -191,8 +191,8 @@ const WaveformPreview = ({
       )}
       {isInViewport && (isLoading || error) && (
         <div className="WaveformOverlay">
-          {isLoading ? <div className="WaveformLoading">Loading...</div> : 
-           error ? <div className="WaveformLoading">{error}</div> : null}
+          {/* {isLoading ? <div className="WaveformLoading">Loading...</div> :  */}
+          {error ? <div className="WaveformLoading">{error}</div> : null}
         </div>
       )}
     </div>
