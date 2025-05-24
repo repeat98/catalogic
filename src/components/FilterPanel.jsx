@@ -1,26 +1,61 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import './FilterPanel.scss';
 
 const FilterCategory = ({ title, options, activeItems, onToggle }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Filter options based on search term
+  const filteredOptions = useMemo(() => {
+    if (!options || options.length === 0) return [];
+    if (!searchTerm.trim()) return options;
+    
+    const lowerSearchTerm = searchTerm.toLowerCase().trim();
+    return options.filter(option => 
+      option.name.toLowerCase().includes(lowerSearchTerm)
+    );
+  }, [options, searchTerm]);
+
   if (!options || options.length === 0) return null;
 
   return (
     <div className="FilterCategory">
       <h4 className="FilterCategoryTitle">{title}</h4>
+      <div className="FilterSearchContainer">
+        <input
+          type="text"
+          placeholder={`Search ${title.toLowerCase()}...`}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="FilterSearchInput"
+        />
+        {searchTerm && (
+          <button
+            onClick={() => setSearchTerm('')}
+            className="FilterSearchClear"
+            aria-label="Clear search"
+          >
+            ×
+          </button>
+        )}
+      </div>
       <ul className="FilterCheckboxList">
-        {options.map(option => (
-          <li key={option.name} className="FilterCheckboxItem">
-            <label>
-              <input 
-                type="checkbox" 
-                checked={activeItems.includes(option.name)}
-                onChange={() => onToggle(option.name)}
-              />
-              <span className="FilterOptionName">{option.name}</span>
-              <span className="FilterOptionCount">({option.count})</span>
-            </label>
-          </li>
-        ))}
+        {filteredOptions.length > 0 ? (
+          filteredOptions.map(option => (
+            <li key={option.name} className="FilterCheckboxItem">
+              <label>
+                <input 
+                  type="checkbox" 
+                  checked={activeItems.includes(option.name)}
+                  onChange={() => onToggle(option.name)}
+                />
+                <span className="FilterOptionName">{option.name}</span>
+                <span className="FilterOptionCount">({option.count})</span>
+              </label>
+            </li>
+          ))
+        ) : (
+          <li className="FilterNoResults">No results found for "{searchTerm}"</li>
+        )}
       </ul>
     </div>
   );

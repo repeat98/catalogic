@@ -245,6 +245,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _FilterPanel_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FilterPanel.scss */ "./src/components/FilterPanel.scss");
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 var FilterCategory = function FilterCategory(_ref) {
@@ -252,14 +258,44 @@ var FilterCategory = function FilterCategory(_ref) {
     options = _ref.options,
     activeItems = _ref.activeItems,
     onToggle = _ref.onToggle;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState2 = _slicedToArray(_useState, 2),
+    searchTerm = _useState2[0],
+    setSearchTerm = _useState2[1];
+
+  // Filter options based on search term
+  var filteredOptions = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+    if (!options || options.length === 0) return [];
+    if (!searchTerm.trim()) return options;
+    var lowerSearchTerm = searchTerm.toLowerCase().trim();
+    return options.filter(function (option) {
+      return option.name.toLowerCase().includes(lowerSearchTerm);
+    });
+  }, [options, searchTerm]);
   if (!options || options.length === 0) return null;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "FilterCategory"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h4", {
     className: "FilterCategoryTitle"
-  }, title), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+  }, title), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "FilterSearchContainer"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    type: "text",
+    placeholder: "Search ".concat(title.toLowerCase(), "..."),
+    value: searchTerm,
+    onChange: function onChange(e) {
+      return setSearchTerm(e.target.value);
+    },
+    className: "FilterSearchInput"
+  }), searchTerm && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    onClick: function onClick() {
+      return setSearchTerm('');
+    },
+    className: "FilterSearchClear",
+    "aria-label": "Clear search"
+  }, "\xD7")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
     className: "FilterCheckboxList"
-  }, options.map(function (option) {
+  }, filteredOptions.length > 0 ? filteredOptions.map(function (option) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
       key: option.name,
       className: "FilterCheckboxItem"
@@ -274,7 +310,9 @@ var FilterCategory = function FilterCategory(_ref) {
     }, option.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
       className: "FilterOptionCount"
     }, "(", option.count, ")")));
-  })));
+  }) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+    className: "FilterNoResults"
+  }, "No results found for \"", searchTerm, "\"")));
 };
 var FilterPanel = function FilterPanel(_ref2) {
   var filterOptions = _ref2.filterOptions,
@@ -3474,6 +3512,63 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.SearchAndFilterControls {
   padding-bottom: 4px;
 }
 
+.FilterSearchContainer {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.FilterSearchInput {
+  width: 100%;
+  padding: 6px 30px 6px 8px;
+  font-size: 0.8rem;
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  border-radius: 3px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.FilterSearchInput:focus {
+  border-color: #666;
+  background-color: #222;
+}
+
+.FilterSearchInput::placeholder {
+  color: #888;
+  font-style: italic;
+}
+
+.FilterSearchClear {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 2px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.FilterSearchClear:hover {
+  color: #fff;
+  background-color: #444;
+}
+
+.FilterNoResults {
+  padding: 8px 0;
+  text-align: center;
+  color: #888;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
 .FilterCheckboxList {
   list-style: none;
   padding: 0;
@@ -3510,7 +3605,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.SearchAndFilterControls {
   font-size: 0.75rem;
   margin-left: auto;
   padding-left: 5px;
-}`, "",{"version":3,"sources":["webpack://./src/components/FilterPanel.scss"],"names":[],"mappings":"AAAA;EACE,aAAA;EACA,SAAA;EACA,mBAAA;EACA,mBAAA;AACF;;AAEA;EACE,kBAAA;EACA,iBAAA;EACA,yBAAA;EACA,YAAA;EACA,YAAA;EACA,kBAAA;EACA,eAAA;EACA,sCAAA;EACA,mBAAA;AACF;;AAEA;EACE,yBAAA;AACF;;AAEA;EACE,yBAAA;EACA,yBAAA;EACA,kBAAA;EACA,mBAAA;EACA,aAAA;AACF;;AAEA;EACE,aAAA;EACA,yBAAA;EACA,mBAAA;AACF;;AAEA;EACE,iBAAA;EACA,iBAAA;EACA,yBAAA;EACA,YAAA;EACA,sBAAA;EACA,kBAAA;EACA,eAAA;EACA,sCAAA;AACF;;AAEA;EACE,yBAAA;AACF;;AAEA;EACE,aAAA;EACA,eAAA;EACA,SAAA;AACF;;AAOA;EACE,eAAA;EACA,gBAAA;AAJF;;AAOA;EACE,kBAAA;EACA,cAAA;EACA,aAAA;EACA,kBAAA;EACA,6BAAA;EACA,mBAAA;AAJF;;AAOA;EACE,gBAAA;EACA,UAAA;EACA,SAAA;EACA,iBAAA;EACA,gBAAA;AAJF;;AAOA;EACE,aAAA;EACA,mBAAA;EACA,cAAA;EACA,kBAAA;EACA,WAAA;EACA,eAAA;EACA,QAAA;AAJF;;AAOA;EACE,iBAAA;EACA,eAAA;AAJF;;AAOA;EACE,yBAAA;AAJF;;AAOA;EACE,YAAA;AAJF;;AAOA;EACE,WAAA;EACA,kBAAA;EACA,iBAAA;EACA,iBAAA;AAJF","sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/components/FilterPanel.scss"],"names":[],"mappings":"AAAA;EACE,aAAA;EACA,SAAA;EACA,mBAAA;EACA,mBAAA;AACF;;AAEA;EACE,kBAAA;EACA,iBAAA;EACA,yBAAA;EACA,YAAA;EACA,YAAA;EACA,kBAAA;EACA,eAAA;EACA,sCAAA;EACA,mBAAA;AACF;;AAEA;EACE,yBAAA;AACF;;AAEA;EACE,yBAAA;EACA,yBAAA;EACA,kBAAA;EACA,mBAAA;EACA,aAAA;AACF;;AAEA;EACE,aAAA;EACA,yBAAA;EACA,mBAAA;AACF;;AAEA;EACE,iBAAA;EACA,iBAAA;EACA,yBAAA;EACA,YAAA;EACA,sBAAA;EACA,kBAAA;EACA,eAAA;EACA,sCAAA;AACF;;AAEA;EACE,yBAAA;AACF;;AAEA;EACE,aAAA;EACA,eAAA;EACA,SAAA;AACF;;AAOA;EACE,eAAA;EACA,gBAAA;AAJF;;AAOA;EACE,kBAAA;EACA,cAAA;EACA,aAAA;EACA,kBAAA;EACA,6BAAA;EACA,mBAAA;AAJF;;AAOA;EACE,kBAAA;EACA,kBAAA;AAJF;;AAOA;EACE,WAAA;EACA,yBAAA;EACA,iBAAA;EACA,yBAAA;EACA,cAAA;EACA,sBAAA;EACA,kBAAA;EACA,aAAA;EACA,kCAAA;EACA,sBAAA;AAJF;;AAOA;EACE,kBAAA;EACA,sBAAA;AAJF;;AAOA;EACE,WAAA;EACA,kBAAA;AAJF;;AAOA;EACE,kBAAA;EACA,UAAA;EACA,QAAA;EACA,2BAAA;EACA,gBAAA;EACA,YAAA;EACA,WAAA;EACA,eAAA;EACA,iBAAA;EACA,eAAA;EACA,gBAAA;EACA,kBAAA;EACA,uDAAA;AAJF;;AAOA;EACE,WAAA;EACA,sBAAA;AAJF;;AAOA;EACE,cAAA;EACA,kBAAA;EACA,WAAA;EACA,iBAAA;EACA,kBAAA;AAJF;;AAOA;EACE,gBAAA;EACA,UAAA;EACA,SAAA;EACA,iBAAA;EACA,gBAAA;AAJF;;AAOA;EACE,aAAA;EACA,mBAAA;EACA,cAAA;EACA,kBAAA;EACA,WAAA;EACA,eAAA;EACA,QAAA;AAJF;;AAOA;EACE,iBAAA;EACA,eAAA;AAJF;;AAOA;EACE,yBAAA;AAJF;;AAOA;EACE,YAAA;AAJF;;AAOA;EACE,WAAA;EACA,kBAAA;EACA,iBAAA;EACA,iBAAA;AAJF","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
