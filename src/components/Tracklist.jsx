@@ -208,28 +208,33 @@ const Tracklist = ({
     }
 
     if (col.type === 'features') {
-      let tags = [];
+      let tagsToDisplay = [];
       switch (selectedFeatureCategory) {
         case 'Style':
-          tags = getTop5Tags(track.style_features);
+          tagsToDisplay = getTop5Tags(track.style_features);
           break;
         case 'Mood':
-          tags = getTop5Tags(track.mood_features);
+          tagsToDisplay = getTop5Tags(track.mood_features);
           break;
         case 'Instrument':
-          tags = getTop5Tags(track.instrument_features);
+          tagsToDisplay = getTop5Tags(track.instrument_features);
           break;
         case 'Spectral':
-          tags = getTop5Spectral(track);
-          if (track.lufs) tags.push(`LUFS: ${track.lufs}`);
-          tags = tags.slice(0,5);
+          tagsToDisplay = getTop5Spectral(track);
+          if (track.lufs) {
+            const lufsTag = `LUFS: ${track.lufs}`;
+            if (!tagsToDisplay.includes(lufsTag)) {
+                tagsToDisplay.push(lufsTag);
+            }
+          }
+          tagsToDisplay = [...new Set(tagsToDisplay)].slice(0,5);
           break;
         default:
-          tags = [];
+          tagsToDisplay = [];
       }
       return (
         <div className="FeatureTagsContainer">
-          {tags.map(tag => <span key={tag} className="FeatureTag">{tag}</span>)}
+          {tagsToDisplay.map((tag, index) => <span key={`${tag}-${index}-${track.id}-${col.key}`} className="FeatureTag">{tag}</span>)}
         </div>
       );
     }

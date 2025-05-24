@@ -6,9 +6,16 @@ const FeatureSelectDropdown = ({ selectedCategory, onCategoryChange, categories 
     onCategoryChange(event.target.value);
   };
 
+  // Prevent click events on the dropdown container from bubbling up to the table header
+  const handleContainerClick = (event) => {
+    event.stopPropagation();
+  };
+
   return (
-    <div className="FeatureSelectContainer">
+    <div className="FeatureSelectContainer" onClick={handleContainerClick}>
       <select className="FeatureSelect" value={selectedCategory} onChange={handleChange}>
+        {/* Clicks directly on the select element itself might also need stopping if the div doesn't cover all click interactions, 
+            but stopping on the container is usually sufficient. The select's native click behavior for opening is desired. */}
         {categories.map(category => (
           <option key={category.value} value={category.value}>
             {category.label}

@@ -55,7 +55,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _Tracklist__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Tracklist */ "./src/components/Tracklist.jsx");
 /* harmony import */ var _SearchComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SearchComponent */ "./src/components/SearchComponent.jsx");
-/* harmony import */ var _Content_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Content.scss */ "./src/components/Content.scss");
+/* harmony import */ var _FilterPanel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./FilterPanel */ "./src/components/FilterPanel.jsx");
+/* harmony import */ var _Content_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Content.scss */ "./src/components/Content.scss");
+
 
 
 
@@ -76,7 +78,14 @@ var Content = function Content(_ref) {
     selectedFeatureCategory = _ref.selectedFeatureCategory,
     onFeatureCategoryChange = _ref.onFeatureCategoryChange,
     sortConfig = _ref.sortConfig,
-    requestSort = _ref.requestSort;
+    requestSort = _ref.requestSort,
+    showFilterPanel = _ref.showFilterPanel,
+    toggleFilterPanel = _ref.toggleFilterPanel,
+    filterOptions = _ref.filterOptions,
+    activeFilters = _ref.activeFilters,
+    onToggleFilter = _ref.onToggleFilter,
+    filterLogicMode = _ref.filterLogicMode,
+    onToggleFilterLogicMode = _ref.onToggleFilterLogicMode;
   if (isLoading) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "ContentLoading"
@@ -90,9 +99,20 @@ var Content = function Content(_ref) {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     "data-layer": "content",
     className: "Content"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "SearchAndFilterControls"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_SearchComponent__WEBPACK_IMPORTED_MODULE_2__["default"], {
     searchTerm: searchTerm,
-    onSearchTermChange: onSearchTermChange // Pass this instead of onSearch/onExecuteSearch
+    onSearchTermChange: onSearchTermChange
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    onClick: toggleFilterPanel,
+    className: "FilterToggleButton"
+  }, showFilterPanel ? 'Hide Filters' : 'Show Filters')), showFilterPanel && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_FilterPanel__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    filterOptions: filterOptions,
+    activeFilters: activeFilters,
+    onToggleFilter: onToggleFilter,
+    filterLogicMode: filterLogicMode,
+    onToggleFilterLogicMode: onToggleFilterLogicMode
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Tracklist__WEBPACK_IMPORTED_MODULE_1__["default"], {
     tracks: filteredTracks,
     selectedTrackId: selectedTrackId,
@@ -188,8 +208,14 @@ var FeatureSelectDropdown = function FeatureSelectDropdown(_ref) {
   var handleChange = function handleChange(event) {
     onCategoryChange(event.target.value);
   };
+
+  // Prevent click events on the dropdown container from bubbling up to the table header
+  var handleContainerClick = function handleContainerClick(event) {
+    event.stopPropagation();
+  };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
-    className: "FeatureSelectContainer"
+    className: "FeatureSelectContainer",
+    onClick: handleContainerClick
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
     className: "FeatureSelect",
     value: selectedCategory,
@@ -202,6 +228,108 @@ var FeatureSelectDropdown = function FeatureSelectDropdown(_ref) {
   })));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FeatureSelectDropdown);
+
+/***/ }),
+
+/***/ "./src/components/FilterPanel.jsx":
+/*!****************************************!*\
+  !*** ./src/components/FilterPanel.jsx ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _FilterPanel_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FilterPanel.scss */ "./src/components/FilterPanel.scss");
+
+
+var FilterCategory = function FilterCategory(_ref) {
+  var title = _ref.title,
+    options = _ref.options,
+    activeItems = _ref.activeItems,
+    onToggle = _ref.onToggle;
+  if (!options || options.length === 0) return null;
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "FilterCategory"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h4", {
+    className: "FilterCategoryTitle"
+  }, title), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("ul", {
+    className: "FilterCheckboxList"
+  }, options.map(function (option) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", {
+      key: option.name,
+      className: "FilterCheckboxItem"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+      type: "checkbox",
+      checked: activeItems.includes(option.name),
+      onChange: function onChange() {
+        return onToggle(option.name);
+      }
+    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "FilterOptionName"
+    }, option.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "FilterOptionCount"
+    }, "(", option.count, ")")));
+  })));
+};
+var FilterPanel = function FilterPanel(_ref2) {
+  var filterOptions = _ref2.filterOptions,
+    activeFilters = _ref2.activeFilters,
+    onToggleFilter = _ref2.onToggleFilter,
+    filterLogicMode = _ref2.filterLogicMode,
+    onToggleFilterLogicMode = _ref2.onToggleFilterLogicMode;
+  var categories = [{
+    id: 'genre',
+    title: 'Genre',
+    options: filterOptions.genre,
+    active: activeFilters.genre
+  }, {
+    id: 'style',
+    title: 'Style',
+    options: filterOptions.style,
+    active: activeFilters.style
+  }, {
+    id: 'mood',
+    title: 'Mood',
+    options: filterOptions.mood,
+    active: activeFilters.mood
+  }, {
+    id: 'instrument',
+    title: 'Instrument',
+    options: filterOptions.instrument,
+    active: activeFilters.instrument
+  }, {
+    id: 'spectral',
+    title: 'Spectral Features',
+    options: filterOptions.spectral,
+    active: activeFilters.spectral
+  }];
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "FilterPanelOuterContainer"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "FilterPanelHeader"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    onClick: onToggleFilterLogicMode,
+    className: "FilterLogicButton"
+  }, "Match: ", filterLogicMode === 'intersection' ? 'All Categories (AND)' : 'Any Tag (OR)')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "FilterPanelContainer"
+  }, categories.map(function (cat) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(FilterCategory, {
+      key: cat.id,
+      title: cat.title,
+      options: cat.options,
+      activeItems: cat.active || [],
+      onToggle: function onToggle(value) {
+        return onToggleFilter(cat.id, value);
+      }
+    });
+  })));
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FilterPanel);
 
 /***/ }),
 
@@ -249,14 +377,17 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
 
  // Styles for the .Main container
 
-// Helper function to strip prefix like "Category---"
+// Corrected helper function to strip prefix like "Category---"
 var stripFeaturePrefix = function stripFeaturePrefix(tagName) {
   if (typeof tagName !== 'string') return '';
-  return tagName.substring(tagName.indexOf('---') + 3);
-  // A more robust regex could be: tagName.replace(/^.+?---/, '');
+  var separatorIndex = tagName.indexOf('---');
+  if (separatorIndex !== -1) {
+    return tagName.substring(separatorIndex + 3);
+  }
+  return tagName; // Return original if no prefix
 };
 
-// Helper function to get a composite sort key from top N tags
+// Helper function to get a composite sort key from top N tags (used for sorting)
 var getCompositeFeatureSortKey = function getCompositeFeatureSortKey(track, categoryKey) {
   var numTopTags = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 2;
   var featureObject = track[categoryKey];
@@ -271,12 +402,120 @@ var getCompositeFeatureSortKey = function getCompositeFeatureSortKey(track, cate
     var _ref6 = _slicedToArray(_ref5, 1),
       tag = _ref6[0];
     return stripFeaturePrefix(tag).toLowerCase();
-  }) // Strip prefix here
+  }) // Uses the corrected stripFeaturePrefix
   .join(',');
   return topTags;
 };
 
-// Helper function to get the highest spectral value (moved outside component for sortTracks)
+// Helper function to get the highest feature score for a category (used for sorting by score)
+var getTopFeatureScore = function getTopFeatureScore(track, categoryKey) {
+  var featureObject = track[categoryKey];
+  if (!featureObject || _typeof(featureObject) !== 'object' || Object.keys(featureObject).length === 0) return 0;
+  var scores = Object.values(featureObject).filter(function (score) {
+    return typeof score === 'number';
+  });
+  return scores.length > 0 ? Math.max.apply(Math, _toConsumableArray(scores)) : 0;
+};
+
+// Helper function to get the score for a specific style from a track
+var getSpecificStyleScore = function getSpecificStyleScore(track, styleName) {
+  if (!track.style_features || _typeof(track.style_features) !== 'object') return 0;
+
+  // Look for the style in the format "Genre---StyleName"
+  for (var _i = 0, _Object$entries = Object.entries(track.style_features); _i < _Object$entries.length; _i++) {
+    var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+      fullTag = _Object$entries$_i[0],
+      score = _Object$entries$_i[1];
+    var parts = fullTag.split('---');
+    var trackStyleName = parts.length > 1 ? parts[1] : fullTag;
+    if (trackStyleName === styleName && typeof score === 'number') {
+      return score;
+    }
+  }
+  return 0;
+};
+
+// Helper function to get the score for a specific genre from a track
+var getSpecificGenreScore = function getSpecificGenreScore(track, genreName) {
+  if (!track.style_features || _typeof(track.style_features) !== 'object') return 0;
+
+  // Look for the genre in the format "GenreName---Style"
+  for (var _i2 = 0, _Object$entries2 = Object.entries(track.style_features); _i2 < _Object$entries2.length; _i2++) {
+    var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i2], 2),
+      fullTag = _Object$entries2$_i[0],
+      score = _Object$entries2$_i[1];
+    var parts = fullTag.split('---');
+    var trackGenreName = parts.length > 1 ? parts[0] : 'Unknown Genre';
+    if (trackGenreName === genreName && typeof score === 'number') {
+      return score;
+    }
+  }
+  return 0;
+};
+
+// Helper function to get the score for a specific mood from a track
+var getSpecificMoodScore = function getSpecificMoodScore(track, moodName) {
+  if (!track.mood_features || _typeof(track.mood_features) !== 'object') return 0;
+
+  // Look for the mood (with or without prefix)
+  for (var _i3 = 0, _Object$entries3 = Object.entries(track.mood_features); _i3 < _Object$entries3.length; _i3++) {
+    var _Object$entries3$_i = _slicedToArray(_Object$entries3[_i3], 2),
+      fullTag = _Object$entries3$_i[0],
+      score = _Object$entries3$_i[1];
+    var trackMoodName = stripFeaturePrefix(fullTag);
+    if (trackMoodName === moodName && typeof score === 'number') {
+      return score;
+    }
+  }
+  return 0;
+};
+
+// Helper function to get the score for a specific instrument from a track
+var getSpecificInstrumentScore = function getSpecificInstrumentScore(track, instrumentName) {
+  if (!track.instrument_features || _typeof(track.instrument_features) !== 'object') return 0;
+
+  // Look for the instrument (with or without prefix)
+  for (var _i4 = 0, _Object$entries4 = Object.entries(track.instrument_features); _i4 < _Object$entries4.length; _i4++) {
+    var _Object$entries4$_i = _slicedToArray(_Object$entries4[_i4], 2),
+      fullTag = _Object$entries4$_i[0],
+      score = _Object$entries4$_i[1];
+    var trackInstrumentName = stripFeaturePrefix(fullTag);
+    if (trackInstrumentName === instrumentName && typeof score === 'number') {
+      return score;
+    }
+  }
+  return 0;
+};
+
+// Helper function to get the score for a specific spectral feature from a track
+var getSpecificSpectralScore = function getSpecificSpectralScore(track, spectralFeatureName) {
+  if (!track || _typeof(track) !== 'object') return 0;
+  var value = track[spectralFeatureName];
+  if (typeof value === 'number') {
+    return value;
+  }
+  return 0;
+};
+
+// Helper specifically for getting top N style names for FILTERING (from previous step, assumed correct)
+var getTrackTopNRawStyles = function getTrackTopNRawStyles(track) {
+  var numTop = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 5;
+  if (!track.style_features || _typeof(track.style_features) !== 'object') return [];
+  return Object.entries(track.style_features).sort(function (_ref7, _ref8) {
+    var _ref9 = _slicedToArray(_ref7, 2),
+      scoreA = _ref9[1];
+    var _ref10 = _slicedToArray(_ref8, 2),
+      scoreB = _ref10[1];
+    return scoreB - scoreA;
+  }).slice(0, numTop).map(function (_ref11) {
+    var _ref12 = _slicedToArray(_ref11, 1),
+      fullTag = _ref12[0];
+    var parts = fullTag.split('---');
+    return parts.length > 1 ? parts[1] : fullTag; // Raw style name
+  });
+};
+
+// Helper function to get the highest spectral value (used for sorting)
 var getTopSpectralValue = function getTopSpectralValue(track) {
   var spectralData = {
     atonal: track.atonal,
@@ -286,68 +525,127 @@ var getTopSpectralValue = function getTopSpectralValue(track) {
     percussive: track.percussive,
     smooth: track.smooth
   };
-  var validEntries = Object.entries(spectralData).filter(function (_ref7) {
-    var _ref8 = _slicedToArray(_ref7, 2),
-      value = _ref8[1];
+  var validEntries = Object.entries(spectralData).filter(function (_ref13) {
+    var _ref14 = _slicedToArray(_ref13, 2),
+      value = _ref14[1];
     return typeof value === 'number';
   });
   if (validEntries.length === 0) return null;
-  validEntries.sort(function (_ref9, _ref10) {
-    var _ref11 = _slicedToArray(_ref9, 2),
-      scoreA = _ref11[1];
-    var _ref12 = _slicedToArray(_ref10, 2),
-      scoreB = _ref12[1];
+  validEntries.sort(function (_ref15, _ref16) {
+    var _ref17 = _slicedToArray(_ref15, 2),
+      scoreA = _ref17[1];
+    var _ref18 = _slicedToArray(_ref16, 2),
+      scoreB = _ref18[1];
     return scoreB - scoreA;
   });
   return validEntries[0][1];
 };
 
-// Centralized sort function - updated to use getCompositeFeatureSortKey
-var sortTracks = function sortTracks(tracks, sortConfig, selectedFeatureCategory, getCompositeFeatureSortKeyFn, getTopSpectralValueFn) {
-  if (!sortConfig || !sortConfig.key) return _toConsumableArray(tracks);
+// Refined sortTracks function
+var sortTracks = function sortTracks(tracks, sortConfig, selectedFeatureCategory, activeFilters, getTopFeatureScoreFn, getTopSpectralValueFn, getTrackTopNRawStylesFn, getSpecificStyleScoreFn, getSpecificGenreScoreFn, getSpecificMoodScoreFn, getSpecificInstrumentScoreFn, getSpecificSpectralScoreFn) {
   var sortedTracks = _toConsumableArray(tracks).sort(function (a, b) {
-    var valA, valB;
-    if (sortConfig.key === 'features') {
-      switch (selectedFeatureCategory) {
-        case 'Style':
-          valA = getCompositeFeatureSortKeyFn(a, 'style_features');
-          valB = getCompositeFeatureSortKeyFn(b, 'style_features');
-          break;
-        case 'Mood':
-          valA = getCompositeFeatureSortKeyFn(a, 'mood_features');
-          valB = getCompositeFeatureSortKeyFn(b, 'mood_features');
-          break;
-        case 'Instrument':
-          valA = getCompositeFeatureSortKeyFn(a, 'instrument_features');
-          valB = getCompositeFeatureSortKeyFn(b, 'instrument_features');
-          break;
-        case 'Spectral':
-          valA = getTopSpectralValueFn(a);
-          valB = getTopSpectralValueFn(b);
-          break;
-        default:
-          valA = '';
-          valB = '';
-        // Use empty string for default case
+    var comparison = 0;
+
+    // Check if we have any active filters for best match sorting
+    var hasActiveFilters = activeFilters.style && activeFilters.style.length > 0 || activeFilters.mood && activeFilters.mood.length > 0 || activeFilters.instrument && activeFilters.instrument.length > 0 || activeFilters.spectral && activeFilters.spectral.length > 0 || activeFilters.genre && activeFilters.genre.length > 0;
+
+    // PRIORITY 1: Best match sorting when filters are active (regardless of selected feature category)
+    if (hasActiveFilters) {
+      var scoreA = 0,
+        scoreB = 0,
+        foundActiveFilter = false;
+
+      // Check for active filters in priority order (regardless of selectedFeatureCategory)
+      // Priority: Style > Mood > Instrument > Spectral > Genre
+      if (activeFilters.style && activeFilters.style.length > 0) {
+        var prioritizedStyle = activeFilters.style[0];
+        scoreA = getSpecificStyleScoreFn(a, prioritizedStyle);
+        scoreB = getSpecificStyleScoreFn(b, prioritizedStyle);
+        foundActiveFilter = true;
+      } else if (activeFilters.mood && activeFilters.mood.length > 0) {
+        var prioritizedMood = activeFilters.mood[0];
+        scoreA = getSpecificMoodScoreFn(a, prioritizedMood);
+        scoreB = getSpecificMoodScoreFn(b, prioritizedMood);
+        foundActiveFilter = true;
+      } else if (activeFilters.instrument && activeFilters.instrument.length > 0) {
+        var prioritizedInstrument = activeFilters.instrument[0];
+        scoreA = getSpecificInstrumentScoreFn(a, prioritizedInstrument);
+        scoreB = getSpecificInstrumentScoreFn(b, prioritizedInstrument);
+        foundActiveFilter = true;
+      } else if (activeFilters.spectral && activeFilters.spectral.length > 0) {
+        var prioritizedSpectral = activeFilters.spectral[0];
+        scoreA = getSpecificSpectralScoreFn(a, prioritizedSpectral);
+        scoreB = getSpecificSpectralScoreFn(b, prioritizedSpectral);
+        foundActiveFilter = true;
+      } else if (activeFilters.genre && activeFilters.genre.length > 0) {
+        var prioritizedGenre = activeFilters.genre[0];
+        scoreA = getSpecificGenreScoreFn(a, prioritizedGenre);
+        scoreB = getSpecificGenreScoreFn(b, prioritizedGenre);
+        foundActiveFilter = true;
       }
-    } else {
-      valA = a[sortConfig.key];
-      valB = b[sortConfig.key];
+      if (foundActiveFilter) {
+        // Sort by the actual score for this filter (higher scores first)
+        comparison = scoreB - scoreA;
+        // If scores are equal, we'll fall through to secondary sorting
+      }
     }
 
-    // Handle cases where sort key might be effectively null (e.g., empty string from getCompositeFeatureSortKey)
-    var aIsNull = valA === null || valA === undefined || valA === '';
-    var bIsNull = valB === null || valB === undefined || valB === '';
-    if (aIsNull && bIsNull) return 0;
-    if (aIsNull) return sortConfig.direction === 'ascending' ? 1 : -1;
-    if (bIsNull) return sortConfig.direction === 'ascending' ? -1 : 1;
-    var comparison = 0;
-    if (typeof valA === 'number' && typeof valB === 'number') {
-      comparison = valA - valB;
-    } else {
-      comparison = String(valA).toLowerCase().localeCompare(String(valB).toLowerCase());
+    // PRIORITY 2: User-requested column sorting (only if no best match found or scores are equal)
+    if (comparison === 0 && sortConfig && sortConfig.key) {
+      // Standard sorting for all other columns or other feature categories, or for Style category if no style filter is active.
+      var valA, valB;
+      if (sortConfig.key === 'features') {
+        switch (selectedFeatureCategory) {
+          case 'Style':
+            // Style sorting, but no active filter to prioritize by.
+            valA = getTopFeatureScoreFn(a, 'style_features');
+            valB = getTopFeatureScoreFn(b, 'style_features');
+            break;
+          case 'Mood':
+            valA = getTopFeatureScoreFn(a, 'mood_features');
+            valB = getTopFeatureScoreFn(b, 'mood_features');
+            break;
+          case 'Instrument':
+            valA = getTopFeatureScoreFn(a, 'instrument_features');
+            valB = getTopFeatureScoreFn(b, 'instrument_features');
+            break;
+          case 'Spectral':
+            valA = getTopSpectralValueFn(a);
+            valB = getTopSpectralValueFn(b);
+            break;
+          default:
+            valA = '';
+            valB = '';
+        }
+      } else {
+        // For non-'features' columns (e.g., title, artist, bpm)
+        valA = a[sortConfig.key];
+        valB = b[sortConfig.key];
+      }
+
+      // General comparison logic (handles nulls, numbers, strings)
+      var aIsNull = valA === null || valA === undefined || valA === '';
+      var bIsNull = valB === null || valB === undefined || valB === '';
+      if (aIsNull && bIsNull) {
+        comparison = 0;
+      } else if (aIsNull) {
+        comparison = 1; // nulls/empty strings go to the end in ascending sort
+      } else if (bIsNull) {
+        comparison = -1;
+      } else if (typeof valA === 'number' && typeof valB === 'number') {
+        comparison = valA - valB;
+      } else {
+        comparison = String(valA).toLowerCase().localeCompare(String(valB).toLowerCase());
+      }
+
+      // Apply sort direction for user-requested sorting
+      comparison = sortConfig.direction === 'ascending' ? comparison : comparison * -1;
     }
-    return sortConfig.direction === 'ascending' ? comparison : comparison * -1;
+
+    // PRIORITY 3: Default fallback - if still no comparison and we have active filters, maintain best match order
+    // (comparison will be 0 if tracks have equal scores, which is fine - they'll maintain their relative order)
+
+    return comparison;
   });
   return sortedTracks;
 };
@@ -403,10 +701,41 @@ function Main() {
     _useState22 = _slicedToArray(_useState21, 2),
     searchTerm = _useState22[0],
     setSearchTerm = _useState22[1];
+
+  // New state for filters
+  var _useState23 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      genre: [],
+      style: [],
+      mood: [],
+      instrument: [],
+      spectral: []
+    }),
+    _useState24 = _slicedToArray(_useState23, 2),
+    filterOptions = _useState24[0],
+    setFilterOptions = _useState24[1];
+  var _useState25 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      genre: [],
+      style: [],
+      mood: [],
+      instrument: [],
+      spectral: []
+    }),
+    _useState26 = _slicedToArray(_useState25, 2),
+    activeFilters = _useState26[0],
+    setActiveFilters = _useState26[1];
+  var _useState27 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
+    _useState28 = _slicedToArray(_useState27, 2),
+    showFilterPanel = _useState28[0],
+    setShowFilterPanel = _useState28[1];
+  var _useState29 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('intersection'),
+    _useState30 = _slicedToArray(_useState29, 2),
+    filterLogicMode = _useState30[0],
+    setFilterLogicMode = _useState30[1]; // 'intersection' (AND) or 'union' (OR)
+
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    var fetchTracks = /*#__PURE__*/function () {
-      var _ref13 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-        var response, errorMessage, errorBody, data, processedTracks;
+    var fetchTracksAndProcess = /*#__PURE__*/function () {
+      var _ref19 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        var response, data, processedTracks, genres, styles, moods, instruments, spectralFeatureNames, formatForFilterOptions;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
@@ -418,28 +747,14 @@ function Main() {
             case 5:
               response = _context.sent;
               if (response.ok) {
-                _context.next = 19;
+                _context.next = 8;
                 break;
               }
-              errorMessage = "HTTP error! status: ".concat(response.status);
-              _context.prev = 8;
-              _context.next = 11;
+              throw new Error("HTTP error! status: ".concat(response.status));
+            case 8:
+              _context.next = 10;
               return response.json();
-            case 11:
-              errorBody = _context.sent;
-              errorMessage += " - ".concat(errorBody.error || response.statusText);
-              _context.next = 18;
-              break;
-            case 15:
-              _context.prev = 15;
-              _context.t0 = _context["catch"](8);
-              errorMessage += " - ".concat(response.statusText);
-            case 18:
-              throw new Error(errorMessage);
-            case 19:
-              _context.next = 21;
-              return response.json();
-            case 21:
+            case 10:
               data = _context.sent;
               processedTracks = data.map(function (track) {
                 return _objectSpread(_objectSpread({}, track), {}, {
@@ -447,41 +762,182 @@ function Main() {
                 });
               });
               setAllTracks(processedTracks);
-              _context.next = 30;
+
+              // Aggregate filter options once all tracks are fetched
+              genres = {};
+              styles = {};
+              moods = {};
+              instruments = {};
+              spectralFeatureNames = ['atonal', 'tonal', 'dark', 'bright', 'percussive', 'smooth']; // LUFS is text
+              processedTracks.forEach(function (track) {
+                // Process style_features for Genre and Style
+                if (track.style_features && _typeof(track.style_features) === 'object') {
+                  Object.keys(track.style_features).forEach(function (fullTag) {
+                    var parts = fullTag.split('---');
+                    var genreName = parts.length > 1 ? parts[0] : 'Unknown Genre'; // Genre is before ---
+                    var styleName = parts.length > 1 ? parts[1] : fullTag; // Style is after ---
+
+                    genres[genreName] = (genres[genreName] || 0) + 1;
+                    styles[styleName] = (styles[styleName] || 0) + 1;
+                  });
+                }
+                // Process mood_features
+                if (track.mood_features && _typeof(track.mood_features) === 'object') {
+                  Object.keys(track.mood_features).forEach(function (tag) {
+                    return moods[stripFeaturePrefix(tag)] = (moods[stripFeaturePrefix(tag)] || 0) + 1;
+                  });
+                }
+                // Process instrument_features
+                if (track.instrument_features && _typeof(track.instrument_features) === 'object') {
+                  Object.keys(track.instrument_features).forEach(function (tag) {
+                    return instruments[stripFeaturePrefix(tag)] = (instruments[stripFeaturePrefix(tag)] || 0) + 1;
+                  });
+                }
+              });
+              formatForFilterOptions = function formatForFilterOptions(obj) {
+                return Object.entries(obj).map(function (_ref20) {
+                  var _ref21 = _slicedToArray(_ref20, 2),
+                    name = _ref21[0],
+                    count = _ref21[1];
+                  return {
+                    name: name,
+                    count: count
+                  };
+                }).sort(function (a, b) {
+                  return b.count - a.count;
+                });
+              };
+              setFilterOptions({
+                genre: formatForFilterOptions(genres),
+                style: formatForFilterOptions(styles),
+                mood: formatForFilterOptions(moods),
+                instrument: formatForFilterOptions(instruments),
+                spectral: spectralFeatureNames.map(function (name) {
+                  return {
+                    name: name,
+                    count: processedTracks.filter(function (t) {
+                      return t[name] !== null && t[name] !== undefined && t[name] !== 0;
+                    }).length
+                  };
+                }).sort(function (a, b) {
+                  return b.count - a.count;
+                })
+              });
+              _context.next = 27;
               break;
-            case 26:
-              _context.prev = 26;
-              _context.t1 = _context["catch"](2);
-              console.error("Failed to fetch tracks:", _context.t1);
-              setError(_context.t1.message);
-            case 30:
-              _context.prev = 30;
+            case 23:
+              _context.prev = 23;
+              _context.t0 = _context["catch"](2);
+              console.error("Failed to fetch tracks or process filters:", _context.t0);
+              setError(_context.t0.message);
+            case 27:
+              _context.prev = 27;
               setIsLoading(false);
-              return _context.finish(30);
-            case 33:
+              return _context.finish(27);
+            case 30:
             case "end":
               return _context.stop();
           }
-        }, _callee, null, [[2, 26, 30, 33], [8, 15]]);
+        }, _callee, null, [[2, 23, 27, 30]]);
       }));
-      return function fetchTracks() {
-        return _ref13.apply(this, arguments);
+      return function fetchTracksAndProcess() {
+        return _ref19.apply(this, arguments);
       };
     }();
-    fetchTracks();
+    fetchTracksAndProcess();
   }, []);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     var tracksToDisplay = _toConsumableArray(allTracks);
+
+    // 1. Apply Search Filter
     if (searchTerm.trim() !== '') {
       var lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
       tracksToDisplay = tracksToDisplay.filter(function (track) {
         return track.title && track.title.toLowerCase().includes(lowerCaseSearchTerm) || track.artist && track.artist.toLowerCase().includes(lowerCaseSearchTerm) || track.album && track.album.toLowerCase().includes(lowerCaseSearchTerm);
       });
     }
-    // Pass the new getCompositeFeatureSortKey to sortTracks
-    tracksToDisplay = sortTracks(tracksToDisplay, sortConfig, selectedFeatureCategory, getCompositeFeatureSortKey, getTopSpectralValue);
+
+    // 2. Apply Active Filters (using logic from previous steps, assumed correct for now)
+    var activeFilterCategories = Object.keys(activeFilters).filter(function (cat) {
+      return activeFilters[cat] && activeFilters[cat].length > 0;
+    });
+    if (activeFilterCategories.length > 0) {
+      if (filterLogicMode === 'intersection') {
+        activeFilterCategories.forEach(function (category) {
+          var selectedValues = activeFilters[category];
+          tracksToDisplay = tracksToDisplay.filter(function (track) {
+            if (category === 'style') {
+              var topStylesOfTrack = getTrackTopNRawStyles(track, 5);
+              return selectedValues.some(function (selStyle) {
+                return topStylesOfTrack.includes(selStyle);
+              });
+            } else if (category === 'genre') {
+              if (!track.style_features || _typeof(track.style_features) !== 'object') return false;
+              return selectedValues.some(function (selGenre) {
+                return Object.keys(track.style_features).some(function (fullTag) {
+                  return (fullTag.split('---')[0] || 'Unknown Genre') === selGenre;
+                });
+              });
+            } else if (category === 'mood') {
+              if (!track.mood_features || _typeof(track.mood_features) !== 'object') return false;
+              return selectedValues.some(function (selMood) {
+                return Object.keys(track.mood_features).map(stripFeaturePrefix).includes(selMood);
+              });
+            } else if (category === 'instrument') {
+              if (!track.instrument_features || _typeof(track.instrument_features) !== 'object') return false;
+              return selectedValues.some(function (selInstrument) {
+                return Object.keys(track.instrument_features).map(stripFeaturePrefix).includes(selInstrument);
+              });
+            } else if (category === 'spectral') {
+              return selectedValues.some(function (specFeat) {
+                return track[specFeat] !== null && track[specFeat] !== undefined && track[specFeat] !== 0;
+              });
+            }
+            return true;
+          });
+        });
+      } else {
+        // filterLogicMode === 'union'
+        tracksToDisplay = tracksToDisplay.filter(function (track) {
+          return activeFilterCategories.some(function (category) {
+            var selectedValues = activeFilters[category];
+            if (category === 'style') {
+              var topStylesOfTrack = getTrackTopNRawStyles(track, 5);
+              return selectedValues.some(function (selStyle) {
+                return topStylesOfTrack.includes(selStyle);
+              });
+            } else if (category === 'genre') {
+              if (!track.style_features || _typeof(track.style_features) !== 'object') return false;
+              return selectedValues.some(function (selGenre) {
+                return Object.keys(track.style_features).some(function (fullTag) {
+                  return (fullTag.split('---')[0] || 'Unknown Genre') === selGenre;
+                });
+              });
+            } else if (category === 'mood') {
+              if (!track.mood_features || _typeof(track.mood_features) !== 'object') return false;
+              return selectedValues.some(function (selMood) {
+                return Object.keys(track.mood_features).map(stripFeaturePrefix).includes(selMood);
+              });
+            } else if (category === 'instrument') {
+              if (!track.instrument_features || _typeof(track.instrument_features) !== 'object') return false;
+              return selectedValues.some(function (selInstrument) {
+                return Object.keys(track.instrument_features).map(stripFeaturePrefix).includes(selInstrument);
+              });
+            } else if (category === 'spectral') {
+              return selectedValues.some(function (specFeat) {
+                return track[specFeat] !== null && track[specFeat] !== undefined && track[specFeat] !== 0;
+              });
+            }
+            return false;
+          });
+        });
+      }
+    }
+
+    // 3. Then Sort - pass all required helper functions
+    tracksToDisplay = sortTracks(tracksToDisplay, sortConfig, selectedFeatureCategory, activeFilters, getTopFeatureScore, getTopSpectralValue, getTrackTopNRawStyles, getSpecificStyleScore, getSpecificGenreScore, getSpecificMoodScore, getSpecificInstrumentScore, getSpecificSpectralScore);
     setFilteredTracks(tracksToDisplay);
-  }, [allTracks, searchTerm, sortConfig, selectedFeatureCategory]);
+  }, [allTracks, searchTerm, sortConfig, selectedFeatureCategory, activeFilters, filterLogicMode]);
   var handleTrackSelect = function handleTrackSelect(trackId) {
     return setSelectedTrackId(trackId);
   };
@@ -587,6 +1043,25 @@ function Main() {
       activeWs.un('seek', handleSeekEvent);
     };
   }, [currentWaveSurfer.current]);
+  var handleToggleFilter = function handleToggleFilter(category, value) {
+    setActiveFilters(function (prev) {
+      var currentCategoryFilters = prev[category] || [];
+      var newCategoryFilters = currentCategoryFilters.includes(value) ? currentCategoryFilters.filter(function (item) {
+        return item !== value;
+      }) : [].concat(_toConsumableArray(currentCategoryFilters), [value]);
+      return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, category, newCategoryFilters));
+    });
+  };
+  var toggleFilterPanel = function toggleFilterPanel() {
+    return setShowFilterPanel(function (prev) {
+      return !prev;
+    });
+  };
+  var toggleFilterLogicMode = function toggleFilterLogicMode() {
+    setFilterLogicMode(function (prevMode) {
+      return prevMode === 'intersection' ? 'union' : 'intersection';
+    });
+  };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "Main"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Navbar__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -607,7 +1082,14 @@ function Main() {
     sortConfig: sortConfig,
     requestSort: requestSort,
     isLoading: isLoading,
-    error: error
+    error: error,
+    showFilterPanel: showFilterPanel,
+    toggleFilterPanel: toggleFilterPanel,
+    filterOptions: filterOptions,
+    activeFilters: activeFilters,
+    onToggleFilter: handleToggleFilter,
+    filterLogicMode: filterLogicMode,
+    onToggleFilterLogicMode: toggleFilterLogicMode
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Player__WEBPACK_IMPORTED_MODULE_3__["default"], {
     currentPlayingTrack: currentPlayingTrack,
     isPlaying: isPlaying,
@@ -1418,6 +1900,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _WaveformPreview__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./WaveformPreview */ "./src/components/WaveformPreview.jsx");
 /* harmony import */ var _FeatureSelectDropdown__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./FeatureSelectDropdown */ "./src/components/FeatureSelectDropdown.jsx");
 /* harmony import */ var _Tracklist_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Tracklist.scss */ "./src/components/Tracklist.scss");
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -1729,30 +2215,35 @@ var Tracklist = function Tracklist(_ref) {
       });
     }
     if (col.type === 'features') {
-      var tags = [];
+      var tagsToDisplay = [];
       switch (selectedFeatureCategory) {
         case 'Style':
-          tags = getTop5Tags(track.style_features);
+          tagsToDisplay = getTop5Tags(track.style_features);
           break;
         case 'Mood':
-          tags = getTop5Tags(track.mood_features);
+          tagsToDisplay = getTop5Tags(track.mood_features);
           break;
         case 'Instrument':
-          tags = getTop5Tags(track.instrument_features);
+          tagsToDisplay = getTop5Tags(track.instrument_features);
           break;
         case 'Spectral':
-          tags = getTop5Spectral(track);
-          if (track.lufs) tags.push("LUFS: ".concat(track.lufs));
-          tags = tags.slice(0, 5);
+          tagsToDisplay = getTop5Spectral(track);
+          if (track.lufs) {
+            var lufsTag = "LUFS: ".concat(track.lufs);
+            if (!tagsToDisplay.includes(lufsTag)) {
+              tagsToDisplay.push(lufsTag);
+            }
+          }
+          tagsToDisplay = _toConsumableArray(new Set(tagsToDisplay)).slice(0, 5);
           break;
         default:
-          tags = [];
+          tagsToDisplay = [];
       }
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
         className: "FeatureTagsContainer"
-      }, tags.map(function (tag) {
+      }, tagsToDisplay.map(function (tag, index) {
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
-          key: tag,
+          key: "".concat(tag, "-").concat(index, "-").concat(track.id, "-").concat(col.key),
           className: "FeatureTag"
         }, tag);
       }));
@@ -2885,6 +3376,141 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.FeatureSelectContainer {
   border-color: #1db954;
   box-shadow: 0 0 0 1px #1db954;
 }`, "",{"version":3,"sources":["webpack://./src/components/FeatureSelectDropdown.scss"],"names":[],"mappings":"AAAA;EACE,qBAAA;AACF;;AAGA;EACE,iBAAA;EACA,mBAAA;EACA,yBAAA;EACA,kBAAA;EACA,yBAAA;EACA,cAAA;EACA,eAAA;EACA,aAAA;AAAF;;AAGA;EACE,kBAAA;AAAF;;AAGA;EACE,qBAAA;EACA,6BAAA;AAAF","sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/FilterPanel.scss":
+/*!**********************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/FilterPanel.scss ***!
+  \**********************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.SearchAndFilterControls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.FilterToggleButton {
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  background-color: #4a4a4a;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.FilterToggleButton:hover {
+  background-color: #5a5a5a;
+}
+
+.FilterPanelOuterContainer {
+  background-color: #252525;
+  border: 1px solid #383838;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  padding: 10px;
+}
+
+.FilterPanelHeader {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.FilterLogicButton {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  background-color: #4a4a4a;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.FilterLogicButton:hover {
+  background-color: #5a5a5a;
+}
+
+.FilterPanelContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.FilterCategory {
+  flex: 1 1 180px;
+  min-width: 150px;
+}
+
+.FilterCategoryTitle {
+  font-size: 0.95rem;
+  color: #e0e0e0;
+  margin-top: 0;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #444;
+  padding-bottom: 4px;
+}
+
+.FilterCheckboxList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.FilterCheckboxItem label {
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 0.85rem;
+  color: #ccc;
+  cursor: pointer;
+  gap: 6px;
+}
+
+.FilterCheckboxItem input[type=checkbox] {
+  margin-right: 6px;
+  cursor: pointer;
+}
+
+.FilterCheckboxItem:hover {
+  background-color: #303030;
+}
+
+.FilterOptionName {
+  flex-grow: 1;
+}
+
+.FilterOptionCount {
+  color: #888;
+  font-size: 0.75rem;
+  margin-left: auto;
+  padding-left: 5px;
+}`, "",{"version":3,"sources":["webpack://./src/components/FilterPanel.scss"],"names":[],"mappings":"AAAA;EACE,aAAA;EACA,SAAA;EACA,mBAAA;EACA,mBAAA;AACF;;AAEA;EACE,kBAAA;EACA,iBAAA;EACA,yBAAA;EACA,YAAA;EACA,YAAA;EACA,kBAAA;EACA,eAAA;EACA,sCAAA;EACA,mBAAA;AACF;;AAEA;EACE,yBAAA;AACF;;AAEA;EACE,yBAAA;EACA,yBAAA;EACA,kBAAA;EACA,mBAAA;EACA,aAAA;AACF;;AAEA;EACE,aAAA;EACA,yBAAA;EACA,mBAAA;AACF;;AAEA;EACE,iBAAA;EACA,iBAAA;EACA,yBAAA;EACA,YAAA;EACA,sBAAA;EACA,kBAAA;EACA,eAAA;EACA,sCAAA;AACF;;AAEA;EACE,yBAAA;AACF;;AAEA;EACE,aAAA;EACA,eAAA;EACA,SAAA;AACF;;AAOA;EACE,eAAA;EACA,gBAAA;AAJF;;AAOA;EACE,kBAAA;EACA,cAAA;EACA,aAAA;EACA,kBAAA;EACA,6BAAA;EACA,mBAAA;AAJF;;AAOA;EACE,gBAAA;EACA,UAAA;EACA,SAAA;EACA,iBAAA;EACA,gBAAA;AAJF;;AAOA;EACE,aAAA;EACA,mBAAA;EACA,cAAA;EACA,kBAAA;EACA,WAAA;EACA,eAAA;EACA,QAAA;AAJF;;AAOA;EACE,iBAAA;EACA,eAAA;AAJF;;AAOA;EACE,yBAAA;AAJF;;AAOA;EACE,YAAA;AAJF;;AAOA;EACE,WAAA;EACA,kBAAA;EACA,iBAAA;EACA,iBAAA;AAJF","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -38906,6 +39532,59 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 
        /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_FeatureSelectDropdown_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_FeatureSelectDropdown_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_FeatureSelectDropdown_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./src/components/FilterPanel.scss":
+/*!*****************************************!*\
+  !*** ./src/components/FilterPanel.scss ***!
+  \*****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_FilterPanel_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../node_modules/css-loader/dist/cjs.js!../../node_modules/sass-loader/dist/cjs.js!./FilterPanel.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/FilterPanel.scss");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_FilterPanel_scss__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_FilterPanel_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_FilterPanel_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_FilterPanel_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
 
 
 /***/ }),

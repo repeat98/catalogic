@@ -1,6 +1,7 @@
 import React from 'react';
 import Tracklist from './Tracklist';
 import SearchComponent from './SearchComponent';
+import FilterPanel from './FilterPanel';
 import './Content.scss';
 
 const Content = ({
@@ -23,7 +24,15 @@ const Content = ({
   onFeatureCategoryChange,
   // Sorting props
   sortConfig,
-  requestSort
+  requestSort,
+  // Filter props
+  showFilterPanel,
+  toggleFilterPanel,
+  filterOptions,
+  activeFilters,
+  onToggleFilter,
+  filterLogicMode,
+  onToggleFilterLogicMode
 }) => {
 
   if (isLoading) {
@@ -36,10 +45,24 @@ const Content = ({
 
   return (
     <div data-layer="content" className="Content">
-      <SearchComponent 
-        searchTerm={searchTerm}
-        onSearchTermChange={onSearchTermChange} // Pass this instead of onSearch/onExecuteSearch
-      />
+      <div className="SearchAndFilterControls">
+        <SearchComponent 
+          searchTerm={searchTerm}
+          onSearchTermChange={onSearchTermChange}
+        />
+        <button onClick={toggleFilterPanel} className="FilterToggleButton">
+          {showFilterPanel ? 'Hide Filters' : 'Show Filters'} 
+        </button>
+      </div>
+      {showFilterPanel && (
+        <FilterPanel 
+          filterOptions={filterOptions} 
+          activeFilters={activeFilters} 
+          onToggleFilter={onToggleFilter} 
+          filterLogicMode={filterLogicMode}
+          onToggleFilterLogicMode={onToggleFilterLogicMode}
+        />
+      )}
       <Tracklist
         tracks={filteredTracks}
         selectedTrackId={selectedTrackId}
