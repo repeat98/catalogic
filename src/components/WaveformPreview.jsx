@@ -19,10 +19,11 @@ const WaveformPreview = ({
   const wavesurferRef = useRef(null);
   const isDestroyedRef = useRef(false);
   const initTimeoutRef = useRef(null);
+  const isInitializingRef = useRef(false);
   const { setPlayingWaveSurfer, currentTrack } = useContext(PlaybackContext);
   
   const [containerRef, isInViewport] = useInViewport({
-    rootMargin: '100px',
+    rootMargin: '800px',
     threshold: 0.1
   });
   

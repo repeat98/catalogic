@@ -17,14 +17,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Sidebar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/Sidebar */ "./src/components/Sidebar.jsx");
 /* harmony import */ var _components_Main__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Main */ "./src/components/Main.jsx");
 /* harmony import */ var _context_PlaybackContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./context/PlaybackContext */ "./src/context/PlaybackContext.jsx");
-/* harmony import */ var _App_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./App.scss */ "./src/App.scss");
+/* harmony import */ var _utils_waveformPreloader__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils/waveformPreloader */ "./src/utils/waveformPreloader.js");
+/* harmony import */ var _App_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./App.scss */ "./src/App.scss");
 
  // Assuming Sidebar.jsx is in the same directory
  // Assuming Main.jsx is in the same directory
 
+ // Import the preloader
  // For AppWindow styles
 
 var App = function App() {
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    (0,_utils_waveformPreloader__WEBPACK_IMPORTED_MODULE_4__.preloadAllWaveforms)(); // Call the preloader on app start
+  }, []); // Empty dependency array ensures it runs only once
+
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_context_PlaybackContext__WEBPACK_IMPORTED_MODULE_3__.PlaybackProvider, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     "data-layer": "app-window",
     className: "AppWindow"
@@ -1529,11 +1535,12 @@ var WaveformPreview = function WaveformPreview(_ref) {
   var wavesurferRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
   var isDestroyedRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(false);
   var initTimeoutRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  var isInitializingRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(false);
   var _useContext = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)(_context_PlaybackContext__WEBPACK_IMPORTED_MODULE_3__.PlaybackContext),
     setPlayingWaveSurfer = _useContext.setPlayingWaveSurfer,
     currentTrack = _useContext.currentTrack;
   var _useInViewport = (0,_hooks_useInViewport__WEBPACK_IMPORTED_MODULE_2__.useInViewport)({
-      rootMargin: '100px',
+      rootMargin: '800px',
       threshold: 0.1
     }),
     _useInViewport2 = _slicedToArray(_useInViewport, 2),
@@ -2123,6 +2130,221 @@ var cacheWaveform = /*#__PURE__*/function () {
 
 /***/ }),
 
+/***/ "./src/utils/waveformPreloader.js":
+/*!****************************************!*\
+  !*** ./src/utils/waveformPreloader.js ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   preloadAllWaveforms: () => (/* binding */ preloadAllWaveforms)
+/* harmony export */ });
+/* harmony import */ var wavesurfer_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! wavesurfer.js */ "./node_modules/wavesurfer.js/dist/wavesurfer.esm.js");
+/* harmony import */ var _waveformCache__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./waveformCache */ "./src/utils/waveformCache.js");
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return r; }; var t, r = {}, e = Object.prototype, n = e.hasOwnProperty, o = "function" == typeof Symbol ? Symbol : {}, i = o.iterator || "@@iterator", a = o.asyncIterator || "@@asyncIterator", u = o.toStringTag || "@@toStringTag"; function c(t, r, e, n) { return Object.defineProperty(t, r, { value: e, enumerable: !n, configurable: !n, writable: !n }); } try { c({}, ""); } catch (t) { c = function c(t, r, e) { return t[r] = e; }; } function h(r, e, n, o) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype); return c(a, "_invoke", function (r, e, n) { var o = 1; return function (i, a) { if (3 === o) throw Error("Generator is already running"); if (4 === o) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var u = n.delegate; if (u) { var c = d(u, n); if (c) { if (c === f) continue; return c; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (1 === o) throw o = 4, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = 3; var h = s(r, e, n); if ("normal" === h.type) { if (o = n.done ? 4 : 2, h.arg === f) continue; return { value: h.arg, done: n.done }; } "throw" === h.type && (o = 4, n.method = "throw", n.arg = h.arg); } }; }(r, n, new Context(o || [])), !0), a; } function s(t, r, e) { try { return { type: "normal", arg: t.call(r, e) }; } catch (t) { return { type: "throw", arg: t }; } } r.wrap = h; var f = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var l = {}; c(l, i, function () { return this; }); var p = Object.getPrototypeOf, y = p && p(p(x([]))); y && y !== e && n.call(y, i) && (l = y); var v = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(l); function g(t) { ["next", "throw", "return"].forEach(function (r) { c(t, r, function (t) { return this._invoke(r, t); }); }); } function AsyncIterator(t, r) { function e(o, i, a, u) { var c = s(t[o], t, i); if ("throw" !== c.type) { var h = c.arg, f = h.value; return f && "object" == _typeof(f) && n.call(f, "__await") ? r.resolve(f.__await).then(function (t) { e("next", t, a, u); }, function (t) { e("throw", t, a, u); }) : r.resolve(f).then(function (t) { h.value = t, a(h); }, function (t) { return e("throw", t, a, u); }); } u(c.arg); } var o; c(this, "_invoke", function (t, n) { function i() { return new r(function (r, o) { e(t, n, r, o); }); } return o = o ? o.then(i, i) : i(); }, !0); } function d(r, e) { var n = e.method, o = r.i[n]; if (o === t) return e.delegate = null, "throw" === n && r.i["return"] && (e.method = "return", e.arg = t, d(r, e), "throw" === e.method) || "return" !== n && (e.method = "throw", e.arg = new TypeError("The iterator does not provide a '" + n + "' method")), f; var i = s(o, r.i, e.arg); if ("throw" === i.type) return e.method = "throw", e.arg = i.arg, e.delegate = null, f; var a = i.arg; return a ? a.done ? (e[r.r] = a.value, e.next = r.n, "return" !== e.method && (e.method = "next", e.arg = t), e.delegate = null, f) : a : (e.method = "throw", e.arg = new TypeError("iterator result is not an object"), e.delegate = null, f); } function w(t) { this.tryEntries.push(t); } function m(r) { var e = r[4] || {}; e.type = "normal", e.arg = t, r[4] = e; } function Context(t) { this.tryEntries = [[-1]], t.forEach(w, this), this.reset(!0); } function x(r) { if (null != r) { var e = r[i]; if (e) return e.call(r); if ("function" == typeof r.next) return r; if (!isNaN(r.length)) { var o = -1, a = function e() { for (; ++o < r.length;) if (n.call(r, o)) return e.value = r[o], e.done = !1, e; return e.value = t, e.done = !0, e; }; return a.next = a; } } throw new TypeError(_typeof(r) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, c(v, "constructor", GeneratorFunctionPrototype), c(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = c(GeneratorFunctionPrototype, u, "GeneratorFunction"), r.isGeneratorFunction = function (t) { var r = "function" == typeof t && t.constructor; return !!r && (r === GeneratorFunction || "GeneratorFunction" === (r.displayName || r.name)); }, r.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, c(t, u, "GeneratorFunction")), t.prototype = Object.create(v), t; }, r.awrap = function (t) { return { __await: t }; }, g(AsyncIterator.prototype), c(AsyncIterator.prototype, a, function () { return this; }), r.AsyncIterator = AsyncIterator, r.async = function (t, e, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(h(t, e, n, o), i); return r.isGeneratorFunction(e) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, g(v), c(v, u, "Generator"), c(v, i, function () { return this; }), c(v, "toString", function () { return "[object Generator]"; }), r.keys = function (t) { var r = Object(t), e = []; for (var n in r) e.unshift(n); return function t() { for (; e.length;) if ((n = e.pop()) in r) return t.value = n, t.done = !1, t; return t.done = !0, t; }; }, r.values = x, Context.prototype = { constructor: Context, reset: function reset(r) { if (this.prev = this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(m), !r) for (var e in this) "t" === e.charAt(0) && n.call(this, e) && !isNaN(+e.slice(1)) && (this[e] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0][4]; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(r) { if (this.done) throw r; var e = this; function n(t) { a.type = "throw", a.arg = r, e.next = t; } for (var o = e.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i[4], u = this.prev, c = i[1], h = i[2]; if (-1 === i[0]) return n("end"), !1; if (!c && !h) throw Error("try statement without catch or finally"); if (null != i[0] && i[0] <= u) { if (u < c) return this.method = "next", this.arg = t, n(c), !0; if (u < h) return n(h), !1; } } }, abrupt: function abrupt(t, r) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var n = this.tryEntries[e]; if (n[0] > -1 && n[0] <= this.prev && this.prev < n[2]) { var o = n; break; } } o && ("break" === t || "continue" === t) && o[0] <= r && r <= o[2] && (o = null); var i = o ? o[4] : {}; return i.type = t, i.arg = r, o ? (this.method = "next", this.next = o[2], f) : this.complete(i); }, complete: function complete(t, r) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && r && (this.next = r), f; }, finish: function finish(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[2] === t) return this.complete(e[4], e[3]), m(e), f; } }, "catch": function _catch(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[0] === t) { var n = e[4]; if ("throw" === n.type) { var o = n.arg; m(e); } return o; } } throw Error("illegal catch attempt"); }, delegateYield: function delegateYield(r, e, n) { return this.delegate = { i: x(r), r: e, n: n }, "next" === this.method && (this.arg = t), f; } }, r; }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+
+
+var PRELOAD_DELAY_MS = 500; // Delay between processing each track to be less resource intensive
+
+/**
+ * Iteratively preloads and caches waveforms for all tracks in the database.
+ */
+var preloadAllWaveforms = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+    var response, tracks, _loop, _ret, i;
+    return _regeneratorRuntime().wrap(function _callee$(_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
+        case 0:
+          console.log('[WaveformPreloader] Starting background waveform preloading...');
+          _context2.prev = 1;
+          _context2.next = 4;
+          return fetch('http://localhost:3000/tracks');
+        case 4:
+          response = _context2.sent;
+          if (response.ok) {
+            _context2.next = 13;
+            break;
+          }
+          _context2.t0 = console;
+          _context2.t1 = response.status;
+          _context2.next = 10;
+          return response.text();
+        case 10:
+          _context2.t2 = _context2.sent;
+          _context2.t0.error.call(_context2.t0, '[WaveformPreloader] Failed to fetch track list:', _context2.t1, _context2.t2);
+          return _context2.abrupt("return");
+        case 13:
+          _context2.next = 15;
+          return response.json();
+        case 15:
+          tracks = _context2.sent;
+          if (!(!tracks || tracks.length === 0)) {
+            _context2.next = 19;
+            break;
+          }
+          console.log('[WaveformPreloader] No tracks found to preload.');
+          return _context2.abrupt("return");
+        case 19:
+          console.log("[WaveformPreloader] Found ".concat(tracks.length, " tracks. Starting iterative caching."));
+          _loop = /*#__PURE__*/_regeneratorRuntime().mark(function _loop() {
+            var track, alreadyCached, audioUrl, tempContainer, wavesurfer;
+            return _regeneratorRuntime().wrap(function _loop$(_context) {
+              while (1) switch (_context.prev = _context.next) {
+                case 0:
+                  track = tracks[i];
+                  if (!(!track || !track.id)) {
+                    _context.next = 4;
+                    break;
+                  }
+                  console.warn('[WaveformPreloader] Skipping invalid track entry:', track);
+                  return _context.abrupt("return", 0);
+                case 4:
+                  _context.prev = 4;
+                  _context.next = 7;
+                  return (0,_waveformCache__WEBPACK_IMPORTED_MODULE_1__.getCachedWaveform)(track.id);
+                case 7:
+                  alreadyCached = _context.sent;
+                  if (!(alreadyCached && alreadyCached.peaks)) {
+                    _context.next = 11;
+                    break;
+                  }
+                  console.log("[WaveformPreloader] Waveform for track ".concat(track.id, " (").concat(track.title, ") is already cached. Skipping."));
+                  return _context.abrupt("return", 0);
+                case 11:
+                  console.log("[WaveformPreloader] Caching waveform for track ".concat(track.id, " (").concat(track.title, ") (").concat(i + 1, "/").concat(tracks.length, ")"));
+                  audioUrl = "http://localhost:3000/audio/".concat(track.id); // Create a temporary, detached container for WaveSurfer
+                  tempContainer = document.createElement('div'); // Important: Do not append to the document body to keep it hidden and avoid layout shifts.
+                  // Style it to be off-screen if it must be in DOM for some WaveSurfer backends, though often not necessary.
+                  // tempContainer.style.position = 'absolute';
+                  // tempContainer.style.left = '-9999px';
+                  // document.body.appendChild(tempContainer);
+                  wavesurfer = null;
+                  _context.prev = 15;
+                  wavesurfer = wavesurfer_js__WEBPACK_IMPORTED_MODULE_0__["default"].create({
+                    container: tempContainer,
+                    // Use the temporary container
+                    backend: 'MediaElement',
+                    // MediaElement backend is generally more robust for background processing
+                    mediaControls: false,
+                    height: 30,
+                    // Minimal height, may not be strictly necessary for peak export
+                    normalize: false,
+                    pixelRatio: 1,
+                    // No need for high pixel ratio for peak data
+                    interact: false // No interaction needed
+                  });
+                  _context.next = 19;
+                  return new Promise(function (resolve, reject) {
+                    wavesurfer.once('ready', function () {
+                      try {
+                        var peaks = wavesurfer.exportPeaks();
+                        if (peaks && peaks.length > 0) {
+                          (0,_waveformCache__WEBPACK_IMPORTED_MODULE_1__.cacheWaveform)(track.id, {
+                            peaks: peaks
+                          }).then(function () {
+                            return console.log("[WaveformPreloader] Successfully cached ".concat(track.id));
+                          })["catch"](function (cacheErr) {
+                            return console.error("[WaveformPreloader] Failed to cache ".concat(track.id, ":"), cacheErr);
+                          })["finally"](resolve);
+                        } else {
+                          console.warn("[WaveformPreloader] No peaks exported for ".concat(track.id));
+                          resolve(); // Resolve even if no peaks, to continue the loop
+                        }
+                      } catch (exportError) {
+                        console.error("[WaveformPreloader] Error exporting peaks for ".concat(track.id, ":"), exportError);
+                        reject(exportError); // Propagate error to main catch
+                      }
+                    });
+                    wavesurfer.once('error', function (err) {
+                      console.error("[WaveformPreloader] WaveSurfer error for ".concat(track.id, " during preloading:"), err);
+                      reject(err); // Propagate error to main catch
+                    });
+                    wavesurfer.load(audioUrl);
+                  });
+                case 19:
+                  _context.prev = 19;
+                  if (wavesurfer) {
+                    wavesurfer.destroy();
+                  }
+                  // if (tempContainer.parentNode) { // If it was appended to body
+                  //   document.body.removeChild(tempContainer);
+                  // }
+                  return _context.finish(19);
+                case 22:
+                  if (!(i < tracks.length - 1)) {
+                    _context.next = 25;
+                    break;
+                  }
+                  _context.next = 25;
+                  return new Promise(function (resolve) {
+                    return setTimeout(resolve, PRELOAD_DELAY_MS);
+                  });
+                case 25:
+                  _context.next = 33;
+                  break;
+                case 27:
+                  _context.prev = 27;
+                  _context.t0 = _context["catch"](4);
+                  console.error("[WaveformPreloader] Failed to process track ".concat(track.id, " (").concat(track.title, "):"), _context.t0);
+                  // Optional: add a longer delay or stop if too many errors occur
+                  if (!(i < tracks.length - 1)) {
+                    _context.next = 33;
+                    break;
+                  }
+                  _context.next = 33;
+                  return new Promise(function (resolve) {
+                    return setTimeout(resolve, PRELOAD_DELAY_MS * 2);
+                  });
+                case 33:
+                case "end":
+                  return _context.stop();
+              }
+            }, _loop, null, [[4, 27], [15,, 19, 22]]);
+          });
+          i = 0;
+        case 22:
+          if (!(i < tracks.length)) {
+            _context2.next = 30;
+            break;
+          }
+          return _context2.delegateYield(_loop(), "t3", 24);
+        case 24:
+          _ret = _context2.t3;
+          if (!(_ret === 0)) {
+            _context2.next = 27;
+            break;
+          }
+          return _context2.abrupt("continue", 27);
+        case 27:
+          i++;
+          _context2.next = 22;
+          break;
+        case 30:
+          console.log('[WaveformPreloader] Finished background waveform preloading.');
+          _context2.next = 36;
+          break;
+        case 33:
+          _context2.prev = 33;
+          _context2.t4 = _context2["catch"](1);
+          console.error('[WaveformPreloader] General error during preloading process:', _context2.t4);
+        case 36:
+        case "end":
+          return _context2.stop();
+      }
+    }, _callee, null, [[1, 33]]);
+  }));
+  return function preloadAllWaveforms() {
+    return _ref.apply(this, arguments);
+  };
+}();
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/App.scss":
 /*!***************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/App.scss ***!
@@ -2635,6 +2857,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Navbar {
   align-items: center;
   min-height: 24px;
   display: inline-flex;
+  background-color: #2e2e2e;
 }
 .Navbar .NavbarMenu {
   justify-content: flex-start;
@@ -2727,7 +2950,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Navbar {
   background: #9C9C9C;
   margin-left: 4px;
   margin-right: 4px;
-}`, "",{"version":3,"sources":["webpack://./src/components/Navbar.scss"],"names":[],"mappings":"AAAA;EACI,mBAAA;EACA,kBAAA;EACA,mBAAA;EACA,iBAAA;EACA,oBAAA;EACA,gBAAA;EACA,8BAAA;EACA,mBAAA;EACA,gBAAA;EACA,oBAAA;AACJ;AACI;EACE,2BAAA;EACA,mBAAA;EACA,SAAA;EACA,aAAA;AACN;AACM;EACE,YAAA;EACA,eAAA;EACA,gCAAA;EACA,gBAAA;EACA,iBAAA;EACA,qBAAA;EACA,eAAA;AACR;AACQ;EACE,gBAAA;AACV;AAII;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,aAAA;EACA,mBAAA;AAFN;AAIM;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EACA,eAAA;AAFR;AAQQ;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EAoBC,oEAAA;AAzBX;AAOU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AALZ;AAQU;EACE,WAAA;EACA,YAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AANZ;AAUU;EACE,UAAA;EACA,YAAA;EACA,UAAA,EAAA,6CAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AARZ;AAYQ;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;AAVV;AAYU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AAVZ;AAaU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,SAAA;EACA,kBAAA;EACA,mBAAA;AAXZ;AAeM;EACE,UAAA;EACA,YAAA;EACA,mBAAA;EACA,gBAAA;EACA,iBAAA;AAbR","sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/components/Navbar.scss"],"names":[],"mappings":"AAAA;EACI,mBAAA;EACA,kBAAA;EACA,mBAAA;EACA,iBAAA;EACA,oBAAA;EACA,gBAAA;EACA,8BAAA;EACA,mBAAA;EACA,gBAAA;EACA,oBAAA;EACA,yBAAA;AACJ;AACI;EACE,2BAAA;EACA,mBAAA;EACA,SAAA;EACA,aAAA;AACN;AACM;EACE,YAAA;EACA,eAAA;EACA,gCAAA;EACA,gBAAA;EACA,iBAAA;EACA,qBAAA;EACA,eAAA;AACR;AACQ;EACE,gBAAA;AACV;AAII;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,aAAA;EACA,mBAAA;AAFN;AAIM;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EACA,eAAA;AAFR;AAQQ;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EAoBC,oEAAA;AAzBX;AAOU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AALZ;AAQU;EACE,WAAA;EACA,YAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AANZ;AAUU;EACE,UAAA;EACA,YAAA;EACA,UAAA,EAAA,6CAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AARZ;AAYQ;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;AAVV;AAYU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AAVZ;AAaU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,SAAA;EACA,kBAAA;EACA,mBAAA;AAXZ;AAeM;EACE,UAAA;EACA,YAAA;EACA,mBAAA;EACA,gBAAA;EACA,iBAAA;AAbR","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -2755,17 +2978,13 @@ __webpack_require__.r(__webpack_exports__);
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
 ___CSS_LOADER_EXPORT___.push([module.id, `.Player {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  width: 100%;
   background-color: #1a1a1a;
   border-top: 1px solid #383838;
   padding: 12px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 1000;
 }
 
 .PlayerInfo {
@@ -2871,7 +3090,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Player {
 
 .AudioErrorText {
   color: #FF5A16;
-}`, "",{"version":3,"sources":["webpack://./src/components/Player.scss"],"names":[],"mappings":"AAAA;EACE,eAAA;EACA,SAAA;EACA,OAAA;EACA,QAAA;EACA,yBAAA;EACA,6BAAA;EACA,kBAAA;EACA,aAAA;EACA,8BAAA;EACA,mBAAA;EACA,aAAA;AACF;;AAEA;EACE,aAAA;EACA,mBAAA;EACA,SAAA;AACF;;AAEA;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,iBAAA;AACF;;AAEA;EACE,aAAA;EACA,sBAAA;AACF;;AAEA;EACE,gBAAA;EACA,cAAA;AACF;;AAEA;EACE,cAAA;EACA,gBAAA;AACF;;AAEA;EACE,aAAA;EACA,mBAAA;EACA,SAAA;EACA,OAAA;EACA,gBAAA;EACA,cAAA;AACF;;AAEA;EACE,gBAAA;EACA,YAAA;EACA,cAAA;EACA,eAAA;EACA,eAAA;EACA,YAAA;EACA,kBAAA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;EACA,iCAAA;AACF;AACE;EACE,yBAAA;AACJ;;AAGA;EACE,aAAA;EACA,mBAAA;EACA,SAAA;EACA,OAAA;EACA,cAAA;EACA,gBAAA;AAAF;;AAGA;EACE,OAAA;EACA,WAAA;EACA,yBAAA;EACA,kBAAA;EACA,eAAA;EACA,kBAAA;EACA,uBAAA;AAAF;AAEE;EACE,WAAA;AAAJ;;AAIA;EACE,kBAAA;EACA,OAAA;EACA,MAAA;EACA,YAAA;EACA,yBAAA;EACA,kBAAA;EACA,6BAAA;AADF;;AAIA;EACE,cAAA;EACA,kBAAA;EACA,WAAA;AADF;;AAIA;EACE,cAAA;EACA,eAAA;EACA,gCAAA;EACA,mBAAA;EACA,gBAAA;EACA,uBAAA;AADF;;AAIA;EACE,cAAA;AADF","sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/components/Player.scss"],"names":[],"mappings":"AAAA;EACE,WAAA;EACA,yBAAA;EACA,6BAAA;EACA,kBAAA;EACA,aAAA;EACA,8BAAA;EACA,mBAAA;AACF;;AAEA;EACE,aAAA;EACA,mBAAA;EACA,SAAA;AACF;;AAEA;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,iBAAA;AACF;;AAEA;EACE,aAAA;EACA,sBAAA;AACF;;AAEA;EACE,gBAAA;EACA,cAAA;AACF;;AAEA;EACE,cAAA;EACA,gBAAA;AACF;;AAEA;EACE,aAAA;EACA,mBAAA;EACA,SAAA;EACA,OAAA;EACA,gBAAA;EACA,cAAA;AACF;;AAEA;EACE,gBAAA;EACA,YAAA;EACA,cAAA;EACA,eAAA;EACA,eAAA;EACA,YAAA;EACA,kBAAA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;EACA,iCAAA;AACF;AACE;EACE,yBAAA;AACJ;;AAGA;EACE,aAAA;EACA,mBAAA;EACA,SAAA;EACA,OAAA;EACA,cAAA;EACA,gBAAA;AAAF;;AAGA;EACE,OAAA;EACA,WAAA;EACA,yBAAA;EACA,kBAAA;EACA,eAAA;EACA,kBAAA;EACA,uBAAA;AAAF;AAEE;EACE,WAAA;AAAJ;;AAIA;EACE,kBAAA;EACA,OAAA;EACA,MAAA;EACA,YAAA;EACA,yBAAA;EACA,kBAAA;EACA,6BAAA;AADF;;AAIA;EACE,cAAA;EACA,kBAAA;EACA,WAAA;AADF;;AAIA;EACE,cAAA;EACA,eAAA;EACA,gCAAA;EACA,mBAAA;EACA,gBAAA;EACA,uBAAA;AADF;;AAIA;EACE,cAAA;AADF","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

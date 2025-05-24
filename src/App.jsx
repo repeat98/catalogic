@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Sidebar from './components/Sidebar'; // Assuming Sidebar.jsx is in the same directory
 import Main from './components/Main';       // Assuming Main.jsx is in the same directory
 import { PlaybackProvider } from './context/PlaybackContext';
+import { preloadAllWaveforms } from './utils/waveformPreloader'; // Import the preloader
 import './App.scss';       // For AppWindow styles
 
 const App = () => {
+  useEffect(() => {
+    preloadAllWaveforms(); // Call the preloader on app start
+  }, []); // Empty dependency array ensures it runs only once
+
   return (
     <PlaybackProvider>
       {/* The main application window container */}

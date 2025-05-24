@@ -9,6 +9,7 @@
     align-items: center;
     min-height: 24px;
     display: inline-flex; // Note: In a flex column parent, this might behave unexpectedly. Usually display: flex;
+    background-color: #2e2e2e;
   
     .NavbarMenu {
       justify-content: flex-start;
