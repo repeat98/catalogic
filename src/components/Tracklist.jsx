@@ -7,10 +7,10 @@ import './Tracklist.scss';
 // Widths here are initial/fallback widths. Actual widths will be managed in state.
 const initialColumnsConfig = [
   { key: 'artwork_thumbnail_path', header: '', type: 'image', width: '50px', minWidth: 40, resizable: false },
+  { key: 'waveform', header: 'Preview', width: '20%', type: 'waveform', minWidth: 100, resizable: true },
   { key: 'title', header: 'Title', width: '25%', minWidth: 100, resizable: true },
   { key: 'artist', header: 'Artist', width: '20%', minWidth: 80, resizable: true },
   { key: 'album', header: 'Album', width: '20%', minWidth: 80, resizable: true },
-  { key: 'waveform', header: 'Preview', width: '20%', type: 'waveform', minWidth: 100, resizable: true },
   { key: 'time', header: 'Time', width: '70px', minWidth: 60, textAlign: 'right', resizable: true },
   { key: 'bpm', header: 'BPM', width: '70px', minWidth: 50, textAlign: 'right', resizable: true },
   { key: 'key', header: 'Key', width: '70px', minWidth: 50, textAlign: 'right', resizable: true },

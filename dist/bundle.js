@@ -1256,6 +1256,13 @@ var initialColumnsConfig = [{
   minWidth: 40,
   resizable: false
 }, {
+  key: 'waveform',
+  header: 'Preview',
+  width: '20%',
+  type: 'waveform',
+  minWidth: 100,
+  resizable: true
+}, {
   key: 'title',
   header: 'Title',
   width: '25%',
@@ -1272,13 +1279,6 @@ var initialColumnsConfig = [{
   header: 'Album',
   width: '20%',
   minWidth: 80,
-  resizable: true
-}, {
-  key: 'waveform',
-  header: 'Preview',
-  width: '20%',
-  type: 'waveform',
-  minWidth: 100,
   resizable: true
 }, {
   key: 'time',
