@@ -1,0 +1,24 @@
+.FeatureSelectContainer {
+  display: inline-block; // Allows it to sit in the header flow
+  // Add more styling as needed for alignment within the table header cell
+}
+
+.FeatureSelect {
+  padding: 6px 10px;
+  font-size: 0.875rem; // Match table header font size if possible
+  border: 1px solid #4a4a4a; // Consistent with table borders
+  border-radius: 4px;
+  background-color: #3a3a3a; // Match header background
+  color: #e0e0e0; // Match header text color
+  cursor: pointer;
+  outline: none;
+}
+
+.FeatureSelect:hover {
+  border-color: #666;
+}
+
+.FeatureSelect:focus {
+  border-color: #1db954; // Highlight on focus
+  box-shadow: 0 0 0 1px #1db954;
+} 

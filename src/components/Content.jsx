@@ -1,27 +1,30 @@
-import React, { useState, useEffect, useRef } from 'react'; // Added useRef
+import React from 'react';
 import Tracklist from './Tracklist';
-import SearchComponent from './SearchComponent'; // Import the new component
+import SearchComponent from './SearchComponent';
 import './Content.scss';
 
-const Content = ({ // Destructure props passed from Main
+const Content = ({
   filteredTracks,
   selectedTrackId,
   currentPlayingTrack,
   isPlaying,
   currentTime,
-  audioError,
+  // audioError, // This prop was in the user's file but not used, remove if not needed
   onTrackSelect,
   onPlayTrack,
   onSeek,
-  onSearch,
   isLoading,
-  error
+  error,
+  // Autocomplete Search Props
+  searchTerm,
+  onSearchInputChange,
+  autocompleteSuggestions,
+  onSuggestionClick,
+  onExecuteSearch,
+  // Feature Column Props
+  selectedFeatureCategory,
+  onFeatureCategoryChange
 }) => {
-  // Removed: allTracks, currentPlayingTrack, error, isLoading states
-  // Removed: isPlaying, audioPlayerRef, audioError states
-  // Removed: fetchTracks useEffect
-  // Removed: handlePlayTrack (will be in Main)
-  // Removed: Audio element event handlers useEffect
 
   if (isLoading) {
     return <div className="ContentLoading">Loading tracks...</div>;
@@ -33,18 +36,26 @@ const Content = ({ // Destructure props passed from Main
 
   return (
     <div data-layer="content" className="Content">
-      <SearchComponent onSearch={onSearch} />
+      <SearchComponent 
+        searchTerm={searchTerm}
+        onSearchInputChange={onSearchInputChange}
+        suggestions={autocompleteSuggestions}
+        onSuggestionClick={onSuggestionClick}
+        onExecuteSearch={onExecuteSearch}
+      />
       <Tracklist
         tracks={filteredTracks}
         selectedTrackId={selectedTrackId}
         onTrackSelect={onTrackSelect}
-        onPlayTrack={onPlayTrack} // Pass the handler from Main
+        onPlayTrack={onPlayTrack}
         currentPlayingTrackId={currentPlayingTrack?.id}
         isAudioPlaying={isPlaying}
         currentTime={currentTime}
         onSeek={onSeek}
+        // Pass feature category props to Tracklist
+        selectedFeatureCategory={selectedFeatureCategory}
+        onFeatureCategoryChange={onFeatureCategoryChange}
       />
-      {/* Removed: <audio> element and MiniPlayerInfo */}
     </div>
   );
 };

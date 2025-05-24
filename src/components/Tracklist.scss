@@ -84,3 +84,20 @@
   
   // Ensure colgroup widths are respected in Track.jsx cells
   // The `style` prop on `<td>` in Track.jsx should handle this.
+
+.FeatureTagsContainer {
+  display: flex;
+  flex-wrap: wrap; // Allow tags to wrap if they exceed cell width
+  gap: 4px; // Space between tags
+  align-items: center; // Align tags nicely if they wrap to multiple lines
+  height: 100%; // Try to fill cell height
+}
+
+.FeatureTag {
+  background-color: #333; // Dark background for tags
+  color: #ccc; // Light text for tags
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.75rem; // Smaller font for tags
+  white-space: nowrap; // Prevent individual tags from breaking lines internally
+}

@@ -1,7 +1,15 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Track from './Track';
 import WaveformPreview from './WaveformPreview';
+import FeatureSelectDropdown from './FeatureSelectDropdown';
 import './Tracklist.scss';
+
+const featureCategories = [
+  { value: 'Style', label: 'Style' },
+  { value: 'Mood', label: 'Mood' },
+  { value: 'Instrument', label: 'Instrument' },
+  { value: 'Spectral', label: 'Spectral' },
+];
 
 // Define the initial columns configuration
 // Widths here are initial/fallback widths. Actual widths will be managed in state.
@@ -11,6 +19,20 @@ const initialColumnsConfig = [
   { key: 'title', header: 'Title', width: '25%', minWidth: 100, resizable: true },
   { key: 'artist', header: 'Artist', width: '20%', minWidth: 80, resizable: true },
   { key: 'album', header: 'Album', width: '20%', minWidth: 80, resizable: true },
+  {
+    key: 'features',
+    headerComponent: (props) => (
+      <FeatureSelectDropdown
+        selectedCategory={props.selectedFeatureCategory}
+        onCategoryChange={props.onFeatureCategoryChange}
+        categories={featureCategories}
+      />
+    ),
+    type: 'features',
+    width: '25%',
+    minWidth: 150,
+    resizable: true
+  },
   { key: 'time', header: 'Time', width: '70px', minWidth: 60, textAlign: 'right', resizable: true },
   { key: 'bpm', header: 'BPM', width: '70px', minWidth: 50, textAlign: 'right', resizable: true },
   { key: 'key', header: 'Key', width: '70px', minWidth: 50, textAlign: 'right', resizable: true },
@@ -25,7 +47,9 @@ const Tracklist = ({
   currentPlayingTrackId,
   isAudioPlaying,
   currentTime,
-  onSeek
+  onSeek,
+  selectedFeatureCategory,
+  onFeatureCategoryChange
 }) => {
   const [columnConfig, setColumnConfig] = useState(
     initialColumnsConfig.map(col => ({ ...col, currentWidth: col.width })) // resizable flag is directly from initialConfig
@@ -104,6 +128,32 @@ const Tracklist = ({
     }
   };
 
+  const getTop5Tags = (featureObject) => {
+    if (!featureObject || typeof featureObject !== 'object') return [];
+    return Object.entries(featureObject)
+      .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
+      .slice(0, 5)
+      .map(([tag]) => tag);
+  };
+
+  const getTop5Spectral = (track) => {
+    const spectralData = {
+      atonal: track.atonal,
+      tonal: track.tonal,
+      dark: track.dark,
+      bright: track.bright,
+      percussive: track.percussive,
+      smooth: track.smooth,
+      // LUFS is text, handle separately if needed or exclude from sorting
+    };
+    const filteredSpectral = Object.entries(spectralData).filter(([,value]) => typeof value === 'number');
+
+    return filteredSpectral
+      .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
+      .slice(0, 5)
+      .map(([tag, value]) => `${tag}: ${value.toFixed(2)}`); // Display with value
+  };
+
   const renderCell = (track, col) => {
     if (col.type === 'image') {
       return (
@@ -130,6 +180,34 @@ const Tracklist = ({
       );
     }
 
+    if (col.type === 'features') {
+      let tags = [];
+      switch (selectedFeatureCategory) {
+        case 'Style':
+          tags = getTop5Tags(track.style_features);
+          break;
+        case 'Mood':
+          tags = getTop5Tags(track.mood_features);
+          break;
+        case 'Instrument':
+          tags = getTop5Tags(track.instrument_features);
+          break;
+        case 'Spectral':
+          tags = getTop5Spectral(track);
+          if (track.lufs) tags.push(`LUFS: ${track.lufs}`); // Add LUFS if it exists
+          // Limit to 5 total for spectral if LUFS is added
+          tags = tags.slice(0,5);
+          break;
+        default:
+          tags = [];
+      }
+      return (
+        <div className="FeatureTagsContainer">
+          {tags.map(tag => <span key={tag} className="FeatureTag">{tag}</span>)}
+        </div>
+      );
+    }
+
     return track[col.key] !== undefined && track[col.key] !== null ? track[col.key] : '-';
   };
 
@@ -147,14 +225,18 @@ const Tracklist = ({
                 style={{ width: col.currentWidth || col.width, textAlign: col.textAlign || 'left' }}
               >
                 <div className="ThContent">
-                  <span>{col.header}</span>
+                  {col.headerComponent ? (
+                    <col.headerComponent selectedFeatureCategory={selectedFeatureCategory} onFeatureCategoryChange={onFeatureCategoryChange} />
+                  ) : (
+                    <span>{col.header}</span>
+                  )}
                   {col.resizable && (
                     <div
                       className="ResizeHandle"
                       onMouseDown={(e) => handleMouseDown(e, col.key)}
                       role="separator"
                       aria-orientation="vertical"
-                      aria-label={`Resize ${col.header} column`}
+                      aria-label={`Resize ${col.header || 'feature'} column`}
                     />
                   )}
                 </div>

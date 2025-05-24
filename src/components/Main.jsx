@@ -17,6 +17,13 @@ function Main() {
   const { currentWaveSurfer, setCurrentTrack: setContextTrack } = useContext(PlaybackContext);
   const timeUpdateIntervalRef = useRef(null);
 
+  // Autocomplete states
+  const [searchTerm, setSearchTerm] = useState('');
+  const [autocompleteSuggestions, setAutocompleteSuggestions] = useState([]);
+
+  // State for selected feature category for the new column
+  const [selectedFeatureCategory, setSelectedFeatureCategory] = useState('Style'); // Default to 'Style'
+
   useEffect(() => {
     const fetchTracks = async () => {
       setIsLoading(true);
@@ -54,18 +61,43 @@ function Main() {
     setSelectedTrackId(trackId);
   };
 
-  const handleSearch = (searchTerm) => {
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    if (!lowerCaseSearchTerm.trim()) {
+  const executeSearch = (termToSearch) => {
+    const lowerCaseSearchTerm = termToSearch.toLowerCase().trim();
+    if (!lowerCaseSearchTerm) {
       setFilteredTracks(allTracks);
     } else {
       const results = allTracks.filter(track =>
-        track.title.toLowerCase().includes(lowerCaseSearchTerm) ||
-        track.artist.toLowerCase().includes(lowerCaseSearchTerm) ||
-        track.album.toLowerCase().includes(lowerCaseSearchTerm)
+        (track.title && track.title.toLowerCase().includes(lowerCaseSearchTerm)) ||
+        (track.artist && track.artist.toLowerCase().includes(lowerCaseSearchTerm)) ||
+        (track.album && track.album.toLowerCase().includes(lowerCaseSearchTerm))
       );
       setFilteredTracks(results);
     }
+  };
+
+  const handleSearchInputChange = (inputValue) => {
+    setSearchTerm(inputValue);
+    if (inputValue.trim() === '') {
+      setAutocompleteSuggestions([]);
+      setFilteredTracks(allTracks);
+      return;
+    }
+    const lowerCaseInput = inputValue.toLowerCase();
+    const suggestions = allTracks.filter(track =>
+      (track.title && track.title.toLowerCase().includes(lowerCaseInput)) ||
+      (track.artist && track.artist.toLowerCase().includes(lowerCaseInput)) ||
+      (track.album && track.album.toLowerCase().includes(lowerCaseInput))
+    )
+    .map(track => track.title)
+    .filter((value, index, self) => self.indexOf(value) === index)
+    .slice(0, 5);
+    setAutocompleteSuggestions(suggestions.map(title => ({ id: title, name: title })));
+  };
+
+  const handleSuggestionClick = (suggestionName) => {
+    setSearchTerm(suggestionName);
+    setAutocompleteSuggestions([]);
+    executeSearch(suggestionName);
   };
 
   const handlePlayTrack = (track) => {
@@ -158,6 +190,10 @@ function Main() {
     };
   }, [currentWaveSurfer.current]);
 
+  const handleFeatureCategoryChange = (category) => {
+    setSelectedFeatureCategory(category);
+  };
+
   return (
     <div className="Main">
       <Navbar />
@@ -171,9 +207,15 @@ function Main() {
           onTrackSelect={handleTrackSelect}
           onPlayTrack={handlePlayTrack}
           onSeek={handleSeek}
-          onSearch={handleSearch}
+          searchTerm={searchTerm}
+          onSearchInputChange={handleSearchInputChange}
+          autocompleteSuggestions={autocompleteSuggestions}
+          onSuggestionClick={handleSuggestionClick}
+          onExecuteSearch={executeSearch}
           isLoading={isLoading}
           error={error}
+          selectedFeatureCategory={selectedFeatureCategory}
+          onFeatureCategoryChange={handleFeatureCategoryChange}
         />
       </div>
       <Player

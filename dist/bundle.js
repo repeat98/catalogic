@@ -56,9 +56,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Tracklist__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Tracklist */ "./src/components/Tracklist.jsx");
 /* harmony import */ var _SearchComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SearchComponent */ "./src/components/SearchComponent.jsx");
 /* harmony import */ var _Content_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Content.scss */ "./src/components/Content.scss");
- // Added useRef
 
- // Import the new component
+
+
 
 var Content = function Content(_ref) {
   var filteredTracks = _ref.filteredTracks,
@@ -66,19 +66,18 @@ var Content = function Content(_ref) {
     currentPlayingTrack = _ref.currentPlayingTrack,
     isPlaying = _ref.isPlaying,
     currentTime = _ref.currentTime,
-    audioError = _ref.audioError,
     onTrackSelect = _ref.onTrackSelect,
     onPlayTrack = _ref.onPlayTrack,
     onSeek = _ref.onSeek,
-    onSearch = _ref.onSearch,
     isLoading = _ref.isLoading,
-    error = _ref.error;
-  // Removed: allTracks, currentPlayingTrack, error, isLoading states
-  // Removed: isPlaying, audioPlayerRef, audioError states
-  // Removed: fetchTracks useEffect
-  // Removed: handlePlayTrack (will be in Main)
-  // Removed: Audio element event handlers useEffect
-
+    error = _ref.error,
+    searchTerm = _ref.searchTerm,
+    onSearchInputChange = _ref.onSearchInputChange,
+    autocompleteSuggestions = _ref.autocompleteSuggestions,
+    onSuggestionClick = _ref.onSuggestionClick,
+    onExecuteSearch = _ref.onExecuteSearch,
+    selectedFeatureCategory = _ref.selectedFeatureCategory,
+    onFeatureCategoryChange = _ref.onFeatureCategoryChange;
   if (isLoading) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "ContentLoading"
@@ -93,17 +92,24 @@ var Content = function Content(_ref) {
     "data-layer": "content",
     className: "Content"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_SearchComponent__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    onSearch: onSearch
+    searchTerm: searchTerm,
+    onSearchInputChange: onSearchInputChange,
+    suggestions: autocompleteSuggestions,
+    onSuggestionClick: onSuggestionClick,
+    onExecuteSearch: onExecuteSearch
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Tracklist__WEBPACK_IMPORTED_MODULE_1__["default"], {
     tracks: filteredTracks,
     selectedTrackId: selectedTrackId,
     onTrackSelect: onTrackSelect,
-    onPlayTrack: onPlayTrack // Pass the handler from Main
-    ,
+    onPlayTrack: onPlayTrack,
     currentPlayingTrackId: currentPlayingTrack === null || currentPlayingTrack === void 0 ? void 0 : currentPlayingTrack.id,
     isAudioPlaying: isPlaying,
     currentTime: currentTime,
     onSeek: onSeek
+    // Pass feature category props to Tracklist
+    ,
+    selectedFeatureCategory: selectedFeatureCategory,
+    onFeatureCategoryChange: onFeatureCategoryChange
   }));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Content);
@@ -157,6 +163,47 @@ var ContextMenu = function ContextMenu(_ref) {
   })));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ContextMenu);
+
+/***/ }),
+
+/***/ "./src/components/FeatureSelectDropdown.jsx":
+/*!**************************************************!*\
+  !*** ./src/components/FeatureSelectDropdown.jsx ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _FeatureSelectDropdown_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FeatureSelectDropdown.scss */ "./src/components/FeatureSelectDropdown.scss");
+
+ // We'll create this SCSS file next
+
+var FeatureSelectDropdown = function FeatureSelectDropdown(_ref) {
+  var selectedCategory = _ref.selectedCategory,
+    onCategoryChange = _ref.onCategoryChange,
+    categories = _ref.categories;
+  var handleChange = function handleChange(event) {
+    onCategoryChange(event.target.value);
+  };
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "FeatureSelectContainer"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("select", {
+    className: "FeatureSelect",
+    value: selectedCategory,
+    onChange: handleChange
+  }, categories.map(function (category) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("option", {
+      key: category.value,
+      value: category.value
+    }, category.label);
+  })));
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (FeatureSelectDropdown);
 
 /***/ }),
 
@@ -237,6 +284,23 @@ function Main() {
     currentWaveSurfer = _useContext.currentWaveSurfer,
     setContextTrack = _useContext.setCurrentTrack;
   var timeUpdateIntervalRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+
+  // Autocomplete states
+  var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState18 = _slicedToArray(_useState17, 2),
+    searchTerm = _useState18[0],
+    setSearchTerm = _useState18[1];
+  var _useState19 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
+    _useState20 = _slicedToArray(_useState19, 2),
+    autocompleteSuggestions = _useState20[0],
+    setAutocompleteSuggestions = _useState20[1];
+
+  // State for selected feature category for the new column
+  var _useState21 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('Style'),
+    _useState22 = _slicedToArray(_useState21, 2),
+    selectedFeatureCategory = _useState22[0],
+    setSelectedFeatureCategory = _useState22[1]; // Default to 'Style'
+
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     var fetchTracks = /*#__PURE__*/function () {
       var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
@@ -308,16 +372,43 @@ function Main() {
   var handleTrackSelect = function handleTrackSelect(trackId) {
     setSelectedTrackId(trackId);
   };
-  var handleSearch = function handleSearch(searchTerm) {
-    var lowerCaseSearchTerm = searchTerm.toLowerCase();
-    if (!lowerCaseSearchTerm.trim()) {
+  var executeSearch = function executeSearch(termToSearch) {
+    var lowerCaseSearchTerm = termToSearch.toLowerCase().trim();
+    if (!lowerCaseSearchTerm) {
       setFilteredTracks(allTracks);
     } else {
       var results = allTracks.filter(function (track) {
-        return track.title.toLowerCase().includes(lowerCaseSearchTerm) || track.artist.toLowerCase().includes(lowerCaseSearchTerm) || track.album.toLowerCase().includes(lowerCaseSearchTerm);
+        return track.title && track.title.toLowerCase().includes(lowerCaseSearchTerm) || track.artist && track.artist.toLowerCase().includes(lowerCaseSearchTerm) || track.album && track.album.toLowerCase().includes(lowerCaseSearchTerm);
       });
       setFilteredTracks(results);
     }
+  };
+  var handleSearchInputChange = function handleSearchInputChange(inputValue) {
+    setSearchTerm(inputValue);
+    if (inputValue.trim() === '') {
+      setAutocompleteSuggestions([]);
+      setFilteredTracks(allTracks);
+      return;
+    }
+    var lowerCaseInput = inputValue.toLowerCase();
+    var suggestions = allTracks.filter(function (track) {
+      return track.title && track.title.toLowerCase().includes(lowerCaseInput) || track.artist && track.artist.toLowerCase().includes(lowerCaseInput) || track.album && track.album.toLowerCase().includes(lowerCaseInput);
+    }).map(function (track) {
+      return track.title;
+    }).filter(function (value, index, self) {
+      return self.indexOf(value) === index;
+    }).slice(0, 5);
+    setAutocompleteSuggestions(suggestions.map(function (title) {
+      return {
+        id: title,
+        name: title
+      };
+    }));
+  };
+  var handleSuggestionClick = function handleSuggestionClick(suggestionName) {
+    setSearchTerm(suggestionName);
+    setAutocompleteSuggestions([]);
+    executeSearch(suggestionName);
   };
   var handlePlayTrack = function handlePlayTrack(track) {
     if (!track || !track.id) {
@@ -403,6 +494,9 @@ function Main() {
       activeWs.un('seek', handleSeekEvent);
     };
   }, [currentWaveSurfer.current]);
+  var handleFeatureCategoryChange = function handleFeatureCategoryChange(category) {
+    setSelectedFeatureCategory(category);
+  };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "Main"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Navbar__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -416,9 +510,15 @@ function Main() {
     onTrackSelect: handleTrackSelect,
     onPlayTrack: handlePlayTrack,
     onSeek: handleSeek,
-    onSearch: handleSearch,
+    searchTerm: searchTerm,
+    onSearchInputChange: handleSearchInputChange,
+    autocompleteSuggestions: autocompleteSuggestions,
+    onSuggestionClick: handleSuggestionClick,
+    onExecuteSearch: executeSearch,
     isLoading: isLoading,
-    error: error
+    error: error,
+    selectedFeatureCategory: selectedFeatureCategory,
+    onFeatureCategoryChange: handleFeatureCategoryChange
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Player__WEBPACK_IMPORTED_MODULE_3__["default"], {
     currentPlayingTrack: currentPlayingTrack,
     isPlaying: isPlaying,
@@ -1234,7 +1334,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _Track__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Track */ "./src/components/Track.jsx");
 /* harmony import */ var _WaveformPreview__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./WaveformPreview */ "./src/components/WaveformPreview.jsx");
-/* harmony import */ var _Tracklist_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Tracklist.scss */ "./src/components/Tracklist.scss");
+/* harmony import */ var _FeatureSelectDropdown__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./FeatureSelectDropdown */ "./src/components/FeatureSelectDropdown.jsx");
+/* harmony import */ var _Tracklist_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Tracklist.scss */ "./src/components/Tracklist.scss");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -1251,6 +1352,20 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 
+
+var featureCategories = [{
+  value: 'Style',
+  label: 'Style'
+}, {
+  value: 'Mood',
+  label: 'Mood'
+}, {
+  value: 'Instrument',
+  label: 'Instrument'
+}, {
+  value: 'Spectral',
+  label: 'Spectral'
+}];
 
 // Define the initial columns configuration
 // Widths here are initial/fallback widths. Actual widths will be managed in state.
@@ -1285,6 +1400,19 @@ var initialColumnsConfig = [{
   header: 'Album',
   width: '20%',
   minWidth: 80,
+  resizable: true
+}, {
+  key: 'features',
+  headerComponent: function headerComponent(props) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_FeatureSelectDropdown__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      selectedCategory: props.selectedFeatureCategory,
+      onCategoryChange: props.onFeatureCategoryChange,
+      categories: featureCategories
+    });
+  },
+  type: 'features',
+  width: '25%',
+  minWidth: 150,
   resizable: true
 }, {
   key: 'time',
@@ -1324,7 +1452,9 @@ var Tracklist = function Tracklist(_ref) {
     currentPlayingTrackId = _ref.currentPlayingTrackId,
     isAudioPlaying = _ref.isAudioPlaying,
     currentTime = _ref.currentTime,
-    onSeek = _ref.onSeek;
+    onSeek = _ref.onSeek,
+    selectedFeatureCategory = _ref.selectedFeatureCategory,
+    onFeatureCategoryChange = _ref.onFeatureCategoryChange;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(initialColumnsConfig.map(function (col) {
       return _objectSpread(_objectSpread({}, col), {}, {
         currentWidth: col.width
@@ -1406,6 +1536,48 @@ var Tracklist = function Tracklist(_ref) {
       onPlayTrack(track);
     }
   };
+  var getTop5Tags = function getTop5Tags(featureObject) {
+    if (!featureObject || _typeof(featureObject) !== 'object') return [];
+    return Object.entries(featureObject).sort(function (_ref2, _ref3) {
+      var _ref4 = _slicedToArray(_ref2, 2),
+        scoreA = _ref4[1];
+      var _ref5 = _slicedToArray(_ref3, 2),
+        scoreB = _ref5[1];
+      return scoreB - scoreA;
+    }).slice(0, 5).map(function (_ref6) {
+      var _ref7 = _slicedToArray(_ref6, 1),
+        tag = _ref7[0];
+      return tag;
+    });
+  };
+  var getTop5Spectral = function getTop5Spectral(track) {
+    var spectralData = {
+      atonal: track.atonal,
+      tonal: track.tonal,
+      dark: track.dark,
+      bright: track.bright,
+      percussive: track.percussive,
+      smooth: track.smooth
+      // LUFS is text, handle separately if needed or exclude from sorting
+    };
+    var filteredSpectral = Object.entries(spectralData).filter(function (_ref8) {
+      var _ref9 = _slicedToArray(_ref8, 2),
+        value = _ref9[1];
+      return typeof value === 'number';
+    });
+    return filteredSpectral.sort(function (_ref10, _ref11) {
+      var _ref12 = _slicedToArray(_ref10, 2),
+        scoreA = _ref12[1];
+      var _ref13 = _slicedToArray(_ref11, 2),
+        scoreB = _ref13[1];
+      return scoreB - scoreA;
+    }).slice(0, 5).map(function (_ref14) {
+      var _ref15 = _slicedToArray(_ref14, 2),
+        tag = _ref15[0],
+        value = _ref15[1];
+      return "".concat(tag, ": ").concat(value.toFixed(2));
+    }); // Display with value
+  };
   var renderCell = function renderCell(track, col) {
     if (col.type === 'image') {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("img", {
@@ -1427,6 +1599,36 @@ var Tracklist = function Tracklist(_ref) {
           return onPlayTrack && onPlayTrack(track);
         }
       });
+    }
+    if (col.type === 'features') {
+      var tags = [];
+      switch (selectedFeatureCategory) {
+        case 'Style':
+          tags = getTop5Tags(track.style_features);
+          break;
+        case 'Mood':
+          tags = getTop5Tags(track.mood_features);
+          break;
+        case 'Instrument':
+          tags = getTop5Tags(track.instrument_features);
+          break;
+        case 'Spectral':
+          tags = getTop5Spectral(track);
+          if (track.lufs) tags.push("LUFS: ".concat(track.lufs)); // Add LUFS if it exists
+          // Limit to 5 total for spectral if LUFS is added
+          tags = tags.slice(0, 5);
+          break;
+        default:
+          tags = [];
+      }
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+        className: "FeatureTagsContainer"
+      }, tags.map(function (tag) {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+          key: tag,
+          className: "FeatureTag"
+        }, tag);
+      }));
     }
     return track[col.key] !== undefined && track[col.key] !== null ? track[col.key] : '-';
   };
@@ -1451,14 +1653,17 @@ var Tracklist = function Tracklist(_ref) {
       }
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "ThContent"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, col.header), col.resizable && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    }, col.headerComponent ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(col.headerComponent, {
+      selectedFeatureCategory: selectedFeatureCategory,
+      onFeatureCategoryChange: onFeatureCategoryChange
+    }) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, col.header), col.resizable && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "ResizeHandle",
       onMouseDown: function onMouseDown(e) {
         return handleMouseDown(e, col.key);
       },
       role: "separator",
       "aria-orientation": "vertical",
-      "aria-label": "Resize ".concat(col.header, " column")
+      "aria-label": "Resize ".concat(col.header || 'feature', " column")
     })));
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tbody", null, tracks.length > 0 ? tracks.map(function (track) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Track__WEBPACK_IMPORTED_MODULE_1__["default"], {
@@ -1987,24 +2192,22 @@ var isWaveformCached = /*#__PURE__*/function () {
       while (1) switch (_context.prev = _context.next) {
         case 0:
           _context.prev = 0;
-          console.log('Checking if waveform is cached for track:', trackId);
-          _context.next = 4;
+          _context.next = 3;
           return fetch("http://localhost:3000/waveforms/".concat(trackId));
-        case 4:
+        case 3:
           response = _context.sent;
-          isCached = response.ok;
-          console.log('Waveform cache check result for track', trackId, ':', isCached);
+          isCached = response.ok; // console.log('Waveform cache check result for track', trackId, ':', isCached);
           return _context.abrupt("return", isCached);
-        case 10:
-          _context.prev = 10;
+        case 8:
+          _context.prev = 8;
           _context.t0 = _context["catch"](0);
-          console.error('Error checking waveform cache for track', trackId, ':', _context.t0);
+          console.error('[WaveformCache] Error checking waveform cache for track', trackId, ':', _context.t0);
           return _context.abrupt("return", false);
-        case 14:
+        case 12:
         case "end":
           return _context.stop();
       }
-    }, _callee, null, [[0, 10]]);
+    }, _callee, null, [[0, 8]]);
   }));
   return function isWaveformCached(_x) {
     return _ref.apply(this, arguments);
@@ -2023,34 +2226,33 @@ var getCachedWaveform = /*#__PURE__*/function () {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
           _context2.prev = 0;
-          console.log('Getting cached waveform for track:', trackId);
-          _context2.next = 4;
+          _context2.next = 3;
           return fetch("http://localhost:3000/waveforms/".concat(trackId));
-        case 4:
+        case 3:
           response = _context2.sent;
           if (response.ok) {
-            _context2.next = 8;
+            _context2.next = 6;
             break;
           }
-          console.log('No cached waveform found for track', trackId);
           return _context2.abrupt("return", null);
-        case 8:
-          _context2.next = 10;
+        case 6:
+          _context2.next = 8;
           return response.json();
-        case 10:
+        case 8:
           data = _context2.sent;
-          console.log('Retrieved cached waveform data for track', trackId, ':', data);
           return _context2.abrupt("return", data);
-        case 15:
-          _context2.prev = 15;
+        case 12:
+          _context2.prev = 12;
           _context2.t0 = _context2["catch"](0);
-          console.error('Error getting cached waveform for track', trackId, ':', _context2.t0);
+          // Keep this error log, but it might be redundant if preloader also logs it.
+          // For now, let's assume this specific utility might be used elsewhere.
+          console.error('[WaveformCache] Error getting cached waveform for track', trackId, ':', _context2.t0);
           return _context2.abrupt("return", null);
-        case 19:
+        case 16:
         case "end":
           return _context2.stop();
       }
-    }, _callee2, null, [[0, 15]]);
+    }, _callee2, null, [[0, 12]]);
   }));
   return function getCachedWaveform(_x2) {
     return _ref2.apply(this, arguments);
@@ -2065,22 +2267,19 @@ var getCachedWaveform = /*#__PURE__*/function () {
  */
 var cacheWaveform = /*#__PURE__*/function () {
   var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(trackId, waveformData) {
-    var response, success, result;
+    var response, success;
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) switch (_context3.prev = _context3.next) {
         case 0:
           _context3.prev = 0;
-          console.log('Caching waveform for track:', trackId);
-
-          // Validate waveform data
           if (!(!waveformData || !Array.isArray(waveformData.peaks) || waveformData.peaks.length === 0)) {
-            _context3.next = 5;
+            _context3.next = 4;
             break;
           }
-          console.error('Invalid waveform data format for track', trackId, ':', waveformData);
+          console.error('[WaveformCache] Invalid waveform data format for track', trackId /* waveformData */); // Avoid logging potentially large data
           return _context3.abrupt("return", false);
-        case 5:
-          _context3.next = 7;
+        case 4:
+          _context3.next = 6;
           return fetch("http://localhost:3000/waveforms/".concat(trackId), {
             method: 'POST',
             headers: {
@@ -2088,40 +2287,32 @@ var cacheWaveform = /*#__PURE__*/function () {
             },
             body: JSON.stringify(waveformData)
           });
-        case 7:
+        case 6:
           response = _context3.sent;
           success = response.ok;
-          if (!success) {
-            _context3.next = 16;
+          if (success) {
+            _context3.next = 15;
             break;
           }
-          _context3.next = 12;
-          return response.json();
-        case 12:
-          result = _context3.sent;
-          console.log('Waveform cached successfully for track', trackId, ':', result);
-          _context3.next = 22;
-          break;
-        case 16:
           _context3.t0 = console;
           _context3.t1 = trackId;
-          _context3.next = 20;
+          _context3.next = 13;
           return response.text();
-        case 20:
+        case 13:
           _context3.t2 = _context3.sent;
-          _context3.t0.error.call(_context3.t0, 'Failed to cache waveform for track', _context3.t1, ':', _context3.t2);
-        case 22:
+          _context3.t0.error.call(_context3.t0, '[WaveformCache] Failed to cache waveform for track', _context3.t1, ':', _context3.t2);
+        case 15:
           return _context3.abrupt("return", success);
-        case 25:
-          _context3.prev = 25;
+        case 18:
+          _context3.prev = 18;
           _context3.t3 = _context3["catch"](0);
-          console.error('Error caching waveform for track', trackId, ':', _context3.t3);
+          console.error('[WaveformCache] Error caching waveform for track', trackId, ':', _context3.t3);
           return _context3.abrupt("return", false);
-        case 29:
+        case 22:
         case "end":
           return _context3.stop();
       }
-    }, _callee3, null, [[0, 25]]);
+    }, _callee3, null, [[0, 18]]);
   }));
   return function cacheWaveform(_x3, _x4) {
     return _ref3.apply(this, arguments);
@@ -2184,13 +2375,11 @@ var preloadAllWaveforms = /*#__PURE__*/function () {
         case 15:
           tracks = _context2.sent;
           if (!(!tracks || tracks.length === 0)) {
-            _context2.next = 19;
+            _context2.next = 18;
             break;
           }
-          console.log('[WaveformPreloader] No tracks found to preload.');
           return _context2.abrupt("return");
-        case 19:
-          console.log("[WaveformPreloader] Found ".concat(tracks.length, " tracks. Starting iterative caching."));
+        case 18:
           _loop = /*#__PURE__*/_regeneratorRuntime().mark(function _loop() {
             var track, alreadyCached, audioUrl, tempContainer, wavesurfer;
             return _regeneratorRuntime().wrap(function _loop$(_context) {
@@ -2210,35 +2399,26 @@ var preloadAllWaveforms = /*#__PURE__*/function () {
                 case 7:
                   alreadyCached = _context.sent;
                   if (!(alreadyCached && alreadyCached.peaks)) {
-                    _context.next = 11;
+                    _context.next = 10;
                     break;
                   }
-                  console.log("[WaveformPreloader] Waveform for track ".concat(track.id, " (").concat(track.title, ") is already cached. Skipping."));
                   return _context.abrupt("return", 0);
-                case 11:
-                  console.log("[WaveformPreloader] Caching waveform for track ".concat(track.id, " (").concat(track.title, ") (").concat(i + 1, "/").concat(tracks.length, ")"));
-                  audioUrl = "http://localhost:3000/audio/".concat(track.id); // Create a temporary, detached container for WaveSurfer
-                  tempContainer = document.createElement('div'); // Important: Do not append to the document body to keep it hidden and avoid layout shifts.
-                  // Style it to be off-screen if it must be in DOM for some WaveSurfer backends, though often not necessary.
-                  // tempContainer.style.position = 'absolute';
-                  // tempContainer.style.left = '-9999px';
-                  // document.body.appendChild(tempContainer);
+                case 10:
+                  // console.log(`[WaveformPreloader] Caching waveform for track ${track.id} (${track.title}) (${i + 1}/${tracks.length})`); // Commented out
+                  audioUrl = "http://localhost:3000/audio/".concat(track.id);
+                  tempContainer = document.createElement('div');
                   wavesurfer = null;
-                  _context.prev = 15;
+                  _context.prev = 13;
                   wavesurfer = wavesurfer_js__WEBPACK_IMPORTED_MODULE_0__["default"].create({
                     container: tempContainer,
-                    // Use the temporary container
                     backend: 'MediaElement',
-                    // MediaElement backend is generally more robust for background processing
                     mediaControls: false,
                     height: 30,
-                    // Minimal height, may not be strictly necessary for peak export
                     normalize: false,
                     pixelRatio: 1,
-                    // No need for high pixel ratio for peak data
-                    interact: false // No interaction needed
+                    interact: false
                   });
-                  _context.next = 19;
+                  _context.next = 17;
                   return new Promise(function (resolve, reject) {
                     wavesurfer.once('ready', function () {
                       try {
@@ -2246,97 +2426,93 @@ var preloadAllWaveforms = /*#__PURE__*/function () {
                         if (peaks && peaks.length > 0) {
                           (0,_waveformCache__WEBPACK_IMPORTED_MODULE_1__.cacheWaveform)(track.id, {
                             peaks: peaks
-                          }).then(function () {
-                            return console.log("[WaveformPreloader] Successfully cached ".concat(track.id));
-                          })["catch"](function (cacheErr) {
-                            return console.error("[WaveformPreloader] Failed to cache ".concat(track.id, ":"), cacheErr);
+                          })
+                          // .then(() => console.log(`[WaveformPreloader] Successfully cached ${track.id}`)) // Commented out
+                          ["catch"](function (cacheErr) {
+                            return console.error("[WaveformPreloader] Error caching waveform for ".concat(track.id, ":"), cacheErr);
                           })["finally"](resolve);
                         } else {
                           console.warn("[WaveformPreloader] No peaks exported for ".concat(track.id));
-                          resolve(); // Resolve even if no peaks, to continue the loop
+                          resolve();
                         }
                       } catch (exportError) {
                         console.error("[WaveformPreloader] Error exporting peaks for ".concat(track.id, ":"), exportError);
-                        reject(exportError); // Propagate error to main catch
+                        reject(exportError);
                       }
                     });
                     wavesurfer.once('error', function (err) {
                       console.error("[WaveformPreloader] WaveSurfer error for ".concat(track.id, " during preloading:"), err);
-                      reject(err); // Propagate error to main catch
+                      reject(err);
                     });
                     wavesurfer.load(audioUrl);
                   });
-                case 19:
-                  _context.prev = 19;
+                case 17:
+                  _context.prev = 17;
                   if (wavesurfer) {
                     wavesurfer.destroy();
                   }
-                  // if (tempContainer.parentNode) { // If it was appended to body
-                  //   document.body.removeChild(tempContainer);
-                  // }
-                  return _context.finish(19);
-                case 22:
+                  return _context.finish(17);
+                case 20:
                   if (!(i < tracks.length - 1)) {
-                    _context.next = 25;
+                    _context.next = 23;
                     break;
                   }
-                  _context.next = 25;
+                  _context.next = 23;
                   return new Promise(function (resolve) {
                     return setTimeout(resolve, PRELOAD_DELAY_MS);
                   });
-                case 25:
-                  _context.next = 33;
+                case 23:
+                  _context.next = 31;
                   break;
-                case 27:
-                  _context.prev = 27;
+                case 25:
+                  _context.prev = 25;
                   _context.t0 = _context["catch"](4);
-                  console.error("[WaveformPreloader] Failed to process track ".concat(track.id, " (").concat(track.title, "):"), _context.t0);
-                  // Optional: add a longer delay or stop if too many errors occur
+                  console.error("[WaveformPreloader] Error processing track ".concat(track.id, " (").concat(track.title, "):"), _context.t0);
                   if (!(i < tracks.length - 1)) {
-                    _context.next = 33;
+                    _context.next = 31;
                     break;
                   }
-                  _context.next = 33;
+                  _context.next = 31;
                   return new Promise(function (resolve) {
                     return setTimeout(resolve, PRELOAD_DELAY_MS * 2);
                   });
-                case 33:
+                case 31:
                 case "end":
                   return _context.stop();
               }
-            }, _loop, null, [[4, 27], [15,, 19, 22]]);
+            }, _loop, null, [[4, 25], [13,, 17, 20]]);
           });
           i = 0;
-        case 22:
+        case 20:
           if (!(i < tracks.length)) {
-            _context2.next = 30;
+            _context2.next = 28;
             break;
           }
-          return _context2.delegateYield(_loop(), "t3", 24);
-        case 24:
+          return _context2.delegateYield(_loop(), "t3", 22);
+        case 22:
           _ret = _context2.t3;
           if (!(_ret === 0)) {
-            _context2.next = 27;
+            _context2.next = 25;
             break;
           }
-          return _context2.abrupt("continue", 27);
-        case 27:
+          return _context2.abrupt("continue", 25);
+        case 25:
           i++;
-          _context2.next = 22;
+          _context2.next = 20;
           break;
-        case 30:
+        case 28:
           console.log('[WaveformPreloader] Finished background waveform preloading.');
-          _context2.next = 36;
+          _context2.next = 34;
           break;
-        case 33:
-          _context2.prev = 33;
+        case 31:
+          _context2.prev = 31;
           _context2.t4 = _context2["catch"](1);
           console.error('[WaveformPreloader] General error during preloading process:', _context2.t4);
-        case 36:
+        case 34:
         case "end":
           return _context2.stop();
       }
-    }, _callee, null, [[1, 33]]);
+    }, _callee, null, [[1, 31]]);
   }));
   return function preloadAllWaveforms() {
     return _ref.apply(this, arguments);
@@ -2527,6 +2703,55 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.ContextMenu {
   background-color: #3a86f7;
   color: #FFFFFF;
 }`, "",{"version":3,"sources":["webpack://./src/components/ContextMenu.scss"],"names":[],"mappings":"AAEA;EACI,eAAA;EACA,aAAA;EACA,yBAAA;EACA,yBAAA;EACA,kBAAA;EACA,yCAAA;EACA,gBAAA;EACA,cAAA;AADJ;AAGI;EACE,gBAAA;EACA,UAAA;EACA,SAAA;AADN;AAGM;EACE,iBAAA;EACA,cAAA;EACA,eAAA;EACA,gCAAA;EACA,eAAA;EACA,8CAAA;AADR;AAGQ;EACE,yBAAA;EACA,cAAA;AADV","sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/FeatureSelectDropdown.scss":
+/*!********************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/FeatureSelectDropdown.scss ***!
+  \********************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.FeatureSelectContainer {
+  display: inline-block;
+}
+
+.FeatureSelect {
+  padding: 6px 10px;
+  font-size: 0.875rem;
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+  background-color: #3a3a3a;
+  color: #e0e0e0;
+  cursor: pointer;
+  outline: none;
+}
+
+.FeatureSelect:hover {
+  border-color: #666;
+}
+
+.FeatureSelect:focus {
+  border-color: #1db954;
+  box-shadow: 0 0 0 1px #1db954;
+}`, "",{"version":3,"sources":["webpack://./src/components/FeatureSelectDropdown.scss"],"names":[],"mappings":"AAAA;EACE,qBAAA;AACF;;AAGA;EACE,iBAAA;EACA,mBAAA;EACA,yBAAA;EACA,kBAAA;EACA,yBAAA;EACA,cAAA;EACA,eAAA;EACA,aAAA;AAAF;;AAGA;EACE,kBAAA;AAAF;;AAGA;EACE,qBAAA;EACA,6BAAA;AAAF","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -3541,7 +3766,24 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.TracklistContainer {
   padding: 40px;
   color: #888;
   font-style: italic;
-}`, "",{"version":3,"sources":["webpack://./src/components/Tracklist.scss"],"names":[],"mappings":"AAAA;EACI,WAAA;EACA,YAAA;EACA,gBAAA;EACA,yBAAA;EACA,cAAA;AACJ;;AAEE;EACE,WAAA;EACA,yBAAA;EACA,mBAAA;EACA,mBAAA;AACJ;AACI;EACE,yBAAA;EACA,gBAAA;EACA,MAAA;EACA,WAAA;AACN;AAEI;EACE,UAAA;EACA,gBAAA;EACA,gBAAA;EACA,cAAA;EACA,gCAAA;EACA,mBAAA;EACA,kBAAA;AAAN;AAEM;EACE,aAAA;EACA,mBAAA;EACA,8BAAA;EACA,kBAAA;EACA,gBAAA;EACA,uBAAA;AAAR;AAGM;EACE,kBAAA;AADR;AAQI;EACE,kBAAA;EACA,QAAA;EACA,MAAA;EACA,SAAA;EACA,UAAA;EACA,kBAAA;EACA,UAAA;AANN;AAsBQ;EACE,yBAAA;AApBV;AAyBI;EACE,kBAAA;EACA,aAAA;EACA,WAAA;EACA,kBAAA;AAvBN","sourceRoot":""}]);
+}
+
+.FeatureTagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  height: 100%;
+}
+
+.FeatureTag {
+  background-color: #333;
+  color: #ccc;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}`, "",{"version":3,"sources":["webpack://./src/components/Tracklist.scss"],"names":[],"mappings":"AAAA;EACI,WAAA;EACA,YAAA;EACA,gBAAA;EACA,yBAAA;EACA,cAAA;AACJ;;AAEE;EACE,WAAA;EACA,yBAAA;EACA,mBAAA;EACA,mBAAA;AACJ;AACI;EACE,yBAAA;EACA,gBAAA;EACA,MAAA;EACA,WAAA;AACN;AAEI;EACE,UAAA;EACA,gBAAA;EACA,gBAAA;EACA,cAAA;EACA,gCAAA;EACA,mBAAA;EACA,kBAAA;AAAN;AAEM;EACE,aAAA;EACA,mBAAA;EACA,8BAAA;EACA,kBAAA;EACA,gBAAA;EACA,uBAAA;AAAR;AAGM;EACE,kBAAA;AADR;AAQI;EACE,kBAAA;EACA,QAAA;EACA,MAAA;EACA,SAAA;EACA,UAAA;EACA,kBAAA;EACA,UAAA;AANN;AAsBQ;EACE,yBAAA;AApBV;AAyBI;EACE,kBAAA;EACA,aAAA;EACA,WAAA;EACA,kBAAA;AAvBN;;AA8BA;EACE,aAAA;EACA,eAAA;EACA,QAAA;EACA,mBAAA;EACA,YAAA;AA3BF;;AA8BA;EACE,sBAAA;EACA,WAAA;EACA,gBAAA;EACA,kBAAA;EACA,kBAAA;EACA,mBAAA;AA3BF","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -38458,6 +38700,59 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 
        /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_ContextMenu_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_ContextMenu_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_ContextMenu_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./src/components/FeatureSelectDropdown.scss":
+/*!***************************************************!*\
+  !*** ./src/components/FeatureSelectDropdown.scss ***!
+  \***************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_FeatureSelectDropdown_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../node_modules/css-loader/dist/cjs.js!../../node_modules/sass-loader/dist/cjs.js!./FeatureSelectDropdown.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/FeatureSelectDropdown.scss");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_FeatureSelectDropdown_scss__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_FeatureSelectDropdown_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_FeatureSelectDropdown_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_FeatureSelectDropdown_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
 
 
 /***/ }),
