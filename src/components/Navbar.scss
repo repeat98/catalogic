@@ -1,30 +1,31 @@
 .Navbar {
     align-self: stretch;
-    padding-left: 24px;
-    padding-right: 24px;
-    padding-top: 16px;
-    padding-bottom: 16px;
+    height: 52px; // Set fixed height
+    padding: 0 24px; // Adjust padding, vertical padding handled by align-items
     overflow: hidden;
+    display: flex; // Ensure display: flex for proper alignment
     justify-content: space-between;
     align-items: center;
-    min-height: 24px;
-    display: inline-flex; // Note: In a flex column parent, this might behave unexpectedly. Usually display: flex;
     background-color: #2e2e2e;
+    -webkit-app-region: drag; // Make the entire navbar draggable
+    // min-height: 24px; // Remove if height is fixed
   
     .NavbarMenu {
       justify-content: flex-start;
       align-items: center;
       gap: 24px;
       display: flex;
+      -webkit-app-region: no-drag; // Make menu items clickable
   
       .NavbarMenuItem {
         color: white;
         font-size: 12px;
         font-family: 'Inter', sans-serif;
         font-weight: 400;
-        line-height: 20px;
+        line-height: 20px; // Ensure this fits within the 52px navbar height
         word-wrap: break-word;
         cursor: pointer;
+        padding: 8px 0; // Add some padding for easier clicking if needed
   
         &.active, &:hover { // Example active/hover state
           font-weight: 700;
@@ -33,18 +34,20 @@
     }
   
     .WindowControl {
-      width: 45px; // Sum of children and divider approx
-      height: 18px;
-      position: relative;
+      height: 100%; // Make it take full height of navbar for easier alignment
       display: flex;
       align-items: center;
+      -webkit-app-region: no-drag; // Make window controls clickable
   
       .Icons {
         width: 18px;
         height: 18px;
-        position: relative; // Changed from absolute for flex layout
+        position: relative;
         overflow: hidden;
         cursor: pointer;
+        display: flex; // For centering icons if they are smaller than container
+        align-items: center;
+        justify-content: center;
   
         // Specific classes for icon containers if needed for spacing
         &.FullWindowIconContainer {}

@@ -17,9 +17,9 @@ function Main() {
   const { currentWaveSurfer, setCurrentTrack: setContextTrack } = useContext(PlaybackContext);
   const timeUpdateIntervalRef = useRef(null);
 
-  // Autocomplete states
-  const [searchTerm, setSearchTerm] = useState('');
-  const [autocompleteSuggestions, setAutocompleteSuggestions] = useState([]);
+  // Autocomplete states removed
+  // const [searchTerm, setSearchTerm] = useState('');
+  // const [autocompleteSuggestions, setAutocompleteSuggestions] = useState([]);
 
   // State for selected feature category for the new column
   const [selectedFeatureCategory, setSelectedFeatureCategory] = useState('Style'); // Default to 'Style'
@@ -61,6 +61,7 @@ function Main() {
     setSelectedTrackId(trackId);
   };
 
+  // This is the primary search execution function
   const executeSearch = (termToSearch) => {
     const lowerCaseSearchTerm = termToSearch.toLowerCase().trim();
     if (!lowerCaseSearchTerm) {
@@ -75,29 +76,10 @@ function Main() {
     }
   };
 
-  const handleSearchInputChange = (inputValue) => {
-    setSearchTerm(inputValue);
-    if (inputValue.trim() === '') {
-      setAutocompleteSuggestions([]);
-      setFilteredTracks(allTracks);
-      return;
-    }
-    const lowerCaseInput = inputValue.toLowerCase();
-    const suggestions = allTracks.filter(track =>
-      (track.title && track.title.toLowerCase().includes(lowerCaseInput)) ||
-      (track.artist && track.artist.toLowerCase().includes(lowerCaseInput)) ||
-      (track.album && track.album.toLowerCase().includes(lowerCaseInput))
-    )
-    .map(track => track.title)
-    .filter((value, index, self) => self.indexOf(value) === index)
-    .slice(0, 5);
-    setAutocompleteSuggestions(suggestions.map(title => ({ id: title, name: title })));
-  };
+  // handleSearchInputChange and handleSuggestionClick removed
 
-  const handleSuggestionClick = (suggestionName) => {
-    setSearchTerm(suggestionName);
-    setAutocompleteSuggestions([]);
-    executeSearch(suggestionName);
+  const handleFeatureCategoryChange = (category) => {
+    setSelectedFeatureCategory(category);
   };
 
   const handlePlayTrack = (track) => {
@@ -190,10 +172,6 @@ function Main() {
     };
   }, [currentWaveSurfer.current]);
 
-  const handleFeatureCategoryChange = (category) => {
-    setSelectedFeatureCategory(category);
-  };
-
   return (
     <div className="Main">
       <Navbar />
@@ -207,11 +185,7 @@ function Main() {
           onTrackSelect={handleTrackSelect}
           onPlayTrack={handlePlayTrack}
           onSeek={handleSeek}
-          searchTerm={searchTerm}
-          onSearchInputChange={handleSearchInputChange}
-          autocompleteSuggestions={autocompleteSuggestions}
-          onSuggestionClick={handleSuggestionClick}
-          onExecuteSearch={executeSearch}
+          onSearch={executeSearch}
           isLoading={isLoading}
           error={error}
           selectedFeatureCategory={selectedFeatureCategory}

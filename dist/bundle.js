@@ -71,11 +71,7 @@ var Content = function Content(_ref) {
     onSeek = _ref.onSeek,
     isLoading = _ref.isLoading,
     error = _ref.error,
-    searchTerm = _ref.searchTerm,
-    onSearchInputChange = _ref.onSearchInputChange,
-    autocompleteSuggestions = _ref.autocompleteSuggestions,
-    onSuggestionClick = _ref.onSuggestionClick,
-    onExecuteSearch = _ref.onExecuteSearch,
+    onSearch = _ref.onSearch,
     selectedFeatureCategory = _ref.selectedFeatureCategory,
     onFeatureCategoryChange = _ref.onFeatureCategoryChange;
   if (isLoading) {
@@ -92,11 +88,7 @@ var Content = function Content(_ref) {
     "data-layer": "content",
     className: "Content"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_SearchComponent__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    searchTerm: searchTerm,
-    onSearchInputChange: onSearchInputChange,
-    suggestions: autocompleteSuggestions,
-    onSuggestionClick: onSuggestionClick,
-    onExecuteSearch: onExecuteSearch
+    onSearch: onSearch // Pass the single onSearch prop
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Tracklist__WEBPACK_IMPORTED_MODULE_1__["default"], {
     tracks: filteredTracks,
     selectedTrackId: selectedTrackId,
@@ -105,9 +97,7 @@ var Content = function Content(_ref) {
     currentPlayingTrackId: currentPlayingTrack === null || currentPlayingTrack === void 0 ? void 0 : currentPlayingTrack.id,
     isAudioPlaying: isPlaying,
     currentTime: currentTime,
-    onSeek: onSeek
-    // Pass feature category props to Tracklist
-    ,
+    onSeek: onSeek,
     selectedFeatureCategory: selectedFeatureCategory,
     onFeatureCategoryChange: onFeatureCategoryChange
   }));
@@ -285,21 +275,15 @@ function Main() {
     setContextTrack = _useContext.setCurrentTrack;
   var timeUpdateIntervalRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
 
-  // Autocomplete states
-  var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
-    _useState18 = _slicedToArray(_useState17, 2),
-    searchTerm = _useState18[0],
-    setSearchTerm = _useState18[1];
-  var _useState19 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
-    _useState20 = _slicedToArray(_useState19, 2),
-    autocompleteSuggestions = _useState20[0],
-    setAutocompleteSuggestions = _useState20[1];
+  // Autocomplete states removed
+  // const [searchTerm, setSearchTerm] = useState('');
+  // const [autocompleteSuggestions, setAutocompleteSuggestions] = useState([]);
 
   // State for selected feature category for the new column
-  var _useState21 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('Style'),
-    _useState22 = _slicedToArray(_useState21, 2),
-    selectedFeatureCategory = _useState22[0],
-    setSelectedFeatureCategory = _useState22[1]; // Default to 'Style'
+  var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('Style'),
+    _useState18 = _slicedToArray(_useState17, 2),
+    selectedFeatureCategory = _useState18[0],
+    setSelectedFeatureCategory = _useState18[1]; // Default to 'Style'
 
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     var fetchTracks = /*#__PURE__*/function () {
@@ -372,6 +356,8 @@ function Main() {
   var handleTrackSelect = function handleTrackSelect(trackId) {
     setSelectedTrackId(trackId);
   };
+
+  // This is the primary search execution function
   var executeSearch = function executeSearch(termToSearch) {
     var lowerCaseSearchTerm = termToSearch.toLowerCase().trim();
     if (!lowerCaseSearchTerm) {
@@ -383,32 +369,11 @@ function Main() {
       setFilteredTracks(results);
     }
   };
-  var handleSearchInputChange = function handleSearchInputChange(inputValue) {
-    setSearchTerm(inputValue);
-    if (inputValue.trim() === '') {
-      setAutocompleteSuggestions([]);
-      setFilteredTracks(allTracks);
-      return;
-    }
-    var lowerCaseInput = inputValue.toLowerCase();
-    var suggestions = allTracks.filter(function (track) {
-      return track.title && track.title.toLowerCase().includes(lowerCaseInput) || track.artist && track.artist.toLowerCase().includes(lowerCaseInput) || track.album && track.album.toLowerCase().includes(lowerCaseInput);
-    }).map(function (track) {
-      return track.title;
-    }).filter(function (value, index, self) {
-      return self.indexOf(value) === index;
-    }).slice(0, 5);
-    setAutocompleteSuggestions(suggestions.map(function (title) {
-      return {
-        id: title,
-        name: title
-      };
-    }));
-  };
-  var handleSuggestionClick = function handleSuggestionClick(suggestionName) {
-    setSearchTerm(suggestionName);
-    setAutocompleteSuggestions([]);
-    executeSearch(suggestionName);
+
+  // handleSearchInputChange and handleSuggestionClick removed
+
+  var handleFeatureCategoryChange = function handleFeatureCategoryChange(category) {
+    setSelectedFeatureCategory(category);
   };
   var handlePlayTrack = function handlePlayTrack(track) {
     if (!track || !track.id) {
@@ -494,9 +459,6 @@ function Main() {
       activeWs.un('seek', handleSeekEvent);
     };
   }, [currentWaveSurfer.current]);
-  var handleFeatureCategoryChange = function handleFeatureCategoryChange(category) {
-    setSelectedFeatureCategory(category);
-  };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "Main"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Navbar__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -510,11 +472,7 @@ function Main() {
     onTrackSelect: handleTrackSelect,
     onPlayTrack: handlePlayTrack,
     onSeek: handleSeek,
-    searchTerm: searchTerm,
-    onSearchInputChange: handleSearchInputChange,
-    autocompleteSuggestions: autocompleteSuggestions,
-    onSuggestionClick: handleSuggestionClick,
-    onExecuteSearch: executeSearch,
+    onSearch: executeSearch,
     isLoading: isLoading,
     error: error,
     selectedFeatureCategory: selectedFeatureCategory,
@@ -971,17 +929,20 @@ var SearchComponent = function SearchComponent(_ref) {
   };
   var handleSubmit = function handleSubmit(event) {
     event.preventDefault();
-    onSearch(searchTerm);
+    if (onSearch) {
+      onSearch(searchTerm);
+    }
   };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("form", {
     className: "SearchForm",
     onSubmit: handleSubmit
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
     type: "text",
-    placeholder: "Search tracks...",
+    placeholder: "Search tracks, artists, albums...",
     value: searchTerm,
     onChange: handleInputChange,
-    className: "SearchInput"
+    className: "SearchInput",
+    autoComplete: "off"
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
     type: "submit",
     className: "SearchButton"
@@ -3073,22 +3034,21 @@ var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBP
 // Module
 ___CSS_LOADER_EXPORT___.push([module.id, `.Navbar {
   align-self: stretch;
-  padding-left: 24px;
-  padding-right: 24px;
-  padding-top: 16px;
-  padding-bottom: 16px;
+  height: 52px;
+  padding: 0 24px;
   overflow: hidden;
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 24px;
-  display: inline-flex;
   background-color: #2e2e2e;
+  -webkit-app-region: drag;
 }
 .Navbar .NavbarMenu {
   justify-content: flex-start;
   align-items: center;
   gap: 24px;
   display: flex;
+  -webkit-app-region: no-drag;
 }
 .Navbar .NavbarMenu .NavbarMenuItem {
   color: white;
@@ -3098,16 +3058,16 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Navbar {
   line-height: 20px;
   word-wrap: break-word;
   cursor: pointer;
+  padding: 8px 0;
 }
 .Navbar .NavbarMenu .NavbarMenuItem.active, .Navbar .NavbarMenu .NavbarMenuItem:hover {
   font-weight: 700;
 }
 .Navbar .WindowControl {
-  width: 45px;
-  height: 18px;
-  position: relative;
+  height: 100%;
   display: flex;
   align-items: center;
+  -webkit-app-region: no-drag;
 }
 .Navbar .WindowControl .Icons {
   width: 18px;
@@ -3115,6 +3075,9 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Navbar {
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .Navbar .WindowControl .Icons .FullWindow {
   width: 18px;
@@ -3175,7 +3138,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Navbar {
   background: #9C9C9C;
   margin-left: 4px;
   margin-right: 4px;
-}`, "",{"version":3,"sources":["webpack://./src/components/Navbar.scss"],"names":[],"mappings":"AAAA;EACI,mBAAA;EACA,kBAAA;EACA,mBAAA;EACA,iBAAA;EACA,oBAAA;EACA,gBAAA;EACA,8BAAA;EACA,mBAAA;EACA,gBAAA;EACA,oBAAA;EACA,yBAAA;AACJ;AACI;EACE,2BAAA;EACA,mBAAA;EACA,SAAA;EACA,aAAA;AACN;AACM;EACE,YAAA;EACA,eAAA;EACA,gCAAA;EACA,gBAAA;EACA,iBAAA;EACA,qBAAA;EACA,eAAA;AACR;AACQ;EACE,gBAAA;AACV;AAII;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,aAAA;EACA,mBAAA;AAFN;AAIM;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EACA,eAAA;AAFR;AAQQ;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EAoBC,oEAAA;AAzBX;AAOU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AALZ;AAQU;EACE,WAAA;EACA,YAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AANZ;AAUU;EACE,UAAA;EACA,YAAA;EACA,UAAA,EAAA,6CAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AARZ;AAYQ;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;AAVV;AAYU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AAVZ;AAaU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,SAAA;EACA,kBAAA;EACA,mBAAA;AAXZ;AAeM;EACE,UAAA;EACA,YAAA;EACA,mBAAA;EACA,gBAAA;EACA,iBAAA;AAbR","sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/components/Navbar.scss"],"names":[],"mappings":"AAAA;EACI,mBAAA;EACA,YAAA;EACA,eAAA;EACA,gBAAA;EACA,aAAA;EACA,8BAAA;EACA,mBAAA;EACA,yBAAA;EACA,wBAAA;AACJ;AAEI;EACE,2BAAA;EACA,mBAAA;EACA,SAAA;EACA,aAAA;EACA,2BAAA;AAAN;AAEM;EACE,YAAA;EACA,eAAA;EACA,gCAAA;EACA,gBAAA;EACA,iBAAA;EACA,qBAAA;EACA,eAAA;EACA,cAAA;AAAR;AAEQ;EACE,gBAAA;AAAV;AAKI;EACE,YAAA;EACA,aAAA;EACA,mBAAA;EACA,2BAAA;AAHN;AAKM;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EACA,eAAA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;AAHR;AASQ;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EAoBC,oEAAA;AA1BX;AAQU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AANZ;AASU;EACE,WAAA;EACA,YAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AAPZ;AAWU;EACE,UAAA;EACA,YAAA;EACA,UAAA,EAAA,6CAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AATZ;AAaQ;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;AAXV;AAaU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,QAAA;EACA,kBAAA;EACA,mBAAA;AAXZ;AAcU;EACE,WAAA;EACA,WAAA;EACA,SAAA;EACA,SAAA;EACA,kBAAA;EACA,mBAAA;AAZZ;AAgBM;EACE,UAAA;EACA,YAAA;EACA,mBAAA;EACA,gBAAA;EACA,iBAAA;AAdR","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -3344,38 +3307,40 @@ var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBP
 // Module
 ___CSS_LOADER_EXPORT___.push([module.id, `.SearchForm {
   display: flex;
+  width: 100%;
   margin-bottom: 16px;
 }
 
 .SearchInput {
   flex-grow: 1;
-  padding: 8px 12px;
+  padding: 10px 15px;
+  font-size: 1rem;
   border: 1px solid #444;
   border-radius: 4px 0 0 4px;
-  background-color: #333;
+  background-color: #2c2c2c;
   color: #e0e0e0;
-  font-size: 0.9rem;
+  outline: none;
 }
 
 .SearchInput:focus {
-  outline: none;
-  border-color: #5a6a7a;
+  border-color: #1db954;
+  box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.2);
 }
 
 .SearchButton {
-  padding: 8px 16px;
-  border: 1px solid #444;
-  border-left: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #1db954;
+  color: white;
+  border: none;
   border-radius: 0 4px 4px 0;
-  background-color: #5a6a7a;
-  color: #ffffff;
   cursor: pointer;
-  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
 }
 
 .SearchButton:hover {
-  background-color: #6b7c8d;
-}`, "",{"version":3,"sources":["webpack://./src/components/SearchComponent.scss"],"names":[],"mappings":"AAAA;EACE,aAAA;EACA,mBAAA;AACF;;AAEA;EACE,YAAA;EACA,iBAAA;EACA,sBAAA;EACA,0BAAA;EACA,sBAAA;EACA,cAAA;EACA,iBAAA;AACF;;AAEA;EACE,aAAA;EACA,qBAAA;AACF;;AAEA;EACE,iBAAA;EACA,sBAAA;EACA,iBAAA;EACA,0BAAA;EACA,yBAAA;EACA,cAAA;EACA,eAAA;EACA,iBAAA;AACF;;AAEA;EACE,yBAAA;AACF","sourceRoot":""}]);
+  background-color: #1aa34a;
+}`, "",{"version":3,"sources":["webpack://./src/components/SearchComponent.scss"],"names":[],"mappings":"AAAA;EACE,aAAA;EACA,WAAA;EACA,mBAAA;AACF;;AAEA;EACE,YAAA;EACA,kBAAA;EACA,eAAA;EACA,sBAAA;EACA,0BAAA;EACA,yBAAA;EACA,cAAA;EACA,aAAA;AACF;;AAEA;EACE,qBAAA;EACA,4CAAA;AACF;;AAEA;EACE,kBAAA;EACA,eAAA;EACA,yBAAA;EACA,YAAA;EACA,YAAA;EACA,0BAAA;EACA,eAAA;EACA,sCAAA;AACF;;AAEA;EACE,yBAAA;AACF","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -3422,6 +3387,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Sidebar {
   justify-content: flex-start;
   align-items: flex-start;
   display: flex;
+  -webkit-app-region: drag;
 }
 
 .Sidebar .WindowControlsOuter .WindowControlsInner {
@@ -3432,6 +3398,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Sidebar {
   align-items: center;
   gap: 8px;
   display: flex;
+  -webkit-app-region: no-drag;
 }
 
 .Sidebar .WindowControlsOuter .WindowControlsInner .Close,
@@ -3442,6 +3409,8 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Sidebar {
   position: relative;
   border-radius: 100px;
   border: 0.5px rgba(0, 0, 0, 0.2) solid;
+  -webkit-app-region: no-drag;
+  cursor: pointer;
 }
 
 .Sidebar .WindowControlsOuter .WindowControlsInner .Close {
@@ -3592,7 +3561,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Sidebar {
   top: 1.5px;
   position: absolute;
   background: #696969;
-}`, "",{"version":3,"sources":["webpack://./src/components/Sidebar.scss"],"names":[],"mappings":"AAEA;EACE,YAAA;EACA,mBAAA;EACA,mBAAA;EACA,gBAAA;EAEA,sBAAA;EACA,2BAAA;EACA,oBAAA;EACA,aAAA;EACA,sBAAA;AAFF;;AAWA;EACE,mBAAA;EACA,YAAA;EACA,cAAA;EACA,sBAAA;EACA,2BAAA;EACA,uBAAA;EACA,aAAA;AARF;;AAWA;EACE,YAAA;EACA,kBAAA;EACA,mBAAA;EACA,2BAAA;EACA,mBAAA;EACA,QAAA;EACA,aAAA;AARF;;AAWA;;;EAGE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,oBAAA;EACA,sCAAA;AARF;;AAUA;EAA4D,mBAAA;AAN5D;;AAOA;EAA+D,mBAAA;AAH/D;;AAIA;EAA2D,mBAAA;AAA3D;;AAEA;EACE,mBAAA;EACA,WAAA;EACA,sBAAA;EACA,2BAAA;EACA,uBAAA;EACA,aAAA;EACA,WAAA;EACA,gBAAA;EACA,kBAAA;AACF;;AAEA;EACE,mBAAA;EACA,kBAAA;EACA,mBAAA;EACA,gBAAA;EACA,mBAAA;EACA,gBAAA;EACA,sBAAA;EACA,2BAAA;EACA,uBAAA;EACA,QAAA;EACA,aAAA;EACA,WAAA;EACA,sBAAA;AACF;;AAEA;EACE,mBAAA;EACA,aAAA;EACA,8BAAA;EACA,mBAAA;EACA,YAAA;AACF;;AAEA;EACE,WAAA;EACA,cAAA;EACA,eAAA;EACA,gCAAA;EACA,gBAAA;EACA,iBAAA;EACA,qBAAA;EACA,yBAAA;AACF;;AAEA;EACE,uBAAA;EACA,YAAA;EACA,cAAA;EACA,eAAA;EACA,UAAA;EACA,WAAA;EACA,YAAA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;EACA,kBAAA;EACA,uDAAA;AACF;;AAEA;EACE,yBAAA;EACA,cAAA;AACF;;AAEA;EACE,yBAAA;AACF;;AAEA;EACE,eAAA;EACA,iBAAA;EACA,cAAA;AACF;;AAEA;EACE,mBAAA;EACA,WAAA;EACA,mBAAA;EACA,gBAAA;EACA,cAAA;AACF;;AAEA;EACE,mBAAA;EACA,kBAAA;EACA,gBAAA;EACA,8BAAA;EACA,mBAAA;EACA,aAAA;EACA,cAAA;EACA,sBAAA;AACF;;AAEA;EACE,uBAAA;EACA,mBAAA;EACA,SAAA;EACA,aAAA;AACF;;AAEA;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,yBAAA;AACF;;AAEA;EACE,WAAA;EACA,YAAA;EACA,cAAA;EACA,eAAA;EACA,gCAAA;EACA,gBAAA;EACA,iBAAA;EACA,qBAAA;AACF;;AAEA;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EACA,eAAA;AACF;;AAEA;EACE,cAAA;EACA,YAAA;EACA,YAAA;EACA,UAAA;EACA,kBAAA;EACA,mBAAA;AACF","sourceRoot":""}]);
+}`, "",{"version":3,"sources":["webpack://./src/components/Sidebar.scss"],"names":[],"mappings":"AAEA;EACE,YAAA;EACA,mBAAA;EACA,mBAAA;EACA,gBAAA;EAEA,sBAAA;EACA,2BAAA;EACA,oBAAA;EACA,aAAA;EACA,sBAAA;AAFF;;AAMA;EACE,mBAAA;EACA,YAAA;EACA,cAAA;EACA,sBAAA;EACA,2BAAA;EACA,uBAAA;EACA,aAAA;EACA,wBAAA;AAHF;;AAQA;EACE,YAAA;EACA,kBAAA;EACA,mBAAA;EACA,2BAAA;EACA,mBAAA;EACA,QAAA;EACA,aAAA;EACA,2BAAA;AALF;;AASA;;;EAGE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,oBAAA;EACA,sCAAA;EACA,2BAAA;EACA,eAAA;AANF;;AAQA;EAA4D,mBAAA;AAJ5D;;AAKA;EAA+D,mBAAA;AAD/D;;AAEA;EAA2D,mBAAA;AAE3D;;AAAA;EACE,mBAAA;EACA,WAAA;EACA,sBAAA;EACA,2BAAA;EACA,uBAAA;EACA,aAAA;EACA,WAAA;EACA,gBAAA;EACA,kBAAA;AAGF;;AAAA;EACE,mBAAA;EACA,kBAAA;EACA,mBAAA;EACA,gBAAA;EACA,mBAAA;EACA,gBAAA;EACA,sBAAA;EACA,2BAAA;EACA,uBAAA;EACA,QAAA;EACA,aAAA;EACA,WAAA;EACA,sBAAA;AAGF;;AAAA;EACE,mBAAA;EACA,aAAA;EACA,8BAAA;EACA,mBAAA;EACA,YAAA;AAGF;;AAAA;EACE,WAAA;EACA,cAAA;EACA,eAAA;EACA,gCAAA;EACA,gBAAA;EACA,iBAAA;EACA,qBAAA;EACA,yBAAA;AAGF;;AAAA;EACE,uBAAA;EACA,YAAA;EACA,cAAA;EACA,eAAA;EACA,UAAA;EACA,WAAA;EACA,YAAA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;EACA,kBAAA;EACA,uDAAA;AAGF;;AAAA;EACE,yBAAA;EACA,cAAA;AAGF;;AAAA;EACE,yBAAA;AAGF;;AAAA;EACE,eAAA;EACA,iBAAA;EACA,cAAA;AAGF;;AAAA;EACE,mBAAA;EACA,WAAA;EACA,mBAAA;EACA,gBAAA;EACA,cAAA;AAGF;;AAAA;EACE,mBAAA;EACA,kBAAA;EACA,gBAAA;EACA,8BAAA;EACA,mBAAA;EACA,aAAA;EACA,cAAA;EACA,sBAAA;AAGF;;AAAA;EACE,uBAAA;EACA,mBAAA;EACA,SAAA;EACA,aAAA;AAGF;;AAAA;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,yBAAA;AAGF;;AAAA;EACE,WAAA;EACA,YAAA;EACA,cAAA;EACA,eAAA;EACA,gCAAA;EACA,gBAAA;EACA,iBAAA;EACA,qBAAA;AAGF;;AAAA;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EACA,eAAA;AAGF;;AAAA;EACE,cAAA;EACA,YAAA;EACA,YAAA;EACA,UAAA;EACA,kBAAA;EACA,mBAAA;AAGF","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

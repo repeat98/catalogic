@@ -10,17 +10,20 @@ const SearchComponent = ({ onSearch }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onSearch(searchTerm);
+    if (onSearch) {
+      onSearch(searchTerm);
+    }
   };
 
   return (
     <form className="SearchForm" onSubmit={handleSubmit}>
       <input
         type="text"
-        placeholder="Search tracks..."
+        placeholder="Search tracks, artists, albums..."
         value={searchTerm}
         onChange={handleInputChange}
         className="SearchInput"
+        autoComplete="off"
       />
       <button type="submit" className="SearchButton">Search</button>
     </form>

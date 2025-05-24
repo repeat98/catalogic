@@ -11,34 +11,34 @@
   align-items: stretch;       // MODIFIED: Ensures children stretch to full width by default
   display: flex;
   box-sizing: border-box;    // Good practice
-
-  // IMPORTANT: For the flex layout to work as intended, especially with
-  // .Menu having flex-grow: 1, the .Sidebar itself needs a defined height.
-  // For example, if it's meant to be full viewport height:
-  // height: 100vh;
-  // Or if its parent has a defined height, you might use height: 100%;
+  // -webkit-app-region: drag; // REMOVE - Sidebar itself is not draggable
 }
 
-.Sidebar .WindowControlsOuter { // Increased specificity slightly for clarity
+.Sidebar .WindowControlsOuter { 
   align-self: stretch;
   height: 52px;
-  flex-shrink: 0; // Prevent this from shrinking
+  flex-shrink: 0;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
+  justify-content: flex-start; // This should be center if WindowControlsInner is to be centered
+  align-items: flex-start;   // This should be center or stretch if WindowControlsInner is to be centered/full-width
   display: flex;
+  -webkit-app-region: drag; // MAKE THIS AREA DRAGGABLE
+  // Add padding or direct alignment for WindowControlsInner if needed
+  // e.g., padding-left: 12px; to align with trafficLightPosition from main.js if x was 12 relative to sidebar start
 }
 
 .Sidebar .WindowControlsOuter .WindowControlsInner {
-  height: 52px;
-  padding-left: 24px;
+  height: 52px; // It can take full height of its parent
+  padding-left: 24px; // Original padding
   padding-right: 24px;
   justify-content: flex-start;
-  align-items: center;
+  align-items: center; // Vertically center the buttons
   gap: 8px;
   display: flex;
+  -webkit-app-region: no-drag; // IMPORTANT: The container of buttons is no-drag
 }
 
+// Ensure individual buttons are also no-drag, though parent container might cover it.
 .Sidebar .WindowControlsOuter .WindowControlsInner .Close,
 .Sidebar .WindowControlsOuter .WindowControlsInner .Minimize,
 .Sidebar .WindowControlsOuter .WindowControlsInner .Zoom {
@@ -47,6 +47,8 @@
   position: relative;
   border-radius: 100px;
   border: 0.50px rgba(0, 0, 0, 0.20) solid;
+  -webkit-app-region: no-drag; // Explicitly make buttons clickable
+  cursor: pointer; // Indicate they are clickable
 }
 .Sidebar .WindowControlsOuter .WindowControlsInner .Close { background: #FF5F57; }
 .Sidebar .WindowControlsOuter .WindowControlsInner .Minimize { background: #FEBC2E; }

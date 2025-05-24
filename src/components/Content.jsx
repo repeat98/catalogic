@@ -15,12 +15,8 @@ const Content = ({
   onSeek,
   isLoading,
   error,
-  // Autocomplete Search Props
-  searchTerm,
-  onSearchInputChange,
-  autocompleteSuggestions,
-  onSuggestionClick,
-  onExecuteSearch,
+  // Search prop
+  onSearch, // This will be executeSearch from Main
   // Feature Column Props
   selectedFeatureCategory,
   onFeatureCategoryChange
@@ -37,11 +33,7 @@ const Content = ({
   return (
     <div data-layer="content" className="Content">
       <SearchComponent 
-        searchTerm={searchTerm}
-        onSearchInputChange={onSearchInputChange}
-        suggestions={autocompleteSuggestions}
-        onSuggestionClick={onSuggestionClick}
-        onExecuteSearch={onExecuteSearch}
+        onSearch={onSearch} // Pass the single onSearch prop
       />
       <Tracklist
         tracks={filteredTracks}
@@ -52,7 +44,6 @@ const Content = ({
         isAudioPlaying={isPlaying}
         currentTime={currentTime}
         onSeek={onSeek}
-        // Pass feature category props to Tracklist
         selectedFeatureCategory={selectedFeatureCategory}
         onFeatureCategoryChange={onFeatureCategoryChange}
       />
