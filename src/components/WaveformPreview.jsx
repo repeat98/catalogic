@@ -56,6 +56,11 @@ const WaveformPreview = ({
         throw new Error(`Audio file not found: ${response.status} ${response.statusText}`);
       }
 
+      // Explicitly clear the container before creating a new WaveSurfer instance
+      if (waveformRef.current) {
+        waveformRef.current.innerHTML = '';
+      }
+
       const wavesurfer = WaveSurfer.create({
         container: waveformRef.current,
         height,

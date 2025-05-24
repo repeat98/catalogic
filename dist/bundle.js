@@ -1588,6 +1588,10 @@ var WaveformPreview = function WaveformPreview(_ref) {
           }
           throw new Error("Audio file not found: ".concat(response.status, " ").concat(response.statusText));
         case 17:
+          // Explicitly clear the container before creating a new WaveSurfer instance
+          if (waveformRef.current) {
+            waveformRef.current.innerHTML = '';
+          }
           wavesurfer = wavesurfer_js__WEBPACK_IMPORTED_MODULE_1__["default"].create({
             container: waveformRef.current,
             height: height,
@@ -1678,32 +1682,32 @@ var WaveformPreview = function WaveformPreview(_ref) {
             }, _callee, null, [[5, 12]]);
           })));
           if (!cachedPeaks) {
-            _context2.next = 28;
+            _context2.next = 29;
             break;
           }
-          _context2.next = 26;
+          _context2.next = 27;
           return wavesurfer.load(audioUrl, cachedPeaks);
-        case 26:
-          _context2.next = 30;
+        case 27:
+          _context2.next = 31;
           break;
-        case 28:
-          _context2.next = 30;
+        case 29:
+          _context2.next = 31;
           return wavesurfer.load(audioUrl);
-        case 30:
-          _context2.next = 38;
+        case 31:
+          _context2.next = 39;
           break;
-        case 32:
-          _context2.prev = 32;
+        case 33:
+          _context2.prev = 33;
           _context2.t0 = _context2["catch"](5);
           console.error('Error initializing waveform for track:', trackId, _context2.t0);
           setError('Error initializing waveform');
           setIsLoading(false);
           setIsReady(false);
-        case 38:
+        case 39:
         case "end":
           return _context2.stop();
       }
-    }, _callee2, null, [[5, 32]]);
+    }, _callee2, null, [[5, 33]]);
   })), [trackId, height, waveColor, progressColor, onSeek, onPlayClick]);
   var cleanupWaveform = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
     if (initTimeoutRef.current) clearTimeout(initTimeoutRef.current);
