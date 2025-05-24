@@ -154,3 +154,13 @@
 
 // .Ellipse-Dark and .Ellipse-Light are now handled by context within .Property1Options and .Property1OptionSelected
 // No need for these as separate utility classes for dots if structured as above.
+
+// Drag and drop styles
+.MenuItemInstanceWrapper.DragTarget {
+  &:hover {
+    .Property1Default, .Property1Options, .Property1Selected, .Property1OptionSelected {
+      border: 2px dashed #4a9eff;
+      background-color: rgba(74, 158, 255, 0.1) !important;
+    }
+  }
+}

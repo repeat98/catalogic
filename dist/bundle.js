@@ -19,6 +19,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _context_PlaybackContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./context/PlaybackContext */ "./src/context/PlaybackContext.jsx");
 /* harmony import */ var _utils_waveformPreloader__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils/waveformPreloader */ "./src/utils/waveformPreloader.js");
 /* harmony import */ var _App_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./App.scss */ "./src/App.scss");
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
  // Assuming Sidebar.jsx is in the same directory
  // Assuming Main.jsx is in the same directory
@@ -27,6 +33,26 @@ __webpack_require__.r(__webpack_exports__);
  // For AppWindow styles
 
 var App = function App() {
+  // Shared state between Sidebar and Main
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({}),
+    _useState2 = _slicedToArray(_useState, 2),
+    crates = _useState2[0],
+    setCrates = _useState2[1];
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState4 = _slicedToArray(_useState3, 2),
+    selectedCrateId = _useState4[0],
+    setSelectedCrateId = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('Tracks'),
+    _useState6 = _slicedToArray(_useState5, 2),
+    selectedLibraryItem = _useState6[0],
+    setSelectedLibraryItem = _useState6[1];
+  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('library'),
+    _useState8 = _slicedToArray(_useState7, 2),
+    viewMode = _useState8[0],
+    setViewMode = _useState8[1]; // 'library' or 'crate'
+
+  // Crate management functions refs - will be set by Main component
+  var crateManagementRef = react__WEBPACK_IMPORTED_MODULE_0___default().useRef({});
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     (0,_utils_waveformPreloader__WEBPACK_IMPORTED_MODULE_4__.preloadAllWaveforms)(); // Call the preloader on app start
   }, []); // Empty dependency array ensures it runs only once
@@ -34,7 +60,25 @@ var App = function App() {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_context_PlaybackContext__WEBPACK_IMPORTED_MODULE_3__.PlaybackProvider, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     "data-layer": "app-window",
     className: "AppWindow"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_Sidebar__WEBPACK_IMPORTED_MODULE_1__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_Main__WEBPACK_IMPORTED_MODULE_2__["default"], null)));
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_Sidebar__WEBPACK_IMPORTED_MODULE_1__["default"], {
+    crates: crates,
+    selectedCrateId: selectedCrateId,
+    selectedLibraryItem: selectedLibraryItem,
+    onCrateSelect: setSelectedCrateId,
+    onLibraryItemSelect: setSelectedLibraryItem,
+    onViewModeChange: setViewMode,
+    crateManagementRef: crateManagementRef
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_components_Main__WEBPACK_IMPORTED_MODULE_2__["default"], {
+    crates: crates,
+    setCrates: setCrates,
+    selectedCrateId: selectedCrateId,
+    setSelectedCrateId: setSelectedCrateId,
+    selectedLibraryItem: selectedLibraryItem,
+    setSelectedLibraryItem: setSelectedLibraryItem,
+    viewMode: viewMode,
+    setViewMode: setViewMode,
+    crateManagementRef: crateManagementRef
+  })));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
 
@@ -85,7 +129,13 @@ var Content = function Content(_ref) {
     activeFilters = _ref.activeFilters,
     onToggleFilter = _ref.onToggleFilter,
     filterLogicMode = _ref.filterLogicMode,
-    onToggleFilterLogicMode = _ref.onToggleFilterLogicMode;
+    onToggleFilterLogicMode = _ref.onToggleFilterLogicMode,
+    onTrackDragStart = _ref.onTrackDragStart,
+    viewMode = _ref.viewMode,
+    selectedCrateId = _ref.selectedCrateId,
+    selectedLibraryItem = _ref.selectedLibraryItem,
+    crates = _ref.crates,
+    onRemoveTrackFromCrate = _ref.onRemoveTrackFromCrate;
   if (isLoading) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "ContentLoading"
@@ -96,10 +146,51 @@ var Content = function Content(_ref) {
       className: "ContentError"
     }, "Error loading tracks: ", error, ". Make sure the backend server is running.");
   }
+
+  // Get current view info
+  var getCurrentViewInfo = function getCurrentViewInfo() {
+    if (viewMode === 'crate' && selectedCrateId && crates[selectedCrateId]) {
+      return {
+        title: crates[selectedCrateId].name,
+        subtitle: 'Crate',
+        trackCount: filteredTracks.length
+      };
+    } else {
+      return {
+        title: selectedLibraryItem || 'Tracks',
+        subtitle: 'Library',
+        trackCount: filteredTracks.length
+      };
+    }
+  };
+  var viewInfo = getCurrentViewInfo();
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     "data-layer": "content",
     className: "Content"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "ViewHeader"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "ViewInfo"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h2", {
+    className: "ViewTitle"
+  }, viewInfo.title), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+    className: "ViewSubtitle"
+  }, viewInfo.subtitle, " \u2022 ", viewInfo.trackCount, " tracks")), viewMode === 'crate' && selectedCrateId && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "CrateActions"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    className: "CrateActionButton",
+    title: "Clear crate filters to see all tracks in this crate",
+    onClick: function onClick() {
+      // Clear all filters when viewing a crate
+      Object.keys(activeFilters).forEach(function (category) {
+        if (activeFilters[category] && activeFilters[category].length > 0) {
+          activeFilters[category].forEach(function (value) {
+            return onToggleFilter(category, value);
+          });
+        }
+      });
+    }
+  }, "Show All Crate Tracks"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "SearchAndFilterControls"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_SearchComponent__WEBPACK_IMPORTED_MODULE_2__["default"], {
     searchTerm: searchTerm,
@@ -128,6 +219,9 @@ var Content = function Content(_ref) {
     ,
     sortConfig: sortConfig,
     requestSort: requestSort
+    // Pass drag and drop props to Tracklist
+    ,
+    onTrackDragStart: onTrackDragStart
   }));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Content);
@@ -389,12 +483,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Player__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Player */ "./src/components/Player.jsx");
 /* harmony import */ var _context_PlaybackContext__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../context/PlaybackContext */ "./src/context/PlaybackContext.jsx");
 /* harmony import */ var _Main_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Main.scss */ "./src/components/Main.scss");
-function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return r; }; var t, r = {}, e = Object.prototype, n = e.hasOwnProperty, o = "function" == typeof Symbol ? Symbol : {}, i = o.iterator || "@@iterator", a = o.asyncIterator || "@@asyncIterator", u = o.toStringTag || "@@toStringTag"; function c(t, r, e, n) { return Object.defineProperty(t, r, { value: e, enumerable: !n, configurable: !n, writable: !n }); } try { c({}, ""); } catch (t) { c = function c(t, r, e) { return t[r] = e; }; } function h(r, e, n, o) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype); return c(a, "_invoke", function (r, e, n) { var o = 1; return function (i, a) { if (3 === o) throw Error("Generator is already running"); if (4 === o) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var u = n.delegate; if (u) { var c = d(u, n); if (c) { if (c === f) continue; return c; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (1 === o) throw o = 4, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = 3; var h = s(r, e, n); if ("normal" === h.type) { if (o = n.done ? 4 : 2, h.arg === f) continue; return { value: h.arg, done: n.done }; } "throw" === h.type && (o = 4, n.method = "throw", n.arg = h.arg); } }; }(r, n, new Context(o || [])), !0), a; } function s(t, r, e) { try { return { type: "normal", arg: t.call(r, e) }; } catch (t) { return { type: "throw", arg: t }; } } r.wrap = h; var f = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var l = {}; c(l, i, function () { return this; }); var p = Object.getPrototypeOf, y = p && p(p(x([]))); y && y !== e && n.call(y, i) && (l = y); var v = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(l); function g(t) { ["next", "throw", "return"].forEach(function (r) { c(t, r, function (t) { return this._invoke(r, t); }); }); } function AsyncIterator(t, r) { function e(o, i, a, u) { var c = s(t[o], t, i); if ("throw" !== c.type) { var h = c.arg, f = h.value; return f && "object" == _typeof(f) && n.call(f, "__await") ? r.resolve(f.__await).then(function (t) { e("next", t, a, u); }, function (t) { e("throw", t, a, u); }) : r.resolve(f).then(function (t) { h.value = t, a(h); }, function (t) { return e("throw", t, a, u); }); } u(c.arg); } var o; c(this, "_invoke", function (t, n) { function i() { return new r(function (r, o) { e(t, n, r, o); }); } return o = o ? o.then(i, i) : i(); }, !0); } function d(r, e) { var n = e.method, o = r.i[n]; if (o === t) return e.delegate = null, "throw" === n && r.i["return"] && (e.method = "return", e.arg = t, d(r, e), "throw" === e.method) || "return" !== n && (e.method = "throw", e.arg = new TypeError("The iterator does not provide a '" + n + "' method")), f; var i = s(o, r.i, e.arg); if ("throw" === i.type) return e.method = "throw", e.arg = i.arg, e.delegate = null, f; var a = i.arg; return a ? a.done ? (e[r.r] = a.value, e.next = r.n, "return" !== e.method && (e.method = "next", e.arg = t), e.delegate = null, f) : a : (e.method = "throw", e.arg = new TypeError("iterator result is not an object"), e.delegate = null, f); } function w(t) { this.tryEntries.push(t); } function m(r) { var e = r[4] || {}; e.type = "normal", e.arg = t, r[4] = e; } function Context(t) { this.tryEntries = [[-1]], t.forEach(w, this), this.reset(!0); } function x(r) { if (null != r) { var e = r[i]; if (e) return e.call(r); if ("function" == typeof r.next) return r; if (!isNaN(r.length)) { var o = -1, a = function e() { for (; ++o < r.length;) if (n.call(r, o)) return e.value = r[o], e.done = !1, e; return e.value = t, e.done = !0, e; }; return a.next = a; } } throw new TypeError(_typeof(r) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, c(v, "constructor", GeneratorFunctionPrototype), c(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = c(GeneratorFunctionPrototype, u, "GeneratorFunction"), r.isGeneratorFunction = function (t) { var r = "function" == typeof t && t.constructor; return !!r && (r === GeneratorFunction || "GeneratorFunction" === (r.displayName || r.name)); }, r.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, c(t, u, "GeneratorFunction")), t.prototype = Object.create(v), t; }, r.awrap = function (t) { return { __await: t }; }, g(AsyncIterator.prototype), c(AsyncIterator.prototype, a, function () { return this; }), r.AsyncIterator = AsyncIterator, r.async = function (t, e, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(h(t, e, n, o), i); return r.isGeneratorFunction(e) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, g(v), c(v, u, "Generator"), c(v, i, function () { return this; }), c(v, "toString", function () { return "[object Generator]"; }), r.keys = function (t) { var r = Object(t), e = []; for (var n in r) e.unshift(n); return function t() { for (; e.length;) if ((n = e.pop()) in r) return t.value = n, t.done = !1, t; return t.done = !0, t; }; }, r.values = x, Context.prototype = { constructor: Context, reset: function reset(r) { if (this.prev = this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(m), !r) for (var e in this) "t" === e.charAt(0) && n.call(this, e) && !isNaN(+e.slice(1)) && (this[e] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0][4]; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(r) { if (this.done) throw r; var e = this; function n(t) { a.type = "throw", a.arg = r, e.next = t; } for (var o = e.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i[4], u = this.prev, c = i[1], h = i[2]; if (-1 === i[0]) return n("end"), !1; if (!c && !h) throw Error("try statement without catch or finally"); if (null != i[0] && i[0] <= u) { if (u < c) return this.method = "next", this.arg = t, n(c), !0; if (u < h) return n(h), !1; } } }, abrupt: function abrupt(t, r) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var n = this.tryEntries[e]; if (n[0] > -1 && n[0] <= this.prev && this.prev < n[2]) { var o = n; break; } } o && ("break" === t || "continue" === t) && o[0] <= r && r <= o[2] && (o = null); var i = o ? o[4] : {}; return i.type = t, i.arg = r, o ? (this.method = "next", this.next = o[2], f) : this.complete(i); }, complete: function complete(t, r) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && r && (this.next = r), f; }, finish: function finish(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[2] === t) return this.complete(e[4], e[3]), m(e), f; } }, "catch": function _catch(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[0] === t) { var n = e[4]; if ("throw" === n.type) { var o = n.arg; m(e); } return o; } } throw Error("illegal catch attempt"); }, delegateYield: function delegateYield(r, e, n) { return this.delegate = { i: x(r), r: e, n: n }, "next" === this.method && (this.arg = t), f; } }, r; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return r; }; var t, r = {}, e = Object.prototype, n = e.hasOwnProperty, o = "function" == typeof Symbol ? Symbol : {}, i = o.iterator || "@@iterator", a = o.asyncIterator || "@@asyncIterator", u = o.toStringTag || "@@toStringTag"; function c(t, r, e, n) { return Object.defineProperty(t, r, { value: e, enumerable: !n, configurable: !n, writable: !n }); } try { c({}, ""); } catch (t) { c = function c(t, r, e) { return t[r] = e; }; } function h(r, e, n, o) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype); return c(a, "_invoke", function (r, e, n) { var o = 1; return function (i, a) { if (3 === o) throw Error("Generator is already running"); if (4 === o) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var u = n.delegate; if (u) { var c = d(u, n); if (c) { if (c === f) continue; return c; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (1 === o) throw o = 4, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = 3; var h = s(r, e, n); if ("normal" === h.type) { if (o = n.done ? 4 : 2, h.arg === f) continue; return { value: h.arg, done: n.done }; } "throw" === h.type && (o = 4, n.method = "throw", n.arg = h.arg); } }; }(r, n, new Context(o || [])), !0), a; } function s(t, r, e) { try { return { type: "normal", arg: t.call(r, e) }; } catch (t) { return { type: "throw", arg: t }; } } r.wrap = h; var f = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var l = {}; c(l, i, function () { return this; }); var p = Object.getPrototypeOf, y = p && p(p(x([]))); y && y !== e && n.call(y, i) && (l = y); var v = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(l); function g(t) { ["next", "throw", "return"].forEach(function (r) { c(t, r, function (t) { return this._invoke(r, t); }); }); } function AsyncIterator(t, r) { function e(o, i, a, u) { var c = s(t[o], t, i); if ("throw" !== c.type) { var h = c.arg, f = h.value; return f && "object" == _typeof(f) && n.call(f, "__await") ? r.resolve(f.__await).then(function (t) { e("next", t, a, u); }, function (t) { e("throw", t, a, u); }) : r.resolve(f).then(function (t) { h.value = t, a(h); }, function (t) { return e("throw", t, a, u); }); } u(c.arg); } var o; c(this, "_invoke", function (t, n) { function i() { return new r(function (r, o) { e(t, n, r, o); }); } return o = o ? o.then(i, i) : i(); }, !0); } function d(r, e) { var n = e.method, o = r.i[n]; if (o === t) return e.delegate = null, "throw" === n && r.i["return"] && (e.method = "return", e.arg = t, d(r, e), "throw" === e.method) || "return" !== n && (e.method = "throw", e.arg = new TypeError("The iterator does not provide a '" + n + "' method")), f; var i = s(o, r.i, e.arg); if ("throw" === i.type) return e.method = "throw", e.arg = i.arg, e.delegate = null, f; var a = i.arg; return a ? a.done ? (e[r.r] = a.value, e.next = r.n, "return" !== e.method && (e.method = "next", e.arg = t), e.delegate = null, f) : a : (e.method = "throw", e.arg = new TypeError("iterator result is not an object"), e.delegate = null, f); } function w(t) { this.tryEntries.push(t); } function m(r) { var e = r[4] || {}; e.type = "normal", e.arg = t, r[4] = e; } function Context(t) { this.tryEntries = [[-1]], t.forEach(w, this), this.reset(!0); } function x(r) { if (null != r) { var e = r[i]; if (e) return e.call(r); if ("function" == typeof r.next) return r; if (!isNaN(r.length)) { var o = -1, a = function e() { for (; ++o < r.length;) if (n.call(r, o)) return e.value = r[o], e.done = !1, e; return e.value = t, e.done = !0, e; }; return a.next = a; } } throw new TypeError(_typeof(r) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, c(v, "constructor", GeneratorFunctionPrototype), c(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = c(GeneratorFunctionPrototype, u, "GeneratorFunction"), r.isGeneratorFunction = function (t) { var r = "function" == typeof t && t.constructor; return !!r && (r === GeneratorFunction || "GeneratorFunction" === (r.displayName || r.name)); }, r.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, c(t, u, "GeneratorFunction")), t.prototype = Object.create(v), t; }, r.awrap = function (t) { return { __await: t }; }, g(AsyncIterator.prototype), c(AsyncIterator.prototype, a, function () { return this; }), r.AsyncIterator = AsyncIterator, r.async = function (t, e, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(h(t, e, n, o), i); return r.isGeneratorFunction(e) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, g(v), c(v, u, "Generator"), c(v, i, function () { return this; }), c(v, "toString", function () { return "[object Generator]"; }), r.keys = function (t) { var r = Object(t), e = []; for (var n in r) e.unshift(n); return function t() { for (; e.length;) if ((n = e.pop()) in r) return t.value = n, t.done = !1, t; return t.done = !0, t; }; }, r.values = x, Context.prototype = { constructor: Context, reset: function reset(r) { if (this.prev = this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(m), !r) for (var e in this) "t" === e.charAt(0) && n.call(this, e) && !isNaN(+e.slice(1)) && (this[e] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0][4]; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(r) { if (this.done) throw r; var e = this; function n(t) { a.type = "throw", a.arg = r, e.next = t; } for (var o = e.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i[4], u = this.prev, c = i[1], h = i[2]; if (-1 === i[0]) return n("end"), !1; if (!c && !h) throw Error("try statement without catch or finally"); if (null != i[0] && i[0] <= u) { if (u < c) return this.method = "next", this.arg = t, n(c), !0; if (u < h) return n(h), !1; } } }, abrupt: function abrupt(t, r) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var n = this.tryEntries[e]; if (n[0] > -1 && n[0] <= this.prev && this.prev < n[2]) { var o = n; break; } } o && ("break" === t || "continue" === t) && o[0] <= r && r <= o[2] && (o = null); var i = o ? o[4] : {}; return i.type = t, i.arg = r, o ? (this.method = "next", this.next = o[2], f) : this.complete(i); }, complete: function complete(t, r) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && r && (this.next = r), f; }, finish: function finish(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[2] === t) return this.complete(e[4], e[3]), m(e), f; } }, "catch": function _catch(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[0] === t) { var n = e[4]; if ("throw" === n.type) { var o = n.arg; m(e); } return o; } } throw Error("illegal catch attempt"); }, delegateYield: function delegateYield(r, e, n) { return this.delegate = { i: x(r), r: e, n: n }, "next" === this.method && (this.arg = t), f; } }, r; }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
@@ -687,7 +781,16 @@ var sortTracks = function sortTracks(tracks, sortConfig, selectedFeatureCategory
   });
   return sortedTracks;
 };
-function Main() {
+function Main(_ref19) {
+  var crates = _ref19.crates,
+    setCrates = _ref19.setCrates,
+    selectedCrateId = _ref19.selectedCrateId,
+    setSelectedCrateId = _ref19.setSelectedCrateId,
+    selectedLibraryItem = _ref19.selectedLibraryItem,
+    setSelectedLibraryItem = _ref19.setSelectedLibraryItem,
+    viewMode = _ref19.viewMode,
+    setViewMode = _ref19.setViewMode,
+    crateManagementRef = _ref19.crateManagementRef;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
     _useState2 = _slicedToArray(_useState, 2),
     allTracks = _useState2[0],
@@ -770,30 +873,326 @@ function Main() {
     filterLogicMode = _useState30[0],
     setFilterLogicMode = _useState30[1]; // 'intersection' (AND) or 'union' (OR)
 
+  // Crate and view management state is now passed as props
+
+  // Crate management functions
+  var fetchCrates = /*#__PURE__*/function () {
+    var _ref20 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+      var response, cratesData;
+      return _regeneratorRuntime().wrap(function _callee$(_context) {
+        while (1) switch (_context.prev = _context.next) {
+          case 0:
+            _context.prev = 0;
+            _context.next = 3;
+            return fetch('http://localhost:3000/crates');
+          case 3:
+            response = _context.sent;
+            if (!response.ok) {
+              _context.next = 9;
+              break;
+            }
+            _context.next = 7;
+            return response.json();
+          case 7:
+            cratesData = _context.sent;
+            setCrates(cratesData);
+          case 9:
+            _context.next = 15;
+            break;
+          case 11:
+            _context.prev = 11;
+            _context.t0 = _context["catch"](0);
+            console.error('Failed to fetch crates:', _context.t0);
+            // Initialize with empty crates if fetch fails
+            setCrates({});
+          case 15:
+          case "end":
+            return _context.stop();
+        }
+      }, _callee, null, [[0, 11]]);
+    }));
+    return function fetchCrates() {
+      return _ref20.apply(this, arguments);
+    };
+  }();
+  var createCrate = /*#__PURE__*/function () {
+    var _ref21 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(crateName) {
+      var response, newCrate;
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.prev = 0;
+            _context2.next = 3;
+            return fetch('http://localhost:3000/crates', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                name: crateName,
+                tracks: []
+              })
+            });
+          case 3:
+            response = _context2.sent;
+            if (!response.ok) {
+              _context2.next = 10;
+              break;
+            }
+            _context2.next = 7;
+            return response.json();
+          case 7:
+            newCrate = _context2.sent;
+            setCrates(function (prev) {
+              return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, newCrate.id, newCrate));
+            });
+            return _context2.abrupt("return", newCrate);
+          case 10:
+            _context2.next = 15;
+            break;
+          case 12:
+            _context2.prev = 12;
+            _context2.t0 = _context2["catch"](0);
+            console.error('Failed to create crate:', _context2.t0);
+          case 15:
+          case "end":
+            return _context2.stop();
+        }
+      }, _callee2, null, [[0, 12]]);
+    }));
+    return function createCrate(_x) {
+      return _ref21.apply(this, arguments);
+    };
+  }();
+  var renameCrate = /*#__PURE__*/function () {
+    var _ref22 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(crateId, newName) {
+      var response;
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.prev = 0;
+            _context3.next = 3;
+            return fetch("http://localhost:3000/crates/".concat(crateId), {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                name: newName
+              })
+            });
+          case 3:
+            response = _context3.sent;
+            if (response.ok) {
+              setCrates(function (prev) {
+                return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, crateId, _objectSpread(_objectSpread({}, prev[crateId]), {}, {
+                  name: newName
+                })));
+              });
+            }
+            _context3.next = 10;
+            break;
+          case 7:
+            _context3.prev = 7;
+            _context3.t0 = _context3["catch"](0);
+            console.error('Failed to rename crate:', _context3.t0);
+          case 10:
+          case "end":
+            return _context3.stop();
+        }
+      }, _callee3, null, [[0, 7]]);
+    }));
+    return function renameCrate(_x2, _x3) {
+      return _ref22.apply(this, arguments);
+    };
+  }();
+  var deleteCrate = /*#__PURE__*/function () {
+    var _ref23 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(crateId) {
+      var response;
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) switch (_context4.prev = _context4.next) {
+          case 0:
+            _context4.prev = 0;
+            _context4.next = 3;
+            return fetch("http://localhost:3000/crates/".concat(crateId), {
+              method: 'DELETE'
+            });
+          case 3:
+            response = _context4.sent;
+            if (response.ok) {
+              setCrates(function (prev) {
+                var updated = _objectSpread({}, prev);
+                delete updated[crateId];
+                return updated;
+              });
+              // If we're currently viewing the deleted crate, switch back to library
+              if (selectedCrateId === crateId) {
+                setSelectedCrateId(null);
+                setViewMode('library');
+                setSelectedLibraryItem('Tracks');
+              }
+            }
+            _context4.next = 10;
+            break;
+          case 7:
+            _context4.prev = 7;
+            _context4.t0 = _context4["catch"](0);
+            console.error('Failed to delete crate:', _context4.t0);
+          case 10:
+          case "end":
+            return _context4.stop();
+        }
+      }, _callee4, null, [[0, 7]]);
+    }));
+    return function deleteCrate(_x4) {
+      return _ref23.apply(this, arguments);
+    };
+  }();
+  var addTrackToCrate = /*#__PURE__*/function () {
+    var _ref24 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5(crateId, trackId) {
+      var currentCrate, updatedTracks, response;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.prev = 0;
+            currentCrate = crates[crateId];
+            if (currentCrate) {
+              _context5.next = 4;
+              break;
+            }
+            return _context5.abrupt("return");
+          case 4:
+            updatedTracks = _toConsumableArray(currentCrate.tracks || []);
+            if (updatedTracks.includes(trackId)) {
+              _context5.next = 11;
+              break;
+            }
+            updatedTracks.push(trackId);
+            _context5.next = 9;
+            return fetch("http://localhost:3000/crates/".concat(crateId), {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                tracks: updatedTracks
+              })
+            });
+          case 9:
+            response = _context5.sent;
+            if (response.ok) {
+              setCrates(function (prev) {
+                return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, crateId, _objectSpread(_objectSpread({}, prev[crateId]), {}, {
+                  tracks: updatedTracks
+                })));
+              });
+            }
+          case 11:
+            _context5.next = 16;
+            break;
+          case 13:
+            _context5.prev = 13;
+            _context5.t0 = _context5["catch"](0);
+            console.error('Failed to add track to crate:', _context5.t0);
+          case 16:
+          case "end":
+            return _context5.stop();
+        }
+      }, _callee5, null, [[0, 13]]);
+    }));
+    return function addTrackToCrate(_x5, _x6) {
+      return _ref24.apply(this, arguments);
+    };
+  }();
+  var removeTrackFromCrate = /*#__PURE__*/function () {
+    var _ref25 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee6(crateId, trackId) {
+      var currentCrate, updatedTracks, response;
+      return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+        while (1) switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.prev = 0;
+            currentCrate = crates[crateId];
+            if (currentCrate) {
+              _context6.next = 4;
+              break;
+            }
+            return _context6.abrupt("return");
+          case 4:
+            updatedTracks = (currentCrate.tracks || []).filter(function (id) {
+              return id !== trackId;
+            });
+            _context6.next = 7;
+            return fetch("http://localhost:3000/crates/".concat(crateId), {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                tracks: updatedTracks
+              })
+            });
+          case 7:
+            response = _context6.sent;
+            if (response.ok) {
+              setCrates(function (prev) {
+                return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, crateId, _objectSpread(_objectSpread({}, prev[crateId]), {}, {
+                  tracks: updatedTracks
+                })));
+              });
+            }
+            _context6.next = 14;
+            break;
+          case 11:
+            _context6.prev = 11;
+            _context6.t0 = _context6["catch"](0);
+            console.error('Failed to remove track from crate:', _context6.t0);
+          case 14:
+          case "end":
+            return _context6.stop();
+        }
+      }, _callee6, null, [[0, 11]]);
+    }));
+    return function removeTrackFromCrate(_x7, _x8) {
+      return _ref25.apply(this, arguments);
+    };
+  }();
+
+  // Set crate management functions in ref for Sidebar access
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (crateManagementRef.current) {
+      crateManagementRef.current = {
+        createCrate: createCrate,
+        renameCrate: renameCrate,
+        deleteCrate: deleteCrate,
+        addTrackToCrate: addTrackToCrate,
+        removeTrackFromCrate: removeTrackFromCrate
+      };
+    }
+  }, []);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     var fetchTracksAndProcess = /*#__PURE__*/function () {
-      var _ref19 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+      var _ref26 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
         var response, data, processedTracks, genres, styles, moods, instruments, spectralFeatureNames, formatForFilterOptions;
-        return _regeneratorRuntime().wrap(function _callee$(_context) {
-          while (1) switch (_context.prev = _context.next) {
+        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+          while (1) switch (_context7.prev = _context7.next) {
             case 0:
               setIsLoading(true);
               setError(null);
-              _context.prev = 2;
-              _context.next = 5;
+              _context7.prev = 2;
+              _context7.next = 5;
               return fetch('http://localhost:3000/tracks');
             case 5:
-              response = _context.sent;
+              response = _context7.sent;
               if (response.ok) {
-                _context.next = 8;
+                _context7.next = 8;
                 break;
               }
               throw new Error("HTTP error! status: ".concat(response.status));
             case 8:
-              _context.next = 10;
+              _context7.next = 10;
               return response.json();
             case 10:
-              data = _context.sent;
+              data = _context7.sent;
               processedTracks = data.map(function (track) {
                 return _objectSpread(_objectSpread({}, track), {}, {
                   artwork_thumbnail_path: track.artwork_thumbnail_path || 'assets/default-artwork.png'
@@ -801,6 +1200,10 @@ function Main() {
               });
               setAllTracks(processedTracks);
 
+              // Also fetch crates
+              _context7.next = 15;
+              return fetchCrates();
+            case 15:
               // Aggregate filter options once all tracks are fetched
               genres = {};
               styles = {};
@@ -833,10 +1236,10 @@ function Main() {
                 }
               });
               formatForFilterOptions = function formatForFilterOptions(obj) {
-                return Object.entries(obj).map(function (_ref20) {
-                  var _ref21 = _slicedToArray(_ref20, 2),
-                    name = _ref21[0],
-                    count = _ref21[1];
+                return Object.entries(obj).map(function (_ref27) {
+                  var _ref28 = _slicedToArray(_ref27, 2),
+                    name = _ref28[0],
+                    count = _ref28[1];
                   return {
                     name: name,
                     count: count
@@ -861,33 +1264,161 @@ function Main() {
                   return b.count - a.count;
                 })
               });
-              _context.next = 27;
+              _context7.next = 29;
               break;
-            case 23:
-              _context.prev = 23;
-              _context.t0 = _context["catch"](2);
-              console.error("Failed to fetch tracks or process filters:", _context.t0);
-              setError(_context.t0.message);
-            case 27:
-              _context.prev = 27;
+            case 25:
+              _context7.prev = 25;
+              _context7.t0 = _context7["catch"](2);
+              console.error("Failed to fetch tracks or process filters:", _context7.t0);
+              setError(_context7.t0.message);
+            case 29:
+              _context7.prev = 29;
               setIsLoading(false);
-              return _context.finish(27);
-            case 30:
+              return _context7.finish(29);
+            case 32:
             case "end":
-              return _context.stop();
+              return _context7.stop();
           }
-        }, _callee, null, [[2, 23, 27, 30]]);
+        }, _callee7, null, [[2, 25, 29, 32]]);
       }));
       return function fetchTracksAndProcess() {
-        return _ref19.apply(this, arguments);
+        return _ref26.apply(this, arguments);
       };
     }();
     fetchTracksAndProcess();
   }, []);
+
+  // Sidebar handlers
+  var handleLibraryItemClick = function handleLibraryItemClick(itemName) {
+    setSelectedLibraryItem(itemName);
+    setViewMode('library');
+    setSelectedCrateId(null);
+  };
+  var handleCrateItemClick = function handleCrateItemClick(crateId) {
+    setSelectedCrateId(crateId);
+    setViewMode('crate');
+    setSelectedLibraryItem(null);
+  };
+  var handleCreateCrate = /*#__PURE__*/function () {
+    var _ref29 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee8(crateName) {
+      return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+        while (1) switch (_context8.prev = _context8.next) {
+          case 0:
+            if (!(crateName && crateName.trim() !== '')) {
+              _context8.next = 3;
+              break;
+            }
+            _context8.next = 3;
+            return createCrate(crateName.trim());
+          case 3:
+          case "end":
+            return _context8.stop();
+        }
+      }, _callee8);
+    }));
+    return function handleCreateCrate(_x9) {
+      return _ref29.apply(this, arguments);
+    };
+  }();
+  var handleRenameCrate = /*#__PURE__*/function () {
+    var _ref30 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee9(crateId, newName, currentName) {
+      return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+        while (1) switch (_context9.prev = _context9.next) {
+          case 0:
+            if (!(newName && newName.trim() !== '' && newName.trim() !== currentName)) {
+              _context9.next = 3;
+              break;
+            }
+            _context9.next = 3;
+            return renameCrate(crateId, newName.trim());
+          case 3:
+          case "end":
+            return _context9.stop();
+        }
+      }, _callee9);
+    }));
+    return function handleRenameCrate(_x10, _x11, _x12) {
+      return _ref30.apply(this, arguments);
+    };
+  }();
+  var handleDeleteCrate = /*#__PURE__*/function () {
+    var _ref31 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee10(crateId) {
+      return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+        while (1) switch (_context10.prev = _context10.next) {
+          case 0:
+            if (!window.confirm('Are you sure you want to delete this crate?')) {
+              _context10.next = 3;
+              break;
+            }
+            _context10.next = 3;
+            return deleteCrate(crateId);
+          case 3:
+          case "end":
+            return _context10.stop();
+        }
+      }, _callee10);
+    }));
+    return function handleDeleteCrate(_x13) {
+      return _ref31.apply(this, arguments);
+    };
+  }();
+
+  // Drag and drop handlers
+  var handleTrackDragStart = function handleTrackDragStart(event, track) {
+    event.dataTransfer.setData('text/plain', JSON.stringify({
+      trackId: track.id,
+      trackData: track
+    }));
+    event.dataTransfer.effectAllowed = 'copy';
+  };
+  var handleCrateDrop = /*#__PURE__*/function () {
+    var _ref32 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee11(event, crateId) {
+      var data;
+      return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+        while (1) switch (_context11.prev = _context11.next) {
+          case 0:
+            event.preventDefault();
+            _context11.prev = 1;
+            data = JSON.parse(event.dataTransfer.getData('text/plain'));
+            if (!data.trackId) {
+              _context11.next = 6;
+              break;
+            }
+            _context11.next = 6;
+            return addTrackToCrate(crateId, data.trackId);
+          case 6:
+            _context11.next = 11;
+            break;
+          case 8:
+            _context11.prev = 8;
+            _context11.t0 = _context11["catch"](1);
+            console.error('Error handling crate drop:', _context11.t0);
+          case 11:
+          case "end":
+            return _context11.stop();
+        }
+      }, _callee11, null, [[1, 8]]);
+    }));
+    return function handleCrateDrop(_x14, _x15) {
+      return _ref32.apply(this, arguments);
+    };
+  }();
+  var handleCrateDragOver = function handleCrateDragOver(event) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+  };
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     var tracksToDisplay = _toConsumableArray(allTracks);
 
-    // 1. Apply Search Filter
+    // 1. Check if we're viewing a crate
+    if (viewMode === 'crate' && selectedCrateId && crates[selectedCrateId]) {
+      var crateTrackIds = crates[selectedCrateId].tracks || [];
+      tracksToDisplay = allTracks.filter(function (track) {
+        return crateTrackIds.includes(track.id);
+      });
+    }
+
+    // 2. Apply Search Filter
     if (searchTerm.trim() !== '') {
       var lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
       tracksToDisplay = tracksToDisplay.filter(function (track) {
@@ -895,11 +1426,11 @@ function Main() {
       });
     }
 
-    // 2. Apply Active Filters (using logic from previous steps, assumed correct for now)
+    // 3. Apply Active Filters (only in library view - crates show their exact contents)
     var activeFilterCategories = Object.keys(activeFilters).filter(function (cat) {
       return activeFilters[cat] && activeFilters[cat].length > 0;
     });
-    if (activeFilterCategories.length > 0) {
+    if (viewMode === 'library' && activeFilterCategories.length > 0) {
       if (filterLogicMode === 'intersection') {
         activeFilterCategories.forEach(function (category) {
           var selectedValues = activeFilters[category];
@@ -972,10 +1503,10 @@ function Main() {
       }
     }
 
-    // 3. Then Sort - pass all required helper functions
+    // 4. Then Sort - pass all required helper functions
     tracksToDisplay = sortTracks(tracksToDisplay, sortConfig, selectedFeatureCategory, activeFilters, getTopFeatureScore, getTopSpectralValue, getTrackTopNRawStyles, getSpecificStyleScore, getSpecificGenreScore, getSpecificMoodScore, getSpecificInstrumentScore, getSpecificSpectralScore);
     setFilteredTracks(tracksToDisplay);
-  }, [allTracks, searchTerm, sortConfig, selectedFeatureCategory, activeFilters, filterLogicMode]);
+  }, [allTracks, searchTerm, sortConfig, selectedFeatureCategory, activeFilters, filterLogicMode, viewMode, selectedCrateId, crates]);
   var handleTrackSelect = function handleTrackSelect(trackId) {
     return setSelectedTrackId(trackId);
   };
@@ -1128,6 +1659,16 @@ function Main() {
     onToggleFilter: handleToggleFilter,
     filterLogicMode: filterLogicMode,
     onToggleFilterLogicMode: toggleFilterLogicMode
+    // Drag and drop props
+    ,
+    onTrackDragStart: handleTrackDragStart
+    // View state props
+    ,
+    viewMode: viewMode,
+    selectedCrateId: selectedCrateId,
+    selectedLibraryItem: selectedLibraryItem,
+    crates: crates,
+    onRemoveTrackFromCrate: removeTrackFromCrate
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Player__WEBPACK_IMPORTED_MODULE_3__["default"], {
     currentPlayingTrack: currentPlayingTrack,
     isPlaying: isPlaying,
@@ -1160,9 +1701,13 @@ var Menu = function Menu(_ref) {
   var selectedLibraryItem = _ref.selectedLibraryItem,
     cratesItems = _ref.cratesItems,
     myTagsItems = _ref.myTagsItems,
+    selectedCrateItem = _ref.selectedCrateItem,
     handleLibraryItemClick = _ref.handleLibraryItemClick,
+    handleCrateItemClick = _ref.handleCrateItemClick,
     addItem = _ref.addItem,
-    handleOpenContextMenu = _ref.handleOpenContextMenu;
+    handleOpenContextMenu = _ref.handleOpenContextMenu,
+    onCrateDrop = _ref.onCrateDrop,
+    onCrateDragOver = _ref.onCrateDragOver;
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     "data-layer": "menu",
     className: "Menu"
@@ -1219,14 +1764,20 @@ var Menu = function Menu(_ref) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_MenuItem__WEBPACK_IMPORTED_MODULE_1__["default"], {
       key: item.id,
       id: item.id,
-      label: item.label
-      // isSelected={selectedCrateItem === item.id} // Implement selection if needed
-      // onClick={() => handleCrateItemClick(item.id)} // Implement selection if needed
-      ,
+      label: "".concat(item.label, " (").concat(item.trackCount || 0, ")"),
+      isSelected: selectedCrateItem === item.id,
+      onClick: function onClick() {
+        return handleCrateItemClick(item.id);
+      },
       showOptions: true,
       onOpenContextMenu: function onOpenContextMenu(e) {
         return handleOpenContextMenu(e, item, 'crates');
-      }
+      },
+      onDrop: function onDrop(e) {
+        return onCrateDrop && onCrateDrop(e, item.id);
+      },
+      onDragOver: onCrateDragOver,
+      isDragTarget: true
     });
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     "data-layer": "divider",
@@ -1293,7 +1844,11 @@ var MenuItem = function MenuItem(_ref) {
     _ref$showOptions = _ref.showOptions,
     showOptions = _ref$showOptions === void 0 ? false : _ref$showOptions,
     onClick = _ref.onClick,
-    onOpenContextMenu = _ref.onOpenContextMenu;
+    onOpenContextMenu = _ref.onOpenContextMenu,
+    onDrop = _ref.onDrop,
+    onDragOver = _ref.onDragOver,
+    _ref$isDragTarget = _ref.isDragTarget,
+    isDragTarget = _ref$isDragTarget === void 0 ? false : _ref$isDragTarget;
   var itemClass = '';
   if (isSelected) {
     itemClass = showOptions ? 'Property1OptionSelected' : 'Property1Selected';
@@ -1313,14 +1868,16 @@ var MenuItem = function MenuItem(_ref) {
   };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     "data-layer": "menu-item-instance",
-    className: "MenuItemInstanceWrapper",
+    className: "MenuItemInstanceWrapper ".concat(isDragTarget ? 'DragTarget' : ''),
     onClick: onClick // Main click for the item
     ,
     role: "button",
     tabIndex: onClick ? 0 : -1,
     onKeyPress: function onKeyPress(e) {
       if (onClick && (e.key === 'Enter' || e.key === ' ')) onClick();
-    }
+    },
+    onDrop: isDragTarget ? onDrop : undefined,
+    onDragOver: isDragTarget ? onDragOver : undefined
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     className: "".concat(itemClass)
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
@@ -1608,7 +2165,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _Menu__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Menu */ "./src/components/Menu.jsx");
 /* harmony import */ var _ContextMenu__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ContextMenu */ "./src/components/ContextMenu.jsx");
-/* harmony import */ var _Sidebar_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Sidebar.scss */ "./src/components/Sidebar.scss");
+/* harmony import */ var _TextInputModal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./TextInputModal */ "./src/components/TextInputModal.jsx");
+/* harmony import */ var _Sidebar_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Sidebar.scss */ "./src/components/Sidebar.scss");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -1619,6 +2177,9 @@ function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArra
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
 function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return r; }; var t, r = {}, e = Object.prototype, n = e.hasOwnProperty, o = "function" == typeof Symbol ? Symbol : {}, i = o.iterator || "@@iterator", a = o.asyncIterator || "@@asyncIterator", u = o.toStringTag || "@@toStringTag"; function c(t, r, e, n) { return Object.defineProperty(t, r, { value: e, enumerable: !n, configurable: !n, writable: !n }); } try { c({}, ""); } catch (t) { c = function c(t, r, e) { return t[r] = e; }; } function h(r, e, n, o) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype); return c(a, "_invoke", function (r, e, n) { var o = 1; return function (i, a) { if (3 === o) throw Error("Generator is already running"); if (4 === o) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var u = n.delegate; if (u) { var c = d(u, n); if (c) { if (c === f) continue; return c; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (1 === o) throw o = 4, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = 3; var h = s(r, e, n); if ("normal" === h.type) { if (o = n.done ? 4 : 2, h.arg === f) continue; return { value: h.arg, done: n.done }; } "throw" === h.type && (o = 4, n.method = "throw", n.arg = h.arg); } }; }(r, n, new Context(o || [])), !0), a; } function s(t, r, e) { try { return { type: "normal", arg: t.call(r, e) }; } catch (t) { return { type: "throw", arg: t }; } } r.wrap = h; var f = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var l = {}; c(l, i, function () { return this; }); var p = Object.getPrototypeOf, y = p && p(p(x([]))); y && y !== e && n.call(y, i) && (l = y); var v = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(l); function g(t) { ["next", "throw", "return"].forEach(function (r) { c(t, r, function (t) { return this._invoke(r, t); }); }); } function AsyncIterator(t, r) { function e(o, i, a, u) { var c = s(t[o], t, i); if ("throw" !== c.type) { var h = c.arg, f = h.value; return f && "object" == _typeof(f) && n.call(f, "__await") ? r.resolve(f.__await).then(function (t) { e("next", t, a, u); }, function (t) { e("throw", t, a, u); }) : r.resolve(f).then(function (t) { h.value = t, a(h); }, function (t) { return e("throw", t, a, u); }); } u(c.arg); } var o; c(this, "_invoke", function (t, n) { function i() { return new r(function (r, o) { e(t, n, r, o); }); } return o = o ? o.then(i, i) : i(); }, !0); } function d(r, e) { var n = e.method, o = r.i[n]; if (o === t) return e.delegate = null, "throw" === n && r.i["return"] && (e.method = "return", e.arg = t, d(r, e), "throw" === e.method) || "return" !== n && (e.method = "throw", e.arg = new TypeError("The iterator does not provide a '" + n + "' method")), f; var i = s(o, r.i, e.arg); if ("throw" === i.type) return e.method = "throw", e.arg = i.arg, e.delegate = null, f; var a = i.arg; return a ? a.done ? (e[r.r] = a.value, e.next = r.n, "return" !== e.method && (e.method = "next", e.arg = t), e.delegate = null, f) : a : (e.method = "throw", e.arg = new TypeError("iterator result is not an object"), e.delegate = null, f); } function w(t) { this.tryEntries.push(t); } function m(r) { var e = r[4] || {}; e.type = "normal", e.arg = t, r[4] = e; } function Context(t) { this.tryEntries = [[-1]], t.forEach(w, this), this.reset(!0); } function x(r) { if (null != r) { var e = r[i]; if (e) return e.call(r); if ("function" == typeof r.next) return r; if (!isNaN(r.length)) { var o = -1, a = function e() { for (; ++o < r.length;) if (n.call(r, o)) return e.value = r[o], e.done = !1, e; return e.value = t, e.done = !0, e; }; return a.next = a; } } throw new TypeError(_typeof(r) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, c(v, "constructor", GeneratorFunctionPrototype), c(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = c(GeneratorFunctionPrototype, u, "GeneratorFunction"), r.isGeneratorFunction = function (t) { var r = "function" == typeof t && t.constructor; return !!r && (r === GeneratorFunction || "GeneratorFunction" === (r.displayName || r.name)); }, r.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, c(t, u, "GeneratorFunction")), t.prototype = Object.create(v), t; }, r.awrap = function (t) { return { __await: t }; }, g(AsyncIterator.prototype), c(AsyncIterator.prototype, a, function () { return this; }), r.AsyncIterator = AsyncIterator, r.async = function (t, e, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(h(t, e, n, o), i); return r.isGeneratorFunction(e) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, g(v), c(v, u, "Generator"), c(v, i, function () { return this; }), c(v, "toString", function () { return "[object Generator]"; }), r.keys = function (t) { var r = Object(t), e = []; for (var n in r) e.unshift(n); return function t() { for (; e.length;) if ((n = e.pop()) in r) return t.value = n, t.done = !1, t; return t.done = !0, t; }; }, r.values = x, Context.prototype = { constructor: Context, reset: function reset(r) { if (this.prev = this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(m), !r) for (var e in this) "t" === e.charAt(0) && n.call(this, e) && !isNaN(+e.slice(1)) && (this[e] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0][4]; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(r) { if (this.done) throw r; var e = this; function n(t) { a.type = "throw", a.arg = r, e.next = t; } for (var o = e.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i[4], u = this.prev, c = i[1], h = i[2]; if (-1 === i[0]) return n("end"), !1; if (!c && !h) throw Error("try statement without catch or finally"); if (null != i[0] && i[0] <= u) { if (u < c) return this.method = "next", this.arg = t, n(c), !0; if (u < h) return n(h), !1; } } }, abrupt: function abrupt(t, r) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var n = this.tryEntries[e]; if (n[0] > -1 && n[0] <= this.prev && this.prev < n[2]) { var o = n; break; } } o && ("break" === t || "continue" === t) && o[0] <= r && r <= o[2] && (o = null); var i = o ? o[4] : {}; return i.type = t, i.arg = r, o ? (this.method = "next", this.next = o[2], f) : this.complete(i); }, complete: function complete(t, r) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && r && (this.next = r), f; }, finish: function finish(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[2] === t) return this.complete(e[4], e[3]), m(e), f; } }, "catch": function _catch(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[0] === t) { var n = e[4]; if ("throw" === n.type) { var o = n.arg; m(e); } return o; } } throw Error("illegal catch attempt"); }, delegateYield: function delegateYield(r, e, n) { return this.delegate = { i: x(r), r: e, n: n }, "next" === this.method && (this.arg = t), f; } }, r; }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -1630,37 +2191,40 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 
+
 // Helper to generate simple unique IDs
 var generateId = function generateId() {
   return "item_".concat(Date.now(), "_").concat(Math.random().toString(36).substr(2, 9));
 };
-var Sidebar = function Sidebar() {
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('Tracks'),
-    _useState2 = _slicedToArray(_useState, 2),
-    selectedLibraryItem = _useState2[0],
-    setSelectedLibraryItem = _useState2[1];
-
-  // State for dynamic items
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([{
-      id: generateId(),
-      label: 'My First Crate'
-    }, {
-      id: generateId(),
-      label: 'DJ Set List'
-    }]),
-    _useState4 = _slicedToArray(_useState3, 2),
-    cratesItems = _useState4[0],
-    setCratesItems = _useState4[1];
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([{
+var Sidebar = function Sidebar(_ref) {
+  var crates = _ref.crates,
+    selectedCrateId = _ref.selectedCrateId,
+    selectedLibraryItem = _ref.selectedLibraryItem,
+    onCrateSelect = _ref.onCrateSelect,
+    onLibraryItemSelect = _ref.onLibraryItemSelect,
+    onViewModeChange = _ref.onViewModeChange,
+    crateManagementRef = _ref.crateManagementRef;
+  // Convert crates object to array format for UI
+  var cratesItems = Object.entries(crates).map(function (_ref2) {
+    var _ref3 = _slicedToArray(_ref2, 2),
+      id = _ref3[0],
+      crate = _ref3[1];
+    return {
+      id: id,
+      label: crate.name,
+      trackCount: crate.tracks ? crate.tracks.length : 0
+    };
+  });
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([{
       id: generateId(),
       label: 'Red Hot'
     }]),
-    _useState6 = _slicedToArray(_useState5, 2),
-    myTagsItems = _useState6[0],
-    setMyTagsItems = _useState6[1];
+    _useState2 = _slicedToArray(_useState, 2),
+    myTagsItems = _useState2[0],
+    setMyTagsItems = _useState2[1];
 
   // Context Menu State
-  var _useState7 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
       isOpen: false,
       x: 0,
       y: 0,
@@ -1668,79 +2232,196 @@ var Sidebar = function Sidebar() {
       // { id, label }
       categoryType: null // 'crates' or 'mytags'
     }),
-    _useState8 = _slicedToArray(_useState7, 2),
-    contextMenu = _useState8[0],
-    setContextMenu = _useState8[1];
+    _useState4 = _slicedToArray(_useState3, 2),
+    contextMenu = _useState4[0],
+    setContextMenu = _useState4[1];
+
+  // Modal State
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      isOpen: false,
+      type: null,
+      // 'create', 'rename'
+      title: '',
+      placeholder: '',
+      defaultValue: '',
+      categoryType: null,
+      itemId: null,
+      currentLabel: null
+    }),
+    _useState6 = _slicedToArray(_useState5, 2),
+    modal = _useState6[0],
+    setModal = _useState6[1];
   var sidebarRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null); // Ref for the sidebar to detect outside clicks
 
   var handleLibraryItemClick = function handleLibraryItemClick(itemName) {
-    setSelectedLibraryItem(itemName);
+    onLibraryItemSelect(itemName);
+    onViewModeChange('library');
     setContextMenu({
       isOpen: false
     }); // Close context menu on other interactions
   };
+  var handleCrateItemClick = function handleCrateItemClick(crateId) {
+    onCrateSelect(crateId);
+    onViewModeChange('crate');
+    setContextMenu({
+      isOpen: false
+    });
+  };
 
   // --- Item Management Functions ---
   var addItem = function addItem(categoryType) {
-    var newItemLabel = prompt("Enter name for new ".concat(categoryType === 'crates' ? 'Crate' : 'Tag', ":"));
-    if (newItemLabel && newItemLabel.trim() !== '') {
-      var newItem = {
-        id: generateId(),
-        label: newItemLabel.trim()
-      };
-      if (categoryType === 'crates') {
-        setCratesItems(function (prev) {
-          return [].concat(_toConsumableArray(prev), [newItem]);
-        });
-      } else if (categoryType === 'mytags') {
-        setMyTagsItems(function (prev) {
-          return [].concat(_toConsumableArray(prev), [newItem]);
-        });
-      }
-    }
+    setModal({
+      isOpen: true,
+      type: 'create',
+      title: "Create New ".concat(categoryType === 'crates' ? 'Crate' : 'Tag'),
+      placeholder: "Enter ".concat(categoryType === 'crates' ? 'crate' : 'tag', " name..."),
+      defaultValue: '',
+      categoryType: categoryType,
+      itemId: null,
+      currentLabel: null
+    });
     setContextMenu({
       isOpen: false
     });
   };
-  var deleteItem = function deleteItem(itemId, categoryType) {
-    if (window.confirm("Are you sure you want to delete this ".concat(categoryType === 'crates' ? 'crate' : 'tag', "?"))) {
-      if (categoryType === 'crates') {
-        setCratesItems(function (prev) {
-          return prev.filter(function (item) {
-            return item.id !== itemId;
-          });
-        });
-      } else if (categoryType === 'mytags') {
-        setMyTagsItems(function (prev) {
-          return prev.filter(function (item) {
-            return item.id !== itemId;
-          });
-        });
-      }
-    }
-    setContextMenu({
-      isOpen: false
-    });
-  };
+  var deleteItem = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(itemId, categoryType) {
+      var _crateManagementRef$c;
+      return _regeneratorRuntime().wrap(function _callee$(_context) {
+        while (1) switch (_context.prev = _context.next) {
+          case 0:
+            if (!window.confirm("Are you sure you want to delete this ".concat(categoryType === 'crates' ? 'crate' : 'tag', "?"))) {
+              _context.next = 7;
+              break;
+            }
+            if (!(categoryType === 'crates' && (_crateManagementRef$c = crateManagementRef.current) !== null && _crateManagementRef$c !== void 0 && _crateManagementRef$c.deleteCrate)) {
+              _context.next = 6;
+              break;
+            }
+            _context.next = 4;
+            return crateManagementRef.current.deleteCrate(itemId);
+          case 4:
+            _context.next = 7;
+            break;
+          case 6:
+            if (categoryType === 'mytags') {
+              setMyTagsItems(function (prev) {
+                return prev.filter(function (item) {
+                  return item.id !== itemId;
+                });
+              });
+            }
+          case 7:
+            setContextMenu({
+              isOpen: false
+            });
+          case 8:
+          case "end":
+            return _context.stop();
+        }
+      }, _callee);
+    }));
+    return function deleteItem(_x, _x2) {
+      return _ref4.apply(this, arguments);
+    };
+  }();
   var renameItem = function renameItem(itemId, currentLabel, categoryType) {
-    var newItemLabel = prompt("Enter new name for \"".concat(currentLabel, "\":"), currentLabel);
-    if (newItemLabel && newItemLabel.trim() !== '' && newItemLabel.trim() !== currentLabel) {
-      var updateFn = function updateFn(prevItems) {
-        return prevItems.map(function (item) {
-          return item.id === itemId ? _objectSpread(_objectSpread({}, item), {}, {
-            label: newItemLabel.trim()
-          }) : item;
-        });
-      };
-      if (categoryType === 'crates') {
-        setCratesItems(updateFn);
-      } else if (categoryType === 'mytags') {
-        setMyTagsItems(updateFn);
-      }
-    }
+    setModal({
+      isOpen: true,
+      type: 'rename',
+      title: "Rename ".concat(categoryType === 'crates' ? 'Crate' : 'Tag'),
+      placeholder: "Enter new name...",
+      defaultValue: currentLabel,
+      categoryType: categoryType,
+      itemId: itemId,
+      currentLabel: currentLabel
+    });
     setContextMenu({
       isOpen: false
     });
+  };
+
+  // --- Modal Management Functions ---
+  var handleModalConfirm = /*#__PURE__*/function () {
+    var _ref5 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(inputValue) {
+      var type, categoryType, itemId, currentLabel, _crateManagementRef$c2, newItem, _crateManagementRef$c3, updateFn;
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
+          case 0:
+            type = modal.type, categoryType = modal.categoryType, itemId = modal.itemId, currentLabel = modal.currentLabel;
+            if (!(type === 'create')) {
+              _context2.next = 10;
+              break;
+            }
+            if (!(categoryType === 'crates' && (_crateManagementRef$c2 = crateManagementRef.current) !== null && _crateManagementRef$c2 !== void 0 && _crateManagementRef$c2.createCrate)) {
+              _context2.next = 7;
+              break;
+            }
+            _context2.next = 5;
+            return crateManagementRef.current.createCrate(inputValue);
+          case 5:
+            _context2.next = 8;
+            break;
+          case 7:
+            if (categoryType === 'mytags') {
+              newItem = {
+                id: generateId(),
+                label: inputValue
+              };
+              setMyTagsItems(function (prev) {
+                return [].concat(_toConsumableArray(prev), [newItem]);
+              });
+            }
+          case 8:
+            _context2.next = 18;
+            break;
+          case 10:
+            if (!(type === 'rename')) {
+              _context2.next = 18;
+              break;
+            }
+            if (!(inputValue !== currentLabel)) {
+              _context2.next = 18;
+              break;
+            }
+            if (!(categoryType === 'crates' && (_crateManagementRef$c3 = crateManagementRef.current) !== null && _crateManagementRef$c3 !== void 0 && _crateManagementRef$c3.renameCrate)) {
+              _context2.next = 17;
+              break;
+            }
+            _context2.next = 15;
+            return crateManagementRef.current.renameCrate(itemId, inputValue);
+          case 15:
+            _context2.next = 18;
+            break;
+          case 17:
+            if (categoryType === 'mytags') {
+              updateFn = function updateFn(prevItems) {
+                return prevItems.map(function (item) {
+                  return item.id === itemId ? _objectSpread(_objectSpread({}, item), {}, {
+                    label: inputValue
+                  }) : item;
+                });
+              };
+              setMyTagsItems(updateFn);
+            }
+          case 18:
+            setModal(_objectSpread(_objectSpread({}, modal), {}, {
+              isOpen: false
+            }));
+          case 19:
+          case "end":
+            return _context2.stop();
+        }
+      }, _callee2);
+    }));
+    return function handleModalConfirm(_x3) {
+      return _ref5.apply(this, arguments);
+    };
+  }();
+  var handleModalClose = function handleModalClose() {
+    setModal(_objectSpread(_objectSpread({}, modal), {}, {
+      isOpen: false
+    }));
   };
 
   // --- Context Menu Logic ---
@@ -1815,10 +2496,27 @@ var Sidebar = function Sidebar() {
     selectedLibraryItem: selectedLibraryItem,
     cratesItems: cratesItems,
     myTagsItems: myTagsItems,
+    selectedCrateItem: selectedCrateId,
     handleLibraryItemClick: handleLibraryItemClick,
+    handleCrateItemClick: handleCrateItemClick,
     addItem: addItem,
-    handleOpenContextMenu: handleOpenContextMenu
-    // selectedCrateItem, handleCrateItemClick, selectedTagItem, handleTagItemClick would be passed here if implemented
+    handleOpenContextMenu: handleOpenContextMenu,
+    onCrateDrop: function onCrateDrop(event, crateId) {
+      event.preventDefault();
+      try {
+        var _crateManagementRef$c4;
+        var data = JSON.parse(event.dataTransfer.getData('text/plain'));
+        if (data.trackId && (_crateManagementRef$c4 = crateManagementRef.current) !== null && _crateManagementRef$c4 !== void 0 && _crateManagementRef$c4.addTrackToCrate) {
+          crateManagementRef.current.addTrackToCrate(crateId, data.trackId);
+        }
+      } catch (error) {
+        console.error('Error handling crate drop:', error);
+      }
+    },
+    onCrateDragOver: function onCrateDragOver(event) {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'copy';
+    }
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
     "data-layer": "logo-container",
     className: "LogoContainer"
@@ -1827,9 +2525,125 @@ var Sidebar = function Sidebar() {
     y: contextMenu.y,
     options: contextMenuItems,
     onClose: handleCloseContextMenu
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_TextInputModal__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    isOpen: modal.isOpen,
+    onClose: handleModalClose,
+    onConfirm: handleModalConfirm,
+    title: modal.title,
+    placeholder: modal.placeholder,
+    defaultValue: modal.defaultValue
   }));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Sidebar);
+
+/***/ }),
+
+/***/ "./src/components/TextInputModal.jsx":
+/*!*******************************************!*\
+  !*** ./src/components/TextInputModal.jsx ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _TextInputModal_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TextInputModal.scss */ "./src/components/TextInputModal.scss");
+function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
+function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
+function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
+
+var TextInputModal = function TextInputModal(_ref) {
+  var isOpen = _ref.isOpen,
+    onClose = _ref.onClose,
+    onConfirm = _ref.onConfirm,
+    title = _ref.title,
+    _ref$placeholder = _ref.placeholder,
+    placeholder = _ref$placeholder === void 0 ? '' : _ref$placeholder,
+    _ref$defaultValue = _ref.defaultValue,
+    defaultValue = _ref$defaultValue === void 0 ? '' : _ref$defaultValue,
+    _ref$confirmText = _ref.confirmText,
+    confirmText = _ref$confirmText === void 0 ? 'OK' : _ref$confirmText,
+    _ref$cancelText = _ref.cancelText,
+    cancelText = _ref$cancelText === void 0 ? 'Cancel' : _ref$cancelText;
+  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(defaultValue),
+    _useState2 = _slicedToArray(_useState, 2),
+    inputValue = _useState2[0],
+    setInputValue = _useState2[1];
+  var inputRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    if (isOpen) {
+      setInputValue(defaultValue);
+      // Focus the input after a small delay to ensure the modal is rendered
+      setTimeout(function () {
+        if (inputRef.current) {
+          inputRef.current.focus();
+          inputRef.current.select();
+        }
+      }, 100);
+    }
+  }, [isOpen, defaultValue]);
+  var handleConfirm = function handleConfirm() {
+    if (inputValue.trim()) {
+      onConfirm(inputValue.trim());
+      setInputValue('');
+    }
+  };
+  var handleCancel = function handleCancel() {
+    onClose();
+    setInputValue('');
+  };
+  var handleKeyPress = function handleKeyPress(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleConfirm();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      handleCancel();
+    }
+  };
+  if (!isOpen) return null;
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "TextInputModalOverlay",
+    onClick: handleCancel
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "TextInputModalContent",
+    onClick: function onClick(e) {
+      return e.stopPropagation();
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "TextInputModalHeader"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("h3", null, title)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "TextInputModalBody"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", {
+    ref: inputRef,
+    type: "text",
+    value: inputValue,
+    onChange: function onChange(e) {
+      return setInputValue(e.target.value);
+    },
+    onKeyDown: handleKeyPress,
+    placeholder: placeholder,
+    className: "TextInputModalInput"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    className: "TextInputModalFooter"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    onClick: handleCancel,
+    className: "TextInputModalButton TextInputModalButtonCancel"
+  }, cancelText), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", {
+    onClick: handleConfirm,
+    className: "TextInputModalButton TextInputModalButtonConfirm",
+    disabled: !inputValue.trim()
+  }, confirmText))));
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TextInputModal);
 
 /***/ }),
 
@@ -1870,7 +2684,8 @@ var Track = function Track(_ref) {
     onPlayClick = _ref.onPlayClick,
     isPlaying = _ref.isPlaying,
     isCurrentTrack = _ref.isCurrentTrack,
-    renderCell = _ref.renderCell;
+    renderCell = _ref.renderCell,
+    onDragStart = _ref.onDragStart;
   var handleMainClick = function handleMainClick() {
     if (onTrackClick) {
       onTrackClick();
@@ -1882,10 +2697,17 @@ var Track = function Track(_ref) {
       onPlayClick(e);
     }
   };
+  var handleDragStart = function handleDragStart(e) {
+    if (onDragStart) {
+      onDragStart(e, track);
+    }
+  };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", {
     className: "TrackRow ".concat(isSelected ? 'Selected' : '', " ").concat(isCurrentTrack ? 'CurrentPlayingTrack' : ''),
     onClick: handleMainClick,
-    onDoubleClick: handleDoubleClick
+    onDoubleClick: handleDoubleClick,
+    draggable: true,
+    onDragStart: handleDragStart
   }, columns.map(function (col) {
     var content;
 
@@ -2094,7 +2916,8 @@ var Tracklist = function Tracklist(_ref) {
     selectedFeatureCategory = _ref.selectedFeatureCategory,
     onFeatureCategoryChange = _ref.onFeatureCategoryChange,
     sortConfig = _ref.sortConfig,
-    requestSort = _ref.requestSort;
+    requestSort = _ref.requestSort,
+    onTrackDragStart = _ref.onTrackDragStart;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(initialColumnsConfig.map(function (col) {
       return _objectSpread(_objectSpread({}, col), {}, {
         currentWidth: col.width
@@ -2341,7 +3164,8 @@ var Tracklist = function Tracklist(_ref) {
       } : undefined,
       isCurrentTrack: currentPlayingTrackId === track.id,
       isPlaying: isAudioPlaying && currentPlayingTrackId === track.id,
-      renderCell: renderCell
+      renderCell: renderCell,
+      onDragStart: onTrackDragStart
     });
   }) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("td", {
     colSpan: columnConfig.length,
@@ -3311,7 +4135,57 @@ ___CSS_LOADER_EXPORT___.push([module.id, `/* Content.scss */
 .AudioErrorText {
   color: #ff8a80;
   font-weight: 500;
-}`, "",{"version":3,"sources":["webpack://./src/components/Content.scss"],"names":[],"mappings":"AAAA,iBAAA;AACA;EACE,YAAA;EACA,YAAA;EACA,yBAAA;EACA,cAAA;EACA,aAAA;EACA,sBAAA;EACA,gBAAA;EACA,kBAAA;EACA,2BAAA;AACF;;AAEA;;EAEE,aAAA;EACA,uBAAA;EACA,mBAAA;EACA,YAAA;EACA,iBAAA;EACA,WAAA;EACA,aAAA;EACA,kBAAA;AACF;;AAEA;EACE,cAAA;AACF;;AAEA;EACE,kBAAA;EACA,yBAAA;EACA,cAAA;EACA,iBAAA;EACA,kBAAA;EACA,6BAAA;EACA;cAAA;EAEA,WAAA;EACA,YAAA;EACA,gBAAA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;AACF;;AAEA;EACE,cAAA;EACA,gBAAA;AACF","sourceRoot":""}]);
+}
+
+.ViewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background-color: #1e1e1e;
+  border-bottom: 1px solid #333;
+  margin-bottom: 16px;
+  border-radius: 6px;
+}
+
+.ViewInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ViewTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #e0e0e0;
+  margin: 0;
+}
+
+.ViewSubtitle {
+  font-size: 0.9rem;
+  color: #999;
+  font-weight: 400;
+}
+
+.CrateActions {
+  display: flex;
+  gap: 8px;
+}
+
+.CrateActionButton {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  background-color: #4a4a4a;
+  color: white;
+  border: 1px solid #666;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.CrateActionButton:hover {
+  background-color: #5a5a5a;
+}`, "",{"version":3,"sources":["webpack://./src/components/Content.scss"],"names":[],"mappings":"AAAA,iBAAA;AACA;EACE,YAAA;EACA,YAAA;EACA,yBAAA;EACA,cAAA;EACA,aAAA;EACA,sBAAA;EACA,gBAAA;EACA,kBAAA;EACA,2BAAA;AACF;;AAEA;;EAEE,aAAA;EACA,uBAAA;EACA,mBAAA;EACA,YAAA;EACA,iBAAA;EACA,WAAA;EACA,aAAA;EACA,kBAAA;AACF;;AAEA;EACE,cAAA;AACF;;AAEA;EACE,kBAAA;EACA,yBAAA;EACA,cAAA;EACA,iBAAA;EACA,kBAAA;EACA,6BAAA;EACA;cAAA;EAEA,WAAA;EACA,YAAA;EACA,gBAAA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;AACF;;AAEA;EACE,cAAA;EACA,gBAAA;AACF;;AAEA;EACE,aAAA;EACA,8BAAA;EACA,mBAAA;EACA,kBAAA;EACA,yBAAA;EACA,6BAAA;EACA,mBAAA;EACA,kBAAA;AACF;;AAEA;EACE,aAAA;EACA,sBAAA;EACA,QAAA;AACF;;AAEA;EACE,iBAAA;EACA,gBAAA;EACA,cAAA;EACA,SAAA;AACF;;AAEA;EACE,iBAAA;EACA,WAAA;EACA,gBAAA;AACF;;AAEA;EACE,aAAA;EACA,QAAA;AACF;;AAEA;EACE,iBAAA;EACA,iBAAA;EACA,yBAAA;EACA,YAAA;EACA,sBAAA;EACA,kBAAA;EACA,eAAA;EACA,sCAAA;AACF;;AAEA;EACE,yBAAA;AACF","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -3898,7 +4772,12 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.MenuItemInstance {
   width: 3px;
   height: 3px;
   border-radius: 50%;
-}`, "",{"version":3,"sources":["webpack://./src/components/MenuItem.scss"],"names":[],"mappings":"AAIA;EACE,aAAA;AAHF;;AAyBA;EAdE,YAAA;EAEA,gBAAA;EACA,gBAAA;EACA,kBAAA;EACA,mBAAA;EACA,QAAA;EACA,aAAA;EACA,sBAAA;EACA,eAAA;EACA,gCAAA;EACA,6CAAA;EAKA,6BAAA;AAZF;AAcE;EACE,yBAAA;AAZJ;AAgBI;EACE,uBAAA;AAdN;;AAmBA;EA7BE,YAAA;EAEA,gBAAA;EACA,gBAAA;EACA,kBAAA;EACA,mBAAA;EACA,QAAA;EACA,aAAA;EACA,sBAAA;EACA,eAAA;EACA,gCAAA;EACA,6CAAA;EAoBA,yBAAA;AANF;AAQE;EACE,gBAAA;AANJ;;AAWA;EAvCE,YAAA;EAEA,gBAAA;EACA,gBAAA;EACA,kBAAA;EACA,mBAAA;EACA,QAAA;EACA,aAAA;EACA,sBAAA;EACA,eAAA;EACA,gCAAA;EACA,6CAAA;EA8BA,8BAAA;EACA,6BAAA;AAEF;AACI;EACE,mBAAA;AACN;AAGE;EACE,yBAAA;AADJ;AAGM;EACE,mBAAA;AADR;;AAOA;EA5DE,YAAA;EAEA,gBAAA;EACA,gBAAA;EACA,kBAAA;EACA,mBAAA;EACA,QAAA;EACA,aAAA;EACA,sBAAA;EACA,eAAA;EACA,gCAAA;EACA,6CAAA;EAmDA,8BAAA;EACA,yBAAA;AAMF;AAJE;EACE,gBAAA;AAMJ;AAFI;EACE,mBAAA;AAIN;;AAIA;EACE,aAAA;EACA,mBAAA;EACA,QAAA;EACA,YAAA;EACA,gBAAA;AADF;;AAIA;EACE,WAAA;EACA,YAAA;EACA,aAAA;EACA,uBAAA;EACA,mBAAA;EACA,cAAA;AADF;;AAIA;EACE,cAAA;EACA,cAAA;EACA,yBAAA;AADF;;AAOA;EACE,cAAA;EACA,eAAA;EACA,gBAAA;EACA,iBAAA;EACA,mBAAA;EACA,gBAAA;EACA,uBAAA;AAJF;AAME;EACE,gBAAA;EACA,cAAA;AAJJ;;AAQA;EACE,WAAA;EACA,YAAA;EACA,aAAA;EACA,sBAAA;EACA,mBAAA;EACA,8BAAA;EACA,cAAA;EACA,cAAA;AALF;;AAQA;EACE,UAAA;EACA,WAAA;EACA,kBAAA;AALF","sourceRoot":""}]);
+}
+
+.MenuItemInstanceWrapper.DragTarget:hover .Property1Default, .MenuItemInstanceWrapper.DragTarget:hover .Property1Options, .MenuItemInstanceWrapper.DragTarget:hover .Property1Selected, .MenuItemInstanceWrapper.DragTarget:hover .Property1OptionSelected {
+  border: 2px dashed #4a9eff;
+  background-color: rgba(74, 158, 255, 0.1) !important;
+}`, "",{"version":3,"sources":["webpack://./src/components/MenuItem.scss"],"names":[],"mappings":"AAIA;EACE,aAAA;AAHF;;AAyBA;EAdE,YAAA;EAEA,gBAAA;EACA,gBAAA;EACA,kBAAA;EACA,mBAAA;EACA,QAAA;EACA,aAAA;EACA,sBAAA;EACA,eAAA;EACA,gCAAA;EACA,6CAAA;EAKA,6BAAA;AAZF;AAcE;EACE,yBAAA;AAZJ;AAgBI;EACE,uBAAA;AAdN;;AAmBA;EA7BE,YAAA;EAEA,gBAAA;EACA,gBAAA;EACA,kBAAA;EACA,mBAAA;EACA,QAAA;EACA,aAAA;EACA,sBAAA;EACA,eAAA;EACA,gCAAA;EACA,6CAAA;EAoBA,yBAAA;AANF;AAQE;EACE,gBAAA;AANJ;;AAWA;EAvCE,YAAA;EAEA,gBAAA;EACA,gBAAA;EACA,kBAAA;EACA,mBAAA;EACA,QAAA;EACA,aAAA;EACA,sBAAA;EACA,eAAA;EACA,gCAAA;EACA,6CAAA;EA8BA,8BAAA;EACA,6BAAA;AAEF;AACI;EACE,mBAAA;AACN;AAGE;EACE,yBAAA;AADJ;AAGM;EACE,mBAAA;AADR;;AAOA;EA5DE,YAAA;EAEA,gBAAA;EACA,gBAAA;EACA,kBAAA;EACA,mBAAA;EACA,QAAA;EACA,aAAA;EACA,sBAAA;EACA,eAAA;EACA,gCAAA;EACA,6CAAA;EAmDA,8BAAA;EACA,yBAAA;AAMF;AAJE;EACE,gBAAA;AAMJ;AAFI;EACE,mBAAA;AAIN;;AAIA;EACE,aAAA;EACA,mBAAA;EACA,QAAA;EACA,YAAA;EACA,gBAAA;AADF;;AAIA;EACE,WAAA;EACA,YAAA;EACA,aAAA;EACA,uBAAA;EACA,mBAAA;EACA,cAAA;AADF;;AAIA;EACE,cAAA;EACA,cAAA;EACA,yBAAA;AADF;;AAOA;EACE,cAAA;EACA,eAAA;EACA,gBAAA;EACA,iBAAA;EACA,mBAAA;EACA,gBAAA;EACA,uBAAA;AAJF;AAME;EACE,gBAAA;EACA,cAAA;AAJJ;;AAQA;EACE,WAAA;EACA,YAAA;EACA,aAAA;EACA,sBAAA;EACA,mBAAA;EACA,8BAAA;EACA,cAAA;EACA,cAAA;AALF;;AAQA;EACE,UAAA;EACA,WAAA;EACA,kBAAA;AALF;;AAkBI;EACE,0BAAA;EACA,oDAAA;AAfN","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -4455,6 +5334,134 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.Sidebar {
   position: absolute;
   background: #696969;
 }`, "",{"version":3,"sources":["webpack://./src/components/Sidebar.scss"],"names":[],"mappings":"AAEA;EACE,YAAA;EACA,mBAAA;EACA,mBAAA;EACA,gBAAA;EAEA,sBAAA;EACA,2BAAA;EACA,oBAAA;EACA,aAAA;EACA,sBAAA;AAFF;;AAMA;EACE,mBAAA;EACA,YAAA;EACA,cAAA;EACA,sBAAA;EACA,2BAAA;EACA,uBAAA;EACA,aAAA;EACA,wBAAA;AAHF;;AAQA;EACE,YAAA;EACA,kBAAA;EACA,mBAAA;EACA,2BAAA;EACA,mBAAA;EACA,QAAA;EACA,aAAA;EACA,2BAAA;AALF;;AASA;;;EAGE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,oBAAA;EACA,sCAAA;EACA,2BAAA;EACA,eAAA;AANF;;AAQA;EAA4D,mBAAA;AAJ5D;;AAKA;EAA+D,mBAAA;AAD/D;;AAEA;EAA2D,mBAAA;AAE3D;;AAAA;EACE,mBAAA;EACA,WAAA;EACA,sBAAA;EACA,2BAAA;EACA,uBAAA;EACA,aAAA;EACA,WAAA;EACA,gBAAA;EACA,kBAAA;AAGF;;AAAA;EACE,mBAAA;EACA,kBAAA;EACA,mBAAA;EACA,gBAAA;EACA,mBAAA;EACA,gBAAA;EACA,sBAAA;EACA,2BAAA;EACA,uBAAA;EACA,QAAA;EACA,aAAA;EACA,WAAA;EACA,sBAAA;AAGF;;AAAA;EACE,mBAAA;EACA,aAAA;EACA,8BAAA;EACA,mBAAA;EACA,YAAA;AAGF;;AAAA;EACE,WAAA;EACA,cAAA;EACA,eAAA;EACA,gCAAA;EACA,gBAAA;EACA,iBAAA;EACA,qBAAA;EACA,yBAAA;AAGF;;AAAA;EACE,uBAAA;EACA,YAAA;EACA,cAAA;EACA,eAAA;EACA,UAAA;EACA,WAAA;EACA,YAAA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;EACA,kBAAA;EACA,uDAAA;AAGF;;AAAA;EACE,yBAAA;EACA,cAAA;AAGF;;AAAA;EACE,yBAAA;AAGF;;AAAA;EACE,eAAA;EACA,iBAAA;EACA,cAAA;AAGF;;AAAA;EACE,mBAAA;EACA,WAAA;EACA,mBAAA;EACA,gBAAA;EACA,cAAA;AAGF;;AAAA;EACE,mBAAA;EACA,kBAAA;EACA,gBAAA;EACA,8BAAA;EACA,mBAAA;EACA,aAAA;EACA,cAAA;EACA,sBAAA;AAGF;;AAAA;EACE,uBAAA;EACA,mBAAA;EACA,SAAA;EACA,aAAA;AAGF;;AAAA;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,yBAAA;AAGF;;AAAA;EACE,WAAA;EACA,YAAA;EACA,cAAA;EACA,eAAA;EACA,gCAAA;EACA,gBAAA;EACA,iBAAA;EACA,qBAAA;AAGF;;AAAA;EACE,WAAA;EACA,YAAA;EACA,kBAAA;EACA,gBAAA;EACA,eAAA;AAGF;;AAAA;EACE,cAAA;EACA,YAAA;EACA,YAAA;EACA,UAAA;EACA,kBAAA;EACA,mBAAA;AAGF","sourceRoot":""}]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/TextInputModal.scss":
+/*!*************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/TextInputModal.scss ***!
+  \*************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/sourceMaps.js */ "./node_modules/css-loader/dist/runtime/sourceMaps.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1__);
+// Imports
+
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_sourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, `.TextInputModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.TextInputModalContent {
+  background-color: #2e2e2e;
+  border-radius: 8px;
+  min-width: 400px;
+  max-width: 90vw;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  border: 1px solid #444;
+  overflow: hidden;
+}
+
+.TextInputModalHeader {
+  padding: 20px 24px 16px 24px;
+  border-bottom: 1px solid #444;
+}
+.TextInputModalHeader h3 {
+  margin: 0;
+  color: #e0e0e0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.TextInputModalBody {
+  padding: 20px 24px;
+}
+
+.TextInputModalInput {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+  border: 1px solid #555;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+.TextInputModalInput:focus {
+  border-color: #4a9eff;
+  box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
+}
+.TextInputModalInput::placeholder {
+  color: #888;
+  font-style: italic;
+}
+
+.TextInputModalFooter {
+  padding: 16px 24px 20px 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid #444;
+}
+
+.TextInputModalButton {
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-weight: 500;
+  min-width: 80px;
+}
+.TextInputModalButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.TextInputModalButtonCancel {
+  background-color: #444;
+  color: #e0e0e0;
+}
+.TextInputModalButtonCancel:hover:not(:disabled) {
+  background-color: #555;
+}
+
+.TextInputModalButtonConfirm {
+  background-color: #4a9eff;
+  color: white;
+}
+.TextInputModalButtonConfirm:hover:not(:disabled) {
+  background-color: #3a8eef;
+}
+.TextInputModalButtonConfirm:disabled {
+  background-color: #444;
+  color: #888;
+}`, "",{"version":3,"sources":["webpack://./src/components/TextInputModal.scss"],"names":[],"mappings":"AAAA;EACE,eAAA;EACA,MAAA;EACA,OAAA;EACA,QAAA;EACA,SAAA;EACA,oCAAA;EACA,aAAA;EACA,mBAAA;EACA,uBAAA;EACA,aAAA;EACA,0BAAA;AACF;;AAEA;EACE,yBAAA;EACA,kBAAA;EACA,gBAAA;EACA,eAAA;EACA,0CAAA;EACA,sBAAA;EACA,gBAAA;AACF;;AAEA;EACE,4BAAA;EACA,6BAAA;AACF;AACE;EACE,SAAA;EACA,cAAA;EACA,iBAAA;EACA,gBAAA;AACJ;;AAGA;EACE,kBAAA;AAAF;;AAGA;EACE,WAAA;EACA,kBAAA;EACA,kBAAA;EACA,yBAAA;EACA,cAAA;EACA,sBAAA;EACA,kBAAA;EACA,aAAA;EACA,kCAAA;EACA,sBAAA;AAAF;AAEE;EACE,qBAAA;EACA,6CAAA;AAAJ;AAGE;EACE,WAAA;EACA,kBAAA;AADJ;;AAKA;EACE,4BAAA;EACA,aAAA;EACA,yBAAA;EACA,SAAA;EACA,0BAAA;AAFF;;AAKA;EACE,kBAAA;EACA,iBAAA;EACA,YAAA;EACA,kBAAA;EACA,eAAA;EACA,sCAAA;EACA,gBAAA;EACA,eAAA;AAFF;AAIE;EACE,YAAA;EACA,mBAAA;AAFJ;;AAMA;EACE,sBAAA;EACA,cAAA;AAHF;AAKE;EACE,sBAAA;AAHJ;;AAOA;EACE,yBAAA;EACA,YAAA;AAJF;AAME;EACE,yBAAA;AAJJ;AAOE;EACE,sBAAA;EACA,WAAA;AALJ","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -40051,6 +41058,59 @@ var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js
 
 
        /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Sidebar_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Sidebar_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_Sidebar_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
+
+
+/***/ }),
+
+/***/ "./src/components/TextInputModal.scss":
+/*!********************************************!*\
+  !*** ./src/components/TextInputModal.scss ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/styleDomAPI.js */ "./node_modules/style-loader/dist/runtime/styleDomAPI.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/insertBySelector.js */ "./node_modules/style-loader/dist/runtime/insertBySelector.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js */ "./node_modules/style-loader/dist/runtime/setAttributesWithoutAttributes.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/insertStyleElement.js */ "./node_modules/style-loader/dist/runtime/insertStyleElement.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! !../../node_modules/style-loader/dist/runtime/styleTagTransform.js */ "./node_modules/style-loader/dist/runtime/styleTagTransform.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_TextInputModal_scss__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! !!../../node_modules/css-loader/dist/cjs.js!../../node_modules/sass-loader/dist/cjs.js!./TextInputModal.scss */ "./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/components/TextInputModal.scss");
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+var options = {};
+
+options.styleTagTransform = (_node_modules_style_loader_dist_runtime_styleTagTransform_js__WEBPACK_IMPORTED_MODULE_5___default());
+options.setAttributes = (_node_modules_style_loader_dist_runtime_setAttributesWithoutAttributes_js__WEBPACK_IMPORTED_MODULE_3___default());
+options.insert = _node_modules_style_loader_dist_runtime_insertBySelector_js__WEBPACK_IMPORTED_MODULE_2___default().bind(null, "head");
+options.domAPI = (_node_modules_style_loader_dist_runtime_styleDomAPI_js__WEBPACK_IMPORTED_MODULE_1___default());
+options.insertStyleElement = (_node_modules_style_loader_dist_runtime_insertStyleElement_js__WEBPACK_IMPORTED_MODULE_4___default());
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_TextInputModal_scss__WEBPACK_IMPORTED_MODULE_6__["default"], options);
+
+
+
+
+       /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_TextInputModal_scss__WEBPACK_IMPORTED_MODULE_6__["default"] && _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_TextInputModal_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals ? _node_modules_css_loader_dist_cjs_js_node_modules_sass_loader_dist_cjs_js_TextInputModal_scss__WEBPACK_IMPORTED_MODULE_6__["default"].locals : undefined);
 
 
 /***/ }),

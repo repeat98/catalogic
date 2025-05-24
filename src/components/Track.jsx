@@ -14,7 +14,7 @@ const formatTime = (time) => {
   return time || '-';
 };
 
-const Track = ({ track, columns, isSelected, onTrackClick, onPlayClick, isPlaying, isCurrentTrack, renderCell }) => {
+const Track = ({ track, columns, isSelected, onTrackClick, onPlayClick, isPlaying, isCurrentTrack, renderCell, onDragStart }) => {
   const handleMainClick = () => {
     if (onTrackClick) {
       onTrackClick();
@@ -28,11 +28,19 @@ const Track = ({ track, columns, isSelected, onTrackClick, onPlayClick, isPlayin
     }
   };
 
+  const handleDragStart = (e) => {
+    if (onDragStart) {
+      onDragStart(e, track);
+    }
+  };
+
   return (
     <tr
       className={`TrackRow ${isSelected ? 'Selected' : ''} ${isCurrentTrack ? 'CurrentPlayingTrack' : ''}`}
       onClick={handleMainClick}
       onDoubleClick={handleDoubleClick}
+      draggable={true}
+      onDragStart={handleDragStart}
     >
       {columns.map((col) => {
         let content;

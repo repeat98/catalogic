@@ -1,19 +1,28 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Menu from './Menu'; // Import the new Menu component
 import ContextMenu from './ContextMenu';
+import TextInputModal from './TextInputModal';
 import './Sidebar.scss';
 
 // Helper to generate simple unique IDs
 const generateId = () => `item_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-const Sidebar = () => {
-  const [selectedLibraryItem, setSelectedLibraryItem] = useState('Tracks');
+const Sidebar = ({ 
+  crates,
+  selectedCrateId,
+  selectedLibraryItem,
+  onCrateSelect,
+  onLibraryItemSelect,
+  onViewModeChange,
+  crateManagementRef
+}) => {
+  // Convert crates object to array format for UI
+  const cratesItems = Object.entries(crates).map(([id, crate]) => ({
+    id,
+    label: crate.name,
+    trackCount: crate.tracks ? crate.tracks.length : 0
+  }));
 
-  // State for dynamic items
-  const [cratesItems, setCratesItems] = useState([
-    { id: generateId(), label: 'My First Crate' },
-    { id: generateId(), label: 'DJ Set List' },
-  ]);
   const [myTagsItems, setMyTagsItems] = useState([
     { id: generateId(), label: 'Red Hot' },
   ]);
@@ -27,31 +36,51 @@ const Sidebar = () => {
     categoryType: null, // 'crates' or 'mytags'
   });
 
+  // Modal State
+  const [modal, setModal] = useState({
+    isOpen: false,
+    type: null, // 'create', 'rename'
+    title: '',
+    placeholder: '',
+    defaultValue: '',
+    categoryType: null,
+    itemId: null,
+    currentLabel: null
+  });
+
   const sidebarRef = useRef(null); // Ref for the sidebar to detect outside clicks
 
   const handleLibraryItemClick = (itemName) => {
-    setSelectedLibraryItem(itemName);
+    onLibraryItemSelect(itemName);
+    onViewModeChange('library');
     setContextMenu({ isOpen: false }); // Close context menu on other interactions
+  };
+
+  const handleCrateItemClick = (crateId) => {
+    onCrateSelect(crateId);
+    onViewModeChange('crate');
+    setContextMenu({ isOpen: false });
   };
 
   // --- Item Management Functions ---
   const addItem = (categoryType) => {
-    const newItemLabel = prompt(`Enter name for new ${categoryType === 'crates' ? 'Crate' : 'Tag'}:`);
-    if (newItemLabel && newItemLabel.trim() !== '') {
-      const newItem = { id: generateId(), label: newItemLabel.trim() };
-      if (categoryType === 'crates') {
-        setCratesItems(prev => [...prev, newItem]);
-      } else if (categoryType === 'mytags') {
-        setMyTagsItems(prev => [...prev, newItem]);
-      }
-    }
+    setModal({
+      isOpen: true,
+      type: 'create',
+      title: `Create New ${categoryType === 'crates' ? 'Crate' : 'Tag'}`,
+      placeholder: `Enter ${categoryType === 'crates' ? 'crate' : 'tag'} name...`,
+      defaultValue: '',
+      categoryType,
+      itemId: null,
+      currentLabel: null
+    });
     setContextMenu({ isOpen: false });
   };
 
-  const deleteItem = (itemId, categoryType) => {
+  const deleteItem = async (itemId, categoryType) => {
     if (window.confirm(`Are you sure you want to delete this ${categoryType === 'crates' ? 'crate' : 'tag'}?`)) {
-      if (categoryType === 'crates') {
-        setCratesItems(prev => prev.filter(item => item.id !== itemId));
+      if (categoryType === 'crates' && crateManagementRef.current?.deleteCrate) {
+        await crateManagementRef.current.deleteCrate(itemId);
       } else if (categoryType === 'mytags') {
         setMyTagsItems(prev => prev.filter(item => item.id !== itemId));
       }
@@ -60,18 +89,48 @@ const Sidebar = () => {
   };
 
   const renameItem = (itemId, currentLabel, categoryType) => {
-    const newItemLabel = prompt(`Enter new name for "${currentLabel}":`, currentLabel);
-    if (newItemLabel && newItemLabel.trim() !== '' && newItemLabel.trim() !== currentLabel) {
-      const updateFn = (prevItems) => prevItems.map(item =>
-        item.id === itemId ? { ...item, label: newItemLabel.trim() } : item
-      );
-      if (categoryType === 'crates') {
-        setCratesItems(updateFn);
+    setModal({
+      isOpen: true,
+      type: 'rename',
+      title: `Rename ${categoryType === 'crates' ? 'Crate' : 'Tag'}`,
+      placeholder: `Enter new name...`,
+      defaultValue: currentLabel,
+      categoryType,
+      itemId,
+      currentLabel
+    });
+    setContextMenu({ isOpen: false });
+  };
+
+  // --- Modal Management Functions ---
+  const handleModalConfirm = async (inputValue) => {
+    const { type, categoryType, itemId, currentLabel } = modal;
+    
+    if (type === 'create') {
+      if (categoryType === 'crates' && crateManagementRef.current?.createCrate) {
+        await crateManagementRef.current.createCrate(inputValue);
       } else if (categoryType === 'mytags') {
-        setMyTagsItems(updateFn);
+        const newItem = { id: generateId(), label: inputValue };
+        setMyTagsItems(prev => [...prev, newItem]);
+      }
+    } else if (type === 'rename') {
+      if (inputValue !== currentLabel) {
+        if (categoryType === 'crates' && crateManagementRef.current?.renameCrate) {
+          await crateManagementRef.current.renameCrate(itemId, inputValue);
+        } else if (categoryType === 'mytags') {
+          const updateFn = (prevItems) => prevItems.map(item =>
+            item.id === itemId ? { ...item, label: inputValue } : item
+          );
+          setMyTagsItems(updateFn);
+        }
       }
     }
-    setContextMenu({ isOpen: false });
+    
+    setModal({ ...modal, isOpen: false });
+  };
+
+  const handleModalClose = () => {
+    setModal({ ...modal, isOpen: false });
   };
 
   // --- Context Menu Logic ---
@@ -142,10 +201,26 @@ const Sidebar = () => {
         selectedLibraryItem={selectedLibraryItem}
         cratesItems={cratesItems}
         myTagsItems={myTagsItems}
+        selectedCrateItem={selectedCrateId}
         handleLibraryItemClick={handleLibraryItemClick}
+        handleCrateItemClick={handleCrateItemClick}
         addItem={addItem}
         handleOpenContextMenu={handleOpenContextMenu}
-        // selectedCrateItem, handleCrateItemClick, selectedTagItem, handleTagItemClick would be passed here if implemented
+        onCrateDrop={(event, crateId) => {
+          event.preventDefault();
+          try {
+            const data = JSON.parse(event.dataTransfer.getData('text/plain'));
+            if (data.trackId && crateManagementRef.current?.addTrackToCrate) {
+              crateManagementRef.current.addTrackToCrate(crateId, data.trackId);
+            }
+          } catch (error) {
+            console.error('Error handling crate drop:', error);
+          }
+        }}
+        onCrateDragOver={(event) => {
+          event.preventDefault();
+          event.dataTransfer.dropEffect = 'copy';
+        }}
       />
       <div data-layer="logo-container" className="LogoContainer">
         {/* Logo */}
@@ -158,6 +233,14 @@ const Sidebar = () => {
           onClose={handleCloseContextMenu}
         />
       )}
+      <TextInputModal
+        isOpen={modal.isOpen}
+        onClose={handleModalClose}
+        onConfirm={handleModalConfirm}
+        title={modal.title}
+        placeholder={modal.placeholder}
+        defaultValue={modal.defaultValue}
+      />
     </div>
   );
 };

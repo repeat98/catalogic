@@ -254,6 +254,25 @@ app.on("window-all-closed", () => {
 
 // Initialize the database schema
 function initDatabase() {
+  // Create crates table if it doesn't exist
+  const createCratesTableQuery = `
+    CREATE TABLE IF NOT EXISTS crates (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      tracks TEXT DEFAULT '[]',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+  
+  db.run(createCratesTableQuery, (err) => {
+    if (err) {
+      console.error("Error creating crates table:", err.message);
+    } else {
+      console.log("Crates table created or already exists.");
+    }
+  });
+
   // Check if new columns exist in 'classified_tracks' table
   const checkColumnsQuery = "PRAGMA table_info(classified_tracks);";
   db.all(checkColumnsQuery, [], (err, columns) => {
@@ -486,6 +505,149 @@ function initRoutes() {
       }
 
       res.json(row);
+    });
+  });
+
+  // Crate management routes
+  
+  // Get all crates
+  expressApp.get("/crates", (req, res) => {
+    const query = `
+      SELECT id, name, tracks, created_at, updated_at
+      FROM crates
+      ORDER BY created_at DESC
+    `;
+
+    db.all(query, [], (err, rows) => {
+      if (err) {
+        console.error("SQL Error:", err.message);
+        res.status(500).json({ error: "Failed to retrieve crates" });
+        return;
+      }
+
+      // Parse tracks JSON and format for client
+      const crates = {};
+      rows.forEach(row => {
+        try {
+          crates[row.id] = {
+            id: row.id,
+            name: row.name,
+            tracks: row.tracks ? JSON.parse(row.tracks) : [],
+            created_at: row.created_at,
+            updated_at: row.updated_at
+          };
+        } catch (e) {
+          console.error(`Error parsing tracks for crate ID ${row.id}:`, e);
+          crates[row.id] = {
+            id: row.id,
+            name: row.name,
+            tracks: [],
+            created_at: row.created_at,
+            updated_at: row.updated_at
+          };
+        }
+      });
+
+      res.json(crates);
+    });
+  });
+
+  // Create a new crate
+  expressApp.post("/crates", (req, res) => {
+    const { name, tracks = [] } = req.body;
+
+    if (!name || !name.trim()) {
+      return res.status(400).json({ error: "Crate name is required" });
+    }
+
+    const query = `
+      INSERT INTO crates (name, tracks, created_at, updated_at)
+      VALUES (?, ?, datetime('now'), datetime('now'))
+    `;
+
+    db.run(query, [name.trim(), JSON.stringify(tracks)], function(err) {
+      if (err) {
+        console.error("SQL Error:", err.message);
+        res.status(500).json({ error: "Failed to create crate" });
+        return;
+      }
+
+      res.json({
+        id: this.lastID,
+        name: name.trim(),
+        tracks,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      });
+    });
+  });
+
+  // Update a crate
+  expressApp.put("/crates/:id", (req, res) => {
+    const crateId = req.params.id;
+    const { name, tracks } = req.body;
+
+    let updates = [];
+    let values = [];
+
+    if (name !== undefined) {
+      updates.push("name = ?");
+      values.push(name.trim());
+    }
+
+    if (tracks !== undefined) {
+      updates.push("tracks = ?");
+      values.push(JSON.stringify(tracks));
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ error: "No updates provided" });
+    }
+
+    updates.push("updated_at = datetime('now')");
+    values.push(crateId);
+
+    const query = `
+      UPDATE crates 
+      SET ${updates.join(", ")}
+      WHERE id = ?
+    `;
+
+    db.run(query, values, function(err) {
+      if (err) {
+        console.error("SQL Error:", err.message);
+        res.status(500).json({ error: "Failed to update crate" });
+        return;
+      }
+
+      if (this.changes === 0) {
+        res.status(404).json({ error: "Crate not found" });
+        return;
+      }
+
+      res.json({ success: true });
+    });
+  });
+
+  // Delete a crate
+  expressApp.delete("/crates/:id", (req, res) => {
+    const crateId = req.params.id;
+
+    const query = "DELETE FROM crates WHERE id = ?";
+
+    db.run(query, [crateId], function(err) {
+      if (err) {
+        console.error("SQL Error:", err.message);
+        res.status(500).json({ error: "Failed to delete crate" });
+        return;
+      }
+
+      if (this.changes === 0) {
+        res.status(404).json({ error: "Crate not found" });
+        return;
+      }
+
+      res.json({ success: true });
     });
   });
 

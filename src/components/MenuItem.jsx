@@ -8,6 +8,9 @@ const MenuItem = ({
   showOptions = false,
   onClick, // Main click action for the item
   onOpenContextMenu, // New: Function to open context menu ( (event, id, label) => void )
+  onDrop, // Drag and drop handler
+  onDragOver, // Drag over handler
+  isDragTarget = false, // Whether this item can accept drops
 }) => {
   let itemClass = '';
 
@@ -28,11 +31,13 @@ const MenuItem = ({
   return (
     <div
       data-layer="menu-item-instance"
-      className={`MenuItemInstanceWrapper`}
+      className={`MenuItemInstanceWrapper ${isDragTarget ? 'DragTarget' : ''}`}
       onClick={onClick} // Main click for the item
       role="button"
       tabIndex={onClick ? 0 : -1}
       onKeyPress={(e) => { if (onClick && (e.key === 'Enter' || e.key === ' ')) onClick(); }}
+      onDrop={isDragTarget ? onDrop : undefined}
+      onDragOver={isDragTarget ? onDragOver : undefined}
     >
       <div className={`${itemClass}`}>
         <div data-layer="title" className="Title">

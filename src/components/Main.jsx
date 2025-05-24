@@ -240,7 +240,17 @@ const sortTracks = (tracks, sortConfig, selectedFeatureCategory, activeFilters, 
   return sortedTracks;
 };
 
-function Main() {
+function Main({ 
+  crates, 
+  setCrates, 
+  selectedCrateId, 
+  setSelectedCrateId, 
+  selectedLibraryItem, 
+  setSelectedLibraryItem, 
+  viewMode, 
+  setViewMode,
+  crateManagementRef 
+}) {
   const [allTracks, setAllTracks] = useState([]);
   const [filteredTracks, setFilteredTracks] = useState([]);
   const [selectedTrackId, setSelectedTrackId] = useState(null);
@@ -261,6 +271,148 @@ function Main() {
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [filterLogicMode, setFilterLogicMode] = useState('intersection'); // 'intersection' (AND) or 'union' (OR)
 
+  // Crate and view management state is now passed as props
+
+  // Crate management functions
+  const fetchCrates = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/crates');
+      if (response.ok) {
+        const cratesData = await response.json();
+        setCrates(cratesData);
+      }
+    } catch (error) {
+      console.error('Failed to fetch crates:', error);
+      // Initialize with empty crates if fetch fails
+      setCrates({});
+    }
+  };
+
+  const createCrate = async (crateName) => {
+    try {
+      const response = await fetch('http://localhost:3000/crates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: crateName, tracks: [] })
+      });
+      
+      if (response.ok) {
+        const newCrate = await response.json();
+        setCrates(prev => ({ ...prev, [newCrate.id]: newCrate }));
+        return newCrate;
+      }
+    } catch (error) {
+      console.error('Failed to create crate:', error);
+    }
+  };
+
+  const renameCrate = async (crateId, newName) => {
+    try {
+      const response = await fetch(`http://localhost:3000/crates/${crateId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newName })
+      });
+      
+      if (response.ok) {
+        setCrates(prev => ({
+          ...prev,
+          [crateId]: { ...prev[crateId], name: newName }
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to rename crate:', error);
+    }
+  };
+
+  const deleteCrate = async (crateId) => {
+    try {
+      const response = await fetch(`http://localhost:3000/crates/${crateId}`, {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+        setCrates(prev => {
+          const updated = { ...prev };
+          delete updated[crateId];
+          return updated;
+        });
+        // If we're currently viewing the deleted crate, switch back to library
+        if (selectedCrateId === crateId) {
+          setSelectedCrateId(null);
+          setViewMode('library');
+          setSelectedLibraryItem('Tracks');
+        }
+      }
+    } catch (error) {
+      console.error('Failed to delete crate:', error);
+    }
+  };
+
+  const addTrackToCrate = async (crateId, trackId) => {
+    try {
+      const currentCrate = crates[crateId];
+      if (!currentCrate) return;
+
+      const updatedTracks = [...(currentCrate.tracks || [])];
+      if (!updatedTracks.includes(trackId)) {
+        updatedTracks.push(trackId);
+        
+        const response = await fetch(`http://localhost:3000/crates/${crateId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tracks: updatedTracks })
+        });
+        
+        if (response.ok) {
+          setCrates(prev => ({
+            ...prev,
+            [crateId]: { ...prev[crateId], tracks: updatedTracks }
+          }));
+        }
+      }
+    } catch (error) {
+      console.error('Failed to add track to crate:', error);
+    }
+  };
+
+  const removeTrackFromCrate = async (crateId, trackId) => {
+    try {
+      const currentCrate = crates[crateId];
+      if (!currentCrate) return;
+
+      const updatedTracks = (currentCrate.tracks || []).filter(id => id !== trackId);
+      
+      const response = await fetch(`http://localhost:3000/crates/${crateId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tracks: updatedTracks })
+      });
+      
+      if (response.ok) {
+        setCrates(prev => ({
+          ...prev,
+          [crateId]: { ...prev[crateId], tracks: updatedTracks }
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to remove track from crate:', error);
+    }
+  };
+
+  // Set crate management functions in ref for Sidebar access
+  useEffect(() => {
+    if (crateManagementRef.current) {
+      crateManagementRef.current = {
+        createCrate,
+        renameCrate,
+        deleteCrate,
+        addTrackToCrate,
+        removeTrackFromCrate
+      };
+    }
+  }, []);
+
   useEffect(() => {
     const fetchTracksAndProcess = async () => {
       setIsLoading(true); setError(null);
@@ -270,6 +422,9 @@ function Main() {
         let data = await response.json();
         const processedTracks = data.map(track => ({ ...track, artwork_thumbnail_path: track.artwork_thumbnail_path || 'assets/default-artwork.png' }));
         setAllTracks(processedTracks);
+
+        // Also fetch crates
+        await fetchCrates();
 
         // Aggregate filter options once all tracks are fetched
         const genres = {};
@@ -320,10 +475,70 @@ function Main() {
     fetchTracksAndProcess();
   }, []);
 
+  // Sidebar handlers
+  const handleLibraryItemClick = (itemName) => {
+    setSelectedLibraryItem(itemName);
+    setViewMode('library');
+    setSelectedCrateId(null);
+  };
+
+  const handleCrateItemClick = (crateId) => {
+    setSelectedCrateId(crateId);
+    setViewMode('crate');
+    setSelectedLibraryItem(null);
+  };
+
+  const handleCreateCrate = async (crateName) => {
+    if (crateName && crateName.trim() !== '') {
+      await createCrate(crateName.trim());
+    }
+  };
+
+  const handleRenameCrate = async (crateId, newName, currentName) => {
+    if (newName && newName.trim() !== '' && newName.trim() !== currentName) {
+      await renameCrate(crateId, newName.trim());
+    }
+  };
+
+  const handleDeleteCrate = async (crateId) => {
+    if (window.confirm('Are you sure you want to delete this crate?')) {
+      await deleteCrate(crateId);
+    }
+  };
+
+  // Drag and drop handlers
+  const handleTrackDragStart = (event, track) => {
+    event.dataTransfer.setData('text/plain', JSON.stringify({ trackId: track.id, trackData: track }));
+    event.dataTransfer.effectAllowed = 'copy';
+  };
+
+  const handleCrateDrop = async (event, crateId) => {
+    event.preventDefault();
+    try {
+      const data = JSON.parse(event.dataTransfer.getData('text/plain'));
+      if (data.trackId) {
+        await addTrackToCrate(crateId, data.trackId);
+      }
+    } catch (error) {
+      console.error('Error handling crate drop:', error);
+    }
+  };
+
+  const handleCrateDragOver = (event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+  };
+
   useEffect(() => {
     let tracksToDisplay = [...allTracks];
     
-    // 1. Apply Search Filter
+    // 1. Check if we're viewing a crate
+    if (viewMode === 'crate' && selectedCrateId && crates[selectedCrateId]) {
+      const crateTrackIds = crates[selectedCrateId].tracks || [];
+      tracksToDisplay = allTracks.filter(track => crateTrackIds.includes(track.id));
+    }
+    
+    // 2. Apply Search Filter
     if (searchTerm.trim() !== '') {
       const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
       tracksToDisplay = tracksToDisplay.filter(track =>
@@ -333,9 +548,9 @@ function Main() {
       );
     }
 
-    // 2. Apply Active Filters (using logic from previous steps, assumed correct for now)
+    // 3. Apply Active Filters (only in library view - crates show their exact contents)
     const activeFilterCategories = Object.keys(activeFilters).filter(cat => activeFilters[cat] && activeFilters[cat].length > 0);
-    if (activeFilterCategories.length > 0) {
+    if (viewMode === 'library' && activeFilterCategories.length > 0) {
       if (filterLogicMode === 'intersection') {
         activeFilterCategories.forEach(category => {
           const selectedValues = activeFilters[category];
@@ -383,7 +598,7 @@ function Main() {
       }
     }
 
-    // 3. Then Sort - pass all required helper functions
+    // 4. Then Sort - pass all required helper functions
     tracksToDisplay = sortTracks(
       tracksToDisplay, 
       sortConfig, 
@@ -399,7 +614,7 @@ function Main() {
       getSpecificSpectralScore
     );
     setFilteredTracks(tracksToDisplay);
-  }, [allTracks, searchTerm, sortConfig, selectedFeatureCategory, activeFilters, filterLogicMode]);
+  }, [allTracks, searchTerm, sortConfig, selectedFeatureCategory, activeFilters, filterLogicMode, viewMode, selectedCrateId, crates]);
 
   const handleTrackSelect = (trackId) => setSelectedTrackId(trackId);
 
@@ -553,6 +768,14 @@ function Main() {
           onToggleFilter={handleToggleFilter}
           filterLogicMode={filterLogicMode}
           onToggleFilterLogicMode={toggleFilterLogicMode}
+          // Drag and drop props
+          onTrackDragStart={handleTrackDragStart}
+          // View state props
+          viewMode={viewMode}
+          selectedCrateId={selectedCrateId}
+          selectedLibraryItem={selectedLibraryItem}
+          crates={crates}
+          onRemoveTrackFromCrate={removeTrackFromCrate}
         />
       </div>
       <Player

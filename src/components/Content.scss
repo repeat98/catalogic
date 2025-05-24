@@ -48,3 +48,53 @@
   color: #ff8a80; // More visible error color
   font-weight: 500;
 }
+
+.ViewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background-color: #1e1e1e;
+  border-bottom: 1px solid #333;
+  margin-bottom: 16px;
+  border-radius: 6px;
+}
+
+.ViewInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ViewTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #e0e0e0;
+  margin: 0;
+}
+
+.ViewSubtitle {
+  font-size: 0.9rem;
+  color: #999;
+  font-weight: 400;
+}
+
+.CrateActions {
+  display: flex;
+  gap: 8px;
+}
+
+.CrateActionButton {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  background-color: #4a4a4a;
+  color: white;
+  border: 1px solid #666;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.CrateActionButton:hover {
+  background-color: #5a5a5a;
+}

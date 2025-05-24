@@ -65,7 +65,9 @@ const Tracklist = ({
   onFeatureCategoryChange,
   // Sorting props
   sortConfig,
-  requestSort
+  requestSort,
+  // Drag and drop props
+  onTrackDragStart
 }) => {
   const [columnConfig, setColumnConfig] = useState(
     initialColumnsConfig.map(col => ({ ...col, currentWidth: col.width }))
@@ -295,6 +297,7 @@ const Tracklist = ({
                 isCurrentTrack={currentPlayingTrackId === track.id}
                 isPlaying={isAudioPlaying && currentPlayingTrackId === track.id}
                 renderCell={renderCell}
+                onDragStart={onTrackDragStart}
               />
             ))
           ) : (

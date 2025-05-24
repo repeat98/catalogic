@@ -6,11 +6,13 @@ const Menu = ({
   selectedLibraryItem,
   cratesItems,
   myTagsItems,
+  selectedCrateItem,
   handleLibraryItemClick,
+  handleCrateItemClick,
   addItem,
   handleOpenContextMenu,
-  // selectedCrateItem, // Prop for future selection handling
-  // handleCrateItemClick, // Prop for future selection handling
+  onCrateDrop,
+  onCrateDragOver,
   // selectedTagItem, // Prop for future selection handling
   // handleTagItemClick, // Prop for future selection handling
 }) => {
@@ -52,11 +54,14 @@ const Menu = ({
           <MenuItem
             key={item.id}
             id={item.id}
-            label={item.label}
-            // isSelected={selectedCrateItem === item.id} // Implement selection if needed
-            // onClick={() => handleCrateItemClick(item.id)} // Implement selection if needed
+            label={`${item.label} (${item.trackCount || 0})`}
+            isSelected={selectedCrateItem === item.id}
+            onClick={() => handleCrateItemClick(item.id)}
             showOptions={true}
             onOpenContextMenu={(e) => handleOpenContextMenu(e, item, 'crates')}
+            onDrop={(e) => onCrateDrop && onCrateDrop(e, item.id)}
+            onDragOver={onCrateDragOver}
+            isDragTarget={true}
           />
         ))}
       </div>
