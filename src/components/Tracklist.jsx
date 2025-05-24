@@ -14,11 +14,11 @@ const featureCategories = [
 // Define the initial columns configuration
 // Widths here are initial/fallback widths. Actual widths will be managed in state.
 const initialColumnsConfig = [
-  { key: 'artwork_thumbnail_path', header: '', type: 'image', width: '50px', minWidth: 40, resizable: false },
-  { key: 'waveform', header: 'Preview', width: '20%', type: 'waveform', minWidth: 100, resizable: true },
-  { key: 'title', header: 'Title', width: '25%', minWidth: 100, resizable: true },
-  { key: 'artist', header: 'Artist', width: '20%', minWidth: 80, resizable: true },
-  { key: 'album', header: 'Album', width: '20%', minWidth: 80, resizable: true },
+  { key: 'artwork_thumbnail_path', header: '', type: 'image', width: '50px', minWidth: 40, resizable: false, sortable: false },
+  { key: 'waveform', header: 'Preview', width: '20%', type: 'waveform', minWidth: 100, resizable: true, sortable: false },
+  { key: 'title', header: 'Title', width: '25%', minWidth: 100, resizable: true, sortable: true, sortType: 'string' },
+  { key: 'artist', header: 'Artist', width: '20%', minWidth: 80, resizable: true, sortable: true, sortType: 'string' },
+  { key: 'album', header: 'Album', width: '20%', minWidth: 80, resizable: true, sortable: true, sortType: 'string' },
   {
     key: 'features',
     headerComponent: (props) => (
@@ -31,13 +31,26 @@ const initialColumnsConfig = [
     type: 'features',
     width: '25%',
     minWidth: 150,
-    resizable: true
+    resizable: true,
+    sortable: true,
+    sortType: 'features'
   },
-  { key: 'time', header: 'Time', width: '70px', minWidth: 60, textAlign: 'right', resizable: true },
-  { key: 'bpm', header: 'BPM', width: '70px', minWidth: 50, textAlign: 'right', resizable: true },
-  { key: 'key', header: 'Key', width: '70px', minWidth: 50, textAlign: 'right', resizable: true },
-  { key: 'year', header: 'Year', width: '70px', minWidth: 50, textAlign: 'right', resizable: true },
+  { key: 'time', header: 'Time', width: '70px', minWidth: 60, textAlign: 'right', resizable: true, sortable: true, sortType: 'string' }, // Time might need custom sort if not just string
+  { key: 'bpm', header: 'BPM', width: '70px', minWidth: 50, textAlign: 'right', resizable: true, sortable: true, sortType: 'number' },
+  { key: 'key', header: 'Key', width: '70px', minWidth: 50, textAlign: 'right', resizable: true, sortable: true, sortType: 'string' },
+  { key: 'year', header: 'Year', width: '70px', minWidth: 50, textAlign: 'right', resizable: true, sortable: true, sortType: 'string' }, // Year is often string, can be number if consistent
 ];
+
+// Helper function to strip prefix like "Category---" (can be shared or duplicated if state management doesn't allow easy sharing)
+const stripFeaturePrefixForDisplay = (tagName) => {
+  if (typeof tagName !== 'string') return '';
+  // return tagName.replace(/^.+?---/, ''); // Using regex for robustness
+  const separatorIndex = tagName.indexOf('---');
+  if (separatorIndex !== -1) {
+    return tagName.substring(separatorIndex + 3);
+  }
+  return tagName; // Return original if no prefix found
+};
 
 const Tracklist = ({
   tracks = [],
@@ -49,71 +62,85 @@ const Tracklist = ({
   currentTime,
   onSeek,
   selectedFeatureCategory,
-  onFeatureCategoryChange
+  onFeatureCategoryChange,
+  // Sorting props
+  sortConfig,
+  requestSort
 }) => {
   const [columnConfig, setColumnConfig] = useState(
-    initialColumnsConfig.map(col => ({ ...col, currentWidth: col.width })) // resizable flag is directly from initialConfig
+    initialColumnsConfig.map(col => ({ ...col, currentWidth: col.width }))
   );
   const tableRef = useRef(null);
-  const currentlyResizingColRef = useRef(null); // { key, startingX, startingWidth }
+  const currentlyResizingColRef = useRef(null);
+  const animationFrameRef = useRef(null); // For requestAnimationFrame
 
   const handleMouseDown = (e, columnKey) => {
-    e.preventDefault(); // Prevent text selection
+    e.preventDefault();
     const columnToResize = columnConfig.find(col => col.key === columnKey);
     if (!columnToResize || !columnToResize.resizable) return;
 
     const thElement = e.target.closest('th');
-    const startingWidth = thElement.offsetWidth;
-
     currentlyResizingColRef.current = {
       key: columnKey,
       startingX: e.clientX,
-      startingWidth: startingWidth,
+      startingWidth: thElement.offsetWidth,
     };
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
   };
 
-  const handleMouseMove = useCallback((e) => {
-    if (!currentlyResizingColRef.current) return;
-    e.preventDefault();
-
-    const { key, startingX, startingWidth } = currentlyResizingColRef.current;
-    const deltaX = e.clientX - startingX;
-    let newWidth = startingWidth + deltaX;
-
-    const columnIndex = columnConfig.findIndex(col => col.key === key);
-    const column = columnConfig[columnIndex];
-
-    if (column.minWidth && newWidth < column.minWidth) {
-      newWidth = column.minWidth;
-    }
-
-    // Update the width for the specific column
+  const updateColumnWidth = (key, newWidth) => {
     setColumnConfig(prevConfig =>
       prevConfig.map(col =>
         col.key === key ? { ...col, currentWidth: `${newWidth}px` } : col
       )
     );
-  }, [columnConfig]); // Dependency: columnConfig
+  };
+
+  const handleMouseMove = useCallback((e) => {
+    if (!currentlyResizingColRef.current) return;
+    e.preventDefault(); // Keep this here for immediate effect if needed
+
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+
+    animationFrameRef.current = requestAnimationFrame(() => {
+      if (!currentlyResizingColRef.current) return; // Check again inside rAF
+      const { key, startingX, startingWidth } = currentlyResizingColRef.current;
+      const deltaX = e.clientX - startingX;
+      let newCalculatedWidth = startingWidth + deltaX;
+
+      const column = columnConfig.find(col => col.key === key); // Find column for minWidth check
+      if (column && column.minWidth && newCalculatedWidth < column.minWidth) {
+        newCalculatedWidth = column.minWidth;
+      }
+      updateColumnWidth(key, newCalculatedWidth);
+    });
+  }, [columnConfig]); // Keep columnConfig, as it's used to find the column for minWidth
 
   const handleMouseUp = useCallback(() => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
     if (!currentlyResizingColRef.current) return;
     currentlyResizingColRef.current = null;
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('mouseup', handleMouseUp);
-    // Here you could save the columnConfig to localStorage if desired
-  }, [handleMouseMove]); // Dependency: handleMouseMove
+    // Optional: Save final columnConfig to localStorage here
+  }, [handleMouseMove]);
 
   useEffect(() => {
-    // Cleanup listeners if component unmounts while resizing
     return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      // Cleanup document event listeners when component unmounts
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [handleMouseMove, handleMouseUp]);
-
+  }, [handleMouseMove, handleMouseUp]); // Ensure this effect re-runs if callbacks change
 
   const handleTrackClick = (track) => {
     if (onTrackSelect) {
@@ -133,7 +160,7 @@ const Tracklist = ({
     return Object.entries(featureObject)
       .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
       .slice(0, 5)
-      .map(([tag]) => tag);
+      .map(([tag]) => stripFeaturePrefixForDisplay(tag)); // Strip prefix for display
   };
 
   const getTop5Spectral = (track) => {
@@ -194,8 +221,7 @@ const Tracklist = ({
           break;
         case 'Spectral':
           tags = getTop5Spectral(track);
-          if (track.lufs) tags.push(`LUFS: ${track.lufs}`); // Add LUFS if it exists
-          // Limit to 5 total for spectral if LUFS is added
+          if (track.lufs) tags.push(`LUFS: ${track.lufs}`);
           tags = tags.slice(0,5);
           break;
         default:
@@ -223,6 +249,8 @@ const Tracklist = ({
               <th
                 key={col.key}
                 style={{ width: col.currentWidth || col.width, textAlign: col.textAlign || 'left' }}
+                onClick={col.sortable ? () => requestSort(col.key) : undefined}
+                className={col.sortable ? 'SortableHeader' : ''}
               >
                 <div className="ThContent">
                   {col.headerComponent ? (
@@ -230,13 +258,18 @@ const Tracklist = ({
                   ) : (
                     <span>{col.header}</span>
                   )}
+                  {col.sortable && sortConfig && sortConfig.key === col.key && (
+                    <span className={`SortIndicator ${sortConfig.direction === 'ascending' ? 'asc' : 'desc'}`}>
+                      {sortConfig.direction === 'ascending' ? ' ▲' : ' ▼'}
+                    </span>
+                  )}
                   {col.resizable && (
                     <div
                       className="ResizeHandle"
                       onMouseDown={(e) => handleMouseDown(e, col.key)}
                       role="separator"
                       aria-orientation="vertical"
-                      aria-label={`Resize ${col.header || 'feature'} column`}
+                      aria-label={`Resize ${col.header || col.key} column`}
                     />
                   )}
                 </div>

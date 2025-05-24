@@ -101,3 +101,16 @@
   font-size: 0.75rem; // Smaller font for tags
   white-space: nowrap; // Prevent individual tags from breaking lines internally
 }
+
+.SortableHeader {
+  cursor: pointer;
+}
+
+.SortableHeader:hover {
+  background-color: #404040; // Slightly darker on hover for sortable headers
+}
+
+.SortIndicator {
+  margin-left: 5px;
+  // color: #1db954; // Optional: color the sort indicator
+}

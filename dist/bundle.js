@@ -71,9 +71,12 @@ var Content = function Content(_ref) {
     onSeek = _ref.onSeek,
     isLoading = _ref.isLoading,
     error = _ref.error,
-    onSearch = _ref.onSearch,
+    searchTerm = _ref.searchTerm,
+    onSearchTermChange = _ref.onSearchTermChange,
     selectedFeatureCategory = _ref.selectedFeatureCategory,
-    onFeatureCategoryChange = _ref.onFeatureCategoryChange;
+    onFeatureCategoryChange = _ref.onFeatureCategoryChange,
+    sortConfig = _ref.sortConfig,
+    requestSort = _ref.requestSort;
   if (isLoading) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "ContentLoading"
@@ -88,7 +91,8 @@ var Content = function Content(_ref) {
     "data-layer": "content",
     className: "Content"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_SearchComponent__WEBPACK_IMPORTED_MODULE_2__["default"], {
-    onSearch: onSearch // Pass the single onSearch prop
+    searchTerm: searchTerm,
+    onSearchTermChange: onSearchTermChange // Pass this instead of onSearch/onExecuteSearch
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Tracklist__WEBPACK_IMPORTED_MODULE_1__["default"], {
     tracks: filteredTracks,
     selectedTrackId: selectedTrackId,
@@ -100,6 +104,10 @@ var Content = function Content(_ref) {
     onSeek: onSeek,
     selectedFeatureCategory: selectedFeatureCategory,
     onFeatureCategoryChange: onFeatureCategoryChange
+    // Pass sorting props to Tracklist
+    ,
+    sortConfig: sortConfig,
+    requestSort: requestSort
   }));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Content);
@@ -215,7 +223,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Player__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Player */ "./src/components/Player.jsx");
 /* harmony import */ var _context_PlaybackContext__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../context/PlaybackContext */ "./src/context/PlaybackContext.jsx");
 /* harmony import */ var _Main_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Main.scss */ "./src/components/Main.scss");
-function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return r; }; var t, r = {}, e = Object.prototype, n = e.hasOwnProperty, o = "function" == typeof Symbol ? Symbol : {}, i = o.iterator || "@@iterator", a = o.asyncIterator || "@@asyncIterator", u = o.toStringTag || "@@toStringTag"; function c(t, r, e, n) { return Object.defineProperty(t, r, { value: e, enumerable: !n, configurable: !n, writable: !n }); } try { c({}, ""); } catch (t) { c = function c(t, r, e) { return t[r] = e; }; } function h(r, e, n, o) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype); return c(a, "_invoke", function (r, e, n) { var o = 1; return function (i, a) { if (3 === o) throw Error("Generator is already running"); if (4 === o) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var u = n.delegate; if (u) { var c = d(u, n); if (c) { if (c === f) continue; return c; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (1 === o) throw o = 4, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = 3; var h = s(r, e, n); if ("normal" === h.type) { if (o = n.done ? 4 : 2, h.arg === f) continue; return { value: h.arg, done: n.done }; } "throw" === h.type && (o = 4, n.method = "throw", n.arg = h.arg); } }; }(r, n, new Context(o || [])), !0), a; } function s(t, r, e) { try { return { type: "normal", arg: t.call(r, e) }; } catch (t) { return { type: "throw", arg: t }; } } r.wrap = h; var f = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var l = {}; c(l, i, function () { return this; }); var p = Object.getPrototypeOf, y = p && p(p(x([]))); y && y !== e && n.call(y, i) && (l = y); var v = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(l); function g(t) { ["next", "throw", "return"].forEach(function (r) { c(t, r, function (t) { return this._invoke(r, t); }); }); } function AsyncIterator(t, r) { function e(o, i, a, u) { var c = s(t[o], t, i); if ("throw" !== c.type) { var h = c.arg, f = h.value; return f && "object" == _typeof(f) && n.call(f, "__await") ? r.resolve(f.__await).then(function (t) { e("next", t, a, u); }, function (t) { e("throw", t, a, u); }) : r.resolve(f).then(function (t) { h.value = t, a(h); }, function (t) { return e("throw", t, a, u); }); } u(c.arg); } var o; c(this, "_invoke", function (t, n) { function i() { return new r(function (r, o) { e(t, n, r, o); }); } return o = o ? o.then(i, i) : i(); }, !0); } function d(r, e) { var n = e.method, o = r.i[n]; if (o === t) return e.delegate = null, "throw" === n && r.i["return"] && (e.method = "return", e.arg = t, d(r, e), "throw" === e.method) || "return" !== n && (e.method = "throw", e.arg = new TypeError("The iterator does not provide a '" + n + "' method")), f; var i = s(o, r.i, e.arg); if ("throw" === i.type) return e.method = "throw", e.arg = i.arg, e.delegate = null, f; var a = i.arg; return a ? a.done ? (e[r.r] = a.value, e.next = r.n, "return" !== e.method && (e.method = "next", e.arg = t), e.delegate = null, f) : a : (e.method = "throw", e.arg = new TypeError("iterator result is not an object"), e.delegate = null, f); } function w(t) { this.tryEntries.push(t); } function m(r) { var e = r[4] || {}; e.type = "normal", e.arg = t, r[4] = e; } function Context(t) { this.tryEntries = [[-1]], t.forEach(w, this), this.reset(!0); } function x(r) { if (null != r) { var e = r[i]; if (e) return e.call(r); if ("function" == typeof r.next) return r; if (!isNaN(r.length)) { var o = -1, a = function e() { for (; ++o < r.length;) if (n.call(r, o)) return e.value = r[o], e.done = !1, e; return e.value = t, e.done = !0, e; }; return a.next = a; } } throw new TypeError(_typeof(r) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, c(v, "constructor", GeneratorFunctionPrototype), c(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = c(GeneratorFunctionPrototype, u, "GeneratorFunction"), r.isGeneratorFunction = function (t) { var r = "function" == typeof t && t.constructor; return !!r && (r === GeneratorFunction || "GeneratorFunction" === (r.displayName || r.name)); }, r.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, c(t, u, "GeneratorFunction")), t.prototype = Object.create(v), t; }, r.awrap = function (t) { return { __await: t }; }, g(AsyncIterator.prototype), c(AsyncIterator.prototype, a, function () { return this; }), r.AsyncIterator = AsyncIterator, r.async = function (t, e, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(h(t, e, n, o), i); return r.isGeneratorFunction(e) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, g(v), c(v, u, "Generator"), c(v, i, function () { return this; }), c(v, "toString", function () { return "[object Generator]"; }), r.keys = function (t) { var r = Object(t), e = []; for (var n in r) e.unshift(n); return function t() { for (; e.length;) if ((n = e.pop()) in r) return t.value = n, t.done = !1, t; return t.done = !0, t; }; }, r.values = x, Context.prototype = { constructor: Context, reset: function reset(r) { if (this.prev = this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(m), !r) for (var e in this) "t" === e.charAt(0) && n.call(this, e) && !isNaN(+e.slice(1)) && (this[e] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0][4]; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(r) { if (this.done) throw r; var e = this; function n(t) { a.type = "throw", a.arg = r, e.next = t; } for (var o = e.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i[4], u = this.prev, c = i[1], h = i[2]; if (-1 === i[0]) return n("end"), !1; if (!c && !h) throw Error("try statement without catch or finally"); if (null != i[0] && i[0] <= u) { if (u < c) return this.method = "next", this.arg = t, n(c), !0; if (u < h) return n(h), !1; } } }, abrupt: function abrupt(t, r) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var n = this.tryEntries[e]; if (n[0] > -1 && n[0] <= this.prev && this.prev < n[2]) { var o = n; break; } } o && ("break" === t || "continue" === t) && o[0] <= r && r <= o[2] && (o = null); var i = o ? o[4] : {}; return i.type = t, i.arg = r, o ? (this.method = "next", this.next = o[2], f) : this.complete(i); }, complete: function complete(t, r) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && r && (this.next = r), f; }, finish: function finish(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[2] === t) return this.complete(e[4], e[3]), m(e), f; } }, "catch": function _catch(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[0] === t) { var n = e[4]; if ("throw" === n.type) { var o = n.arg; m(e); } return o; } } throw Error("illegal catch attempt"); }, delegateYield: function delegateYield(r, e, n) { return this.delegate = { i: x(r), r: e, n: n }, "next" === this.method && (this.arg = t), f; } }, r; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -224,12 +231,17 @@ function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" 
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
+function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
 function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 
  // Import the Navbar component
  // Import the Content component
@@ -237,6 +249,108 @@ function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
  // Styles for the .Main container
 
+// Helper function to strip prefix like "Category---"
+var stripFeaturePrefix = function stripFeaturePrefix(tagName) {
+  if (typeof tagName !== 'string') return '';
+  return tagName.substring(tagName.indexOf('---') + 3);
+  // A more robust regex could be: tagName.replace(/^.+?---/, '');
+};
+
+// Helper function to get a composite sort key from top N tags
+var getCompositeFeatureSortKey = function getCompositeFeatureSortKey(track, categoryKey) {
+  var numTopTags = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 2;
+  var featureObject = track[categoryKey];
+  if (!featureObject || _typeof(featureObject) !== 'object' || Object.keys(featureObject).length === 0) return '';
+  var topTags = Object.entries(featureObject).sort(function (_ref, _ref2) {
+    var _ref3 = _slicedToArray(_ref, 2),
+      scoreA = _ref3[1];
+    var _ref4 = _slicedToArray(_ref2, 2),
+      scoreB = _ref4[1];
+    return scoreB - scoreA;
+  }).slice(0, numTopTags).map(function (_ref5) {
+    var _ref6 = _slicedToArray(_ref5, 1),
+      tag = _ref6[0];
+    return stripFeaturePrefix(tag).toLowerCase();
+  }) // Strip prefix here
+  .join(',');
+  return topTags;
+};
+
+// Helper function to get the highest spectral value (moved outside component for sortTracks)
+var getTopSpectralValue = function getTopSpectralValue(track) {
+  var spectralData = {
+    atonal: track.atonal,
+    tonal: track.tonal,
+    dark: track.dark,
+    bright: track.bright,
+    percussive: track.percussive,
+    smooth: track.smooth
+  };
+  var validEntries = Object.entries(spectralData).filter(function (_ref7) {
+    var _ref8 = _slicedToArray(_ref7, 2),
+      value = _ref8[1];
+    return typeof value === 'number';
+  });
+  if (validEntries.length === 0) return null;
+  validEntries.sort(function (_ref9, _ref10) {
+    var _ref11 = _slicedToArray(_ref9, 2),
+      scoreA = _ref11[1];
+    var _ref12 = _slicedToArray(_ref10, 2),
+      scoreB = _ref12[1];
+    return scoreB - scoreA;
+  });
+  return validEntries[0][1];
+};
+
+// Centralized sort function - updated to use getCompositeFeatureSortKey
+var sortTracks = function sortTracks(tracks, sortConfig, selectedFeatureCategory, getCompositeFeatureSortKeyFn, getTopSpectralValueFn) {
+  if (!sortConfig || !sortConfig.key) return _toConsumableArray(tracks);
+  var sortedTracks = _toConsumableArray(tracks).sort(function (a, b) {
+    var valA, valB;
+    if (sortConfig.key === 'features') {
+      switch (selectedFeatureCategory) {
+        case 'Style':
+          valA = getCompositeFeatureSortKeyFn(a, 'style_features');
+          valB = getCompositeFeatureSortKeyFn(b, 'style_features');
+          break;
+        case 'Mood':
+          valA = getCompositeFeatureSortKeyFn(a, 'mood_features');
+          valB = getCompositeFeatureSortKeyFn(b, 'mood_features');
+          break;
+        case 'Instrument':
+          valA = getCompositeFeatureSortKeyFn(a, 'instrument_features');
+          valB = getCompositeFeatureSortKeyFn(b, 'instrument_features');
+          break;
+        case 'Spectral':
+          valA = getTopSpectralValueFn(a);
+          valB = getTopSpectralValueFn(b);
+          break;
+        default:
+          valA = '';
+          valB = '';
+        // Use empty string for default case
+      }
+    } else {
+      valA = a[sortConfig.key];
+      valB = b[sortConfig.key];
+    }
+
+    // Handle cases where sort key might be effectively null (e.g., empty string from getCompositeFeatureSortKey)
+    var aIsNull = valA === null || valA === undefined || valA === '';
+    var bIsNull = valB === null || valB === undefined || valB === '';
+    if (aIsNull && bIsNull) return 0;
+    if (aIsNull) return sortConfig.direction === 'ascending' ? 1 : -1;
+    if (bIsNull) return sortConfig.direction === 'ascending' ? -1 : 1;
+    var comparison = 0;
+    if (typeof valA === 'number' && typeof valB === 'number') {
+      comparison = valA - valB;
+    } else {
+      comparison = String(valA).toLowerCase().localeCompare(String(valB).toLowerCase());
+    }
+    return sortConfig.direction === 'ascending' ? comparison : comparison * -1;
+  });
+  return sortedTracks;
+};
 function Main() {
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
     _useState2 = _slicedToArray(_useState, 2),
@@ -274,20 +388,24 @@ function Main() {
     currentWaveSurfer = _useContext.currentWaveSurfer,
     setContextTrack = _useContext.setCurrentTrack;
   var timeUpdateIntervalRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-
-  // Autocomplete states removed
-  // const [searchTerm, setSearchTerm] = useState('');
-  // const [autocompleteSuggestions, setAutocompleteSuggestions] = useState([]);
-
-  // State for selected feature category for the new column
   var _useState17 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('Style'),
     _useState18 = _slicedToArray(_useState17, 2),
     selectedFeatureCategory = _useState18[0],
-    setSelectedFeatureCategory = _useState18[1]; // Default to 'Style'
-
+    setSelectedFeatureCategory = _useState18[1];
+  var _useState19 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+      key: null,
+      direction: 'ascending'
+    }),
+    _useState20 = _slicedToArray(_useState19, 2),
+    sortConfig = _useState20[0],
+    setSortConfig = _useState20[1];
+  var _useState21 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
+    _useState22 = _slicedToArray(_useState21, 2),
+    searchTerm = _useState22[0],
+    setSearchTerm = _useState22[1];
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     var fetchTracks = /*#__PURE__*/function () {
-      var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+      var _ref13 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
         var response, errorMessage, errorBody, data, processedTracks;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
@@ -329,51 +447,61 @@ function Main() {
                 });
               });
               setAllTracks(processedTracks);
-              setFilteredTracks(processedTracks);
-              _context.next = 31;
+              _context.next = 30;
               break;
-            case 27:
-              _context.prev = 27;
+            case 26:
+              _context.prev = 26;
               _context.t1 = _context["catch"](2);
               console.error("Failed to fetch tracks:", _context.t1);
               setError(_context.t1.message);
-            case 31:
-              _context.prev = 31;
+            case 30:
+              _context.prev = 30;
               setIsLoading(false);
-              return _context.finish(31);
-            case 34:
+              return _context.finish(30);
+            case 33:
             case "end":
               return _context.stop();
           }
-        }, _callee, null, [[2, 27, 31, 34], [8, 15]]);
+        }, _callee, null, [[2, 26, 30, 33], [8, 15]]);
       }));
       return function fetchTracks() {
-        return _ref.apply(this, arguments);
+        return _ref13.apply(this, arguments);
       };
     }();
     fetchTracks();
   }, []);
-  var handleTrackSelect = function handleTrackSelect(trackId) {
-    setSelectedTrackId(trackId);
-  };
-
-  // This is the primary search execution function
-  var executeSearch = function executeSearch(termToSearch) {
-    var lowerCaseSearchTerm = termToSearch.toLowerCase().trim();
-    if (!lowerCaseSearchTerm) {
-      setFilteredTracks(allTracks);
-    } else {
-      var results = allTracks.filter(function (track) {
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    var tracksToDisplay = _toConsumableArray(allTracks);
+    if (searchTerm.trim() !== '') {
+      var lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
+      tracksToDisplay = tracksToDisplay.filter(function (track) {
         return track.title && track.title.toLowerCase().includes(lowerCaseSearchTerm) || track.artist && track.artist.toLowerCase().includes(lowerCaseSearchTerm) || track.album && track.album.toLowerCase().includes(lowerCaseSearchTerm);
       });
-      setFilteredTracks(results);
     }
+    // Pass the new getCompositeFeatureSortKey to sortTracks
+    tracksToDisplay = sortTracks(tracksToDisplay, sortConfig, selectedFeatureCategory, getCompositeFeatureSortKey, getTopSpectralValue);
+    setFilteredTracks(tracksToDisplay);
+  }, [allTracks, searchTerm, sortConfig, selectedFeatureCategory]);
+  var handleTrackSelect = function handleTrackSelect(trackId) {
+    return setSelectedTrackId(trackId);
   };
-
-  // handleSearchInputChange and handleSuggestionClick removed
-
+  var handleSearchTermChange = function handleSearchTermChange(newSearchTerm) {
+    setSearchTerm(newSearchTerm);
+  };
+  var requestSort = function requestSort(key) {
+    var direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    } else if (sortConfig.key === key && sortConfig.direction === 'descending') {
+      direction = 'ascending';
+    }
+    setSortConfig({
+      key: key,
+      direction: direction
+    });
+  };
   var handleFeatureCategoryChange = function handleFeatureCategoryChange(category) {
-    setSelectedFeatureCategory(category);
+    return setSelectedFeatureCategory(category);
   };
   var handlePlayTrack = function handlePlayTrack(track) {
     if (!track || !track.id) {
@@ -472,11 +600,14 @@ function Main() {
     onTrackSelect: handleTrackSelect,
     onPlayTrack: handlePlayTrack,
     onSeek: handleSeek,
-    onSearch: executeSearch,
-    isLoading: isLoading,
-    error: error,
+    searchTerm: searchTerm,
+    onSearchTermChange: handleSearchTermChange,
     selectedFeatureCategory: selectedFeatureCategory,
-    onFeatureCategoryChange: handleFeatureCategoryChange
+    onFeatureCategoryChange: handleFeatureCategoryChange,
+    sortConfig: sortConfig,
+    requestSort: requestSort,
+    isLoading: isLoading,
+    error: error
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Player__WEBPACK_IMPORTED_MODULE_3__["default"], {
     currentPlayingTrack: currentPlayingTrack,
     isPlaying: isPlaying,
@@ -910,28 +1041,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _SearchComponent_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SearchComponent.scss */ "./src/components/SearchComponent.scss");
-function _slicedToArray(r, e) { return _arrayWithHoles(r) || _iterableToArrayLimit(r, e) || _unsupportedIterableToArray(r, e) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
-function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
 
 
 var SearchComponent = function SearchComponent(_ref) {
-  var onSearch = _ref.onSearch;
-  var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''),
-    _useState2 = _slicedToArray(_useState, 2),
-    searchTerm = _useState2[0],
-    setSearchTerm = _useState2[1];
+  var searchTerm = _ref.searchTerm,
+    onSearchTermChange = _ref.onSearchTermChange;
   var handleInputChange = function handleInputChange(event) {
-    setSearchTerm(event.target.value);
+    if (onSearchTermChange) {
+      onSearchTermChange(event.target.value);
+    }
   };
   var handleSubmit = function handleSubmit(event) {
     event.preventDefault();
-    if (onSearch) {
-      onSearch(searchTerm);
-    }
   };
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("form", {
     className: "SearchForm",
@@ -1336,32 +1457,40 @@ var initialColumnsConfig = [{
   type: 'image',
   width: '50px',
   minWidth: 40,
-  resizable: false
+  resizable: false,
+  sortable: false
 }, {
   key: 'waveform',
   header: 'Preview',
   width: '20%',
   type: 'waveform',
   minWidth: 100,
-  resizable: true
+  resizable: true,
+  sortable: false
 }, {
   key: 'title',
   header: 'Title',
   width: '25%',
   minWidth: 100,
-  resizable: true
+  resizable: true,
+  sortable: true,
+  sortType: 'string'
 }, {
   key: 'artist',
   header: 'Artist',
   width: '20%',
   minWidth: 80,
-  resizable: true
+  resizable: true,
+  sortable: true,
+  sortType: 'string'
 }, {
   key: 'album',
   header: 'Album',
   width: '20%',
   minWidth: 80,
-  resizable: true
+  resizable: true,
+  sortable: true,
+  sortType: 'string'
 }, {
   key: 'features',
   headerComponent: function headerComponent(props) {
@@ -1374,36 +1503,60 @@ var initialColumnsConfig = [{
   type: 'features',
   width: '25%',
   minWidth: 150,
-  resizable: true
+  resizable: true,
+  sortable: true,
+  sortType: 'features'
 }, {
   key: 'time',
   header: 'Time',
   width: '70px',
   minWidth: 60,
   textAlign: 'right',
-  resizable: true
-}, {
+  resizable: true,
+  sortable: true,
+  sortType: 'string'
+},
+// Time might need custom sort if not just string
+{
   key: 'bpm',
   header: 'BPM',
   width: '70px',
   minWidth: 50,
   textAlign: 'right',
-  resizable: true
+  resizable: true,
+  sortable: true,
+  sortType: 'number'
 }, {
   key: 'key',
   header: 'Key',
   width: '70px',
   minWidth: 50,
   textAlign: 'right',
-  resizable: true
+  resizable: true,
+  sortable: true,
+  sortType: 'string'
 }, {
   key: 'year',
   header: 'Year',
   width: '70px',
   minWidth: 50,
   textAlign: 'right',
-  resizable: true
-}];
+  resizable: true,
+  sortable: true,
+  sortType: 'string'
+} // Year is often string, can be number if consistent
+];
+
+// Helper function to strip prefix like "Category---" (can be shared or duplicated if state management doesn't allow easy sharing)
+var stripFeaturePrefixForDisplay = function stripFeaturePrefixForDisplay(tagName) {
+  if (typeof tagName !== 'string') return '';
+  // return tagName.replace(/^.+?---/, ''); // Using regex for robustness
+  var separatorIndex = tagName.indexOf('---');
+  if (separatorIndex !== -1) {
+    return tagName.substring(separatorIndex + 3);
+  }
+  return tagName; // Return original if no prefix found
+};
 var Tracklist = function Tracklist(_ref) {
   var _ref$tracks = _ref.tracks,
     tracks = _ref$tracks === void 0 ? [] : _ref$tracks,
@@ -1415,53 +1568,37 @@ var Tracklist = function Tracklist(_ref) {
     currentTime = _ref.currentTime,
     onSeek = _ref.onSeek,
     selectedFeatureCategory = _ref.selectedFeatureCategory,
-    onFeatureCategoryChange = _ref.onFeatureCategoryChange;
+    onFeatureCategoryChange = _ref.onFeatureCategoryChange,
+    sortConfig = _ref.sortConfig,
+    requestSort = _ref.requestSort;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(initialColumnsConfig.map(function (col) {
       return _objectSpread(_objectSpread({}, col), {}, {
         currentWidth: col.width
       });
-    }) // resizable flag is directly from initialConfig
-    ),
+    })),
     _useState2 = _slicedToArray(_useState, 2),
     columnConfig = _useState2[0],
     setColumnConfig = _useState2[1];
   var tableRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
-  var currentlyResizingColRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null); // { key, startingX, startingWidth }
+  var currentlyResizingColRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null);
+  var animationFrameRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null); // For requestAnimationFrame
 
   var handleMouseDown = function handleMouseDown(e, columnKey) {
-    e.preventDefault(); // Prevent text selection
+    e.preventDefault();
     var columnToResize = columnConfig.find(function (col) {
       return col.key === columnKey;
     });
     if (!columnToResize || !columnToResize.resizable) return;
     var thElement = e.target.closest('th');
-    var startingWidth = thElement.offsetWidth;
     currentlyResizingColRef.current = {
       key: columnKey,
       startingX: e.clientX,
-      startingWidth: startingWidth
+      startingWidth: thElement.offsetWidth
     };
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
   };
-  var handleMouseMove = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (e) {
-    if (!currentlyResizingColRef.current) return;
-    e.preventDefault();
-    var _currentlyResizingCol = currentlyResizingColRef.current,
-      key = _currentlyResizingCol.key,
-      startingX = _currentlyResizingCol.startingX,
-      startingWidth = _currentlyResizingCol.startingWidth;
-    var deltaX = e.clientX - startingX;
-    var newWidth = startingWidth + deltaX;
-    var columnIndex = columnConfig.findIndex(function (col) {
-      return col.key === key;
-    });
-    var column = columnConfig[columnIndex];
-    if (column.minWidth && newWidth < column.minWidth) {
-      newWidth = column.minWidth;
-    }
-
-    // Update the width for the specific column
+  var updateColumnWidth = function updateColumnWidth(key, newWidth) {
     setColumnConfig(function (prevConfig) {
       return prevConfig.map(function (col) {
         return col.key === key ? _objectSpread(_objectSpread({}, col), {}, {
@@ -1469,23 +1606,53 @@ var Tracklist = function Tracklist(_ref) {
         }) : col;
       });
     });
-  }, [columnConfig]); // Dependency: columnConfig
+  };
+  var handleMouseMove = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (e) {
+    if (!currentlyResizingColRef.current) return;
+    e.preventDefault(); // Keep this here for immediate effect if needed
+
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
+    animationFrameRef.current = requestAnimationFrame(function () {
+      if (!currentlyResizingColRef.current) return; // Check again inside rAF
+      var _currentlyResizingCol = currentlyResizingColRef.current,
+        key = _currentlyResizingCol.key,
+        startingX = _currentlyResizingCol.startingX,
+        startingWidth = _currentlyResizingCol.startingWidth;
+      var deltaX = e.clientX - startingX;
+      var newCalculatedWidth = startingWidth + deltaX;
+      var column = columnConfig.find(function (col) {
+        return col.key === key;
+      }); // Find column for minWidth check
+      if (column && column.minWidth && newCalculatedWidth < column.minWidth) {
+        newCalculatedWidth = column.minWidth;
+      }
+      updateColumnWidth(key, newCalculatedWidth);
+    });
+  }, [columnConfig]); // Keep columnConfig, as it's used to find the column for minWidth
 
   var handleMouseUp = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
     if (!currentlyResizingColRef.current) return;
     currentlyResizingColRef.current = null;
     document.removeEventListener('mousemove', handleMouseMove);
     document.removeEventListener('mouseup', handleMouseUp);
-    // Here you could save the columnConfig to localStorage if desired
-  }, [handleMouseMove]); // Dependency: handleMouseMove
-
+    // Optional: Save final columnConfig to localStorage here
+  }, [handleMouseMove]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    // Cleanup listeners if component unmounts while resizing
     return function () {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      // Cleanup document event listeners when component unmounts
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [handleMouseMove, handleMouseUp]);
+  }, [handleMouseMove, handleMouseUp]); // Ensure this effect re-runs if callbacks change
+
   var handleTrackClick = function handleTrackClick(track) {
     if (onTrackSelect) {
       onTrackSelect(track.id);
@@ -1508,8 +1675,8 @@ var Tracklist = function Tracklist(_ref) {
     }).slice(0, 5).map(function (_ref6) {
       var _ref7 = _slicedToArray(_ref6, 1),
         tag = _ref7[0];
-      return tag;
-    });
+      return stripFeaturePrefixForDisplay(tag);
+    }); // Strip prefix for display
   };
   var getTop5Spectral = function getTop5Spectral(track) {
     var spectralData = {
@@ -1575,8 +1742,7 @@ var Tracklist = function Tracklist(_ref) {
           break;
         case 'Spectral':
           tags = getTop5Spectral(track);
-          if (track.lufs) tags.push("LUFS: ".concat(track.lufs)); // Add LUFS if it exists
-          // Limit to 5 total for spectral if LUFS is added
+          if (track.lufs) tags.push("LUFS: ".concat(track.lufs));
           tags = tags.slice(0, 5);
           break;
         default:
@@ -1611,20 +1777,26 @@ var Tracklist = function Tracklist(_ref) {
       style: {
         width: col.currentWidth || col.width,
         textAlign: col.textAlign || 'left'
-      }
+      },
+      onClick: col.sortable ? function () {
+        return requestSort(col.key);
+      } : undefined,
+      className: col.sortable ? 'SortableHeader' : ''
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "ThContent"
     }, col.headerComponent ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(col.headerComponent, {
       selectedFeatureCategory: selectedFeatureCategory,
       onFeatureCategoryChange: onFeatureCategoryChange
-    }) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, col.header), col.resizable && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
+    }) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", null, col.header), col.sortable && sortConfig && sortConfig.key === col.key && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", {
+      className: "SortIndicator ".concat(sortConfig.direction === 'ascending' ? 'asc' : 'desc')
+    }, sortConfig.direction === 'ascending' ? ' ▲' : ' ▼'), col.resizable && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", {
       className: "ResizeHandle",
       onMouseDown: function onMouseDown(e) {
         return handleMouseDown(e, col.key);
       },
       role: "separator",
       "aria-orientation": "vertical",
-      "aria-label": "Resize ".concat(col.header || 'feature', " column")
+      "aria-label": "Resize ".concat(col.header || col.key, " column")
     })));
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement("tbody", null, tracks.length > 0 ? tracks.map(function (track) {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_Track__WEBPACK_IMPORTED_MODULE_1__["default"], {
@@ -3752,7 +3924,19 @@ ___CSS_LOADER_EXPORT___.push([module.id, `.TracklistContainer {
   border-radius: 3px;
   font-size: 0.75rem;
   white-space: nowrap;
-}`, "",{"version":3,"sources":["webpack://./src/components/Tracklist.scss"],"names":[],"mappings":"AAAA;EACI,WAAA;EACA,YAAA;EACA,gBAAA;EACA,yBAAA;EACA,cAAA;AACJ;;AAEE;EACE,WAAA;EACA,yBAAA;EACA,mBAAA;EACA,mBAAA;AACJ;AACI;EACE,yBAAA;EACA,gBAAA;EACA,MAAA;EACA,WAAA;AACN;AAEI;EACE,UAAA;EACA,gBAAA;EACA,gBAAA;EACA,cAAA;EACA,gCAAA;EACA,mBAAA;EACA,kBAAA;AAAN;AAEM;EACE,aAAA;EACA,mBAAA;EACA,8BAAA;EACA,kBAAA;EACA,gBAAA;EACA,uBAAA;AAAR;AAGM;EACE,kBAAA;AADR;AAQI;EACE,kBAAA;EACA,QAAA;EACA,MAAA;EACA,SAAA;EACA,UAAA;EACA,kBAAA;EACA,UAAA;AANN;AAsBQ;EACE,yBAAA;AApBV;AAyBI;EACE,kBAAA;EACA,aAAA;EACA,WAAA;EACA,kBAAA;AAvBN;;AA8BA;EACE,aAAA;EACA,eAAA;EACA,QAAA;EACA,mBAAA;EACA,YAAA;AA3BF;;AA8BA;EACE,sBAAA;EACA,WAAA;EACA,gBAAA;EACA,kBAAA;EACA,kBAAA;EACA,mBAAA;AA3BF","sourceRoot":""}]);
+}
+
+.SortableHeader {
+  cursor: pointer;
+}
+
+.SortableHeader:hover {
+  background-color: #404040;
+}
+
+.SortIndicator {
+  margin-left: 5px;
+}`, "",{"version":3,"sources":["webpack://./src/components/Tracklist.scss"],"names":[],"mappings":"AAAA;EACI,WAAA;EACA,YAAA;EACA,gBAAA;EACA,yBAAA;EACA,cAAA;AACJ;;AAEE;EACE,WAAA;EACA,yBAAA;EACA,mBAAA;EACA,mBAAA;AACJ;AACI;EACE,yBAAA;EACA,gBAAA;EACA,MAAA;EACA,WAAA;AACN;AAEI;EACE,UAAA;EACA,gBAAA;EACA,gBAAA;EACA,cAAA;EACA,gCAAA;EACA,mBAAA;EACA,kBAAA;AAAN;AAEM;EACE,aAAA;EACA,mBAAA;EACA,8BAAA;EACA,kBAAA;EACA,gBAAA;EACA,uBAAA;AAAR;AAGM;EACE,kBAAA;AADR;AAQI;EACE,kBAAA;EACA,QAAA;EACA,MAAA;EACA,SAAA;EACA,UAAA;EACA,kBAAA;EACA,UAAA;AANN;AAsBQ;EACE,yBAAA;AApBV;AAyBI;EACE,kBAAA;EACA,aAAA;EACA,WAAA;EACA,kBAAA;AAvBN;;AA8BA;EACE,aAAA;EACA,eAAA;EACA,QAAA;EACA,mBAAA;EACA,YAAA;AA3BF;;AA8BA;EACE,sBAAA;EACA,WAAA;EACA,gBAAA;EACA,kBAAA;EACA,kBAAA;EACA,mBAAA;AA3BF;;AA8BA;EACE,eAAA;AA3BF;;AA8BA;EACE,yBAAA;AA3BF;;AA8BA;EACE,gBAAA;AA3BF","sourceRoot":""}]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

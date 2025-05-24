@@ -15,11 +15,15 @@ const Content = ({
   onSeek,
   isLoading,
   error,
-  // Search prop
-  onSearch, // This will be executeSearch from Main
+  // Updated Search props
+  searchTerm,
+  onSearchTermChange,
   // Feature Column Props
   selectedFeatureCategory,
-  onFeatureCategoryChange
+  onFeatureCategoryChange,
+  // Sorting props
+  sortConfig,
+  requestSort
 }) => {
 
   if (isLoading) {
@@ -33,7 +37,8 @@ const Content = ({
   return (
     <div data-layer="content" className="Content">
       <SearchComponent 
-        onSearch={onSearch} // Pass the single onSearch prop
+        searchTerm={searchTerm}
+        onSearchTermChange={onSearchTermChange} // Pass this instead of onSearch/onExecuteSearch
       />
       <Tracklist
         tracks={filteredTracks}
@@ -46,6 +51,9 @@ const Content = ({
         onSeek={onSeek}
         selectedFeatureCategory={selectedFeatureCategory}
         onFeatureCategoryChange={onFeatureCategoryChange}
+        // Pass sorting props to Tracklist
+        sortConfig={sortConfig}
+        requestSort={requestSort}
       />
     </div>
   );

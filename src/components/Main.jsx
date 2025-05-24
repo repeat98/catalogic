@@ -5,6 +5,86 @@ import Player from './Player';   // Import the Player component
 import { PlaybackContext } from '../context/PlaybackContext';
 import './Main.scss';         // Styles for the .Main container
 
+// Helper function to strip prefix like "Category---"
+const stripFeaturePrefix = (tagName) => {
+  if (typeof tagName !== 'string') return '';
+  return tagName.substring(tagName.indexOf('---') + 3);
+  // A more robust regex could be: tagName.replace(/^.+?---/, '');
+};
+
+// Helper function to get a composite sort key from top N tags
+const getCompositeFeatureSortKey = (track, categoryKey, numTopTags = 2) => {
+  const featureObject = track[categoryKey];
+  if (!featureObject || typeof featureObject !== 'object' || Object.keys(featureObject).length === 0) return ''; 
+  
+  const topTags = Object.entries(featureObject)
+    .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
+    .slice(0, numTopTags)
+    .map(([tag]) => stripFeaturePrefix(tag).toLowerCase()) // Strip prefix here
+    .join(','); 
+  
+  return topTags;
+};
+
+// Helper function to get the highest spectral value (moved outside component for sortTracks)
+const getTopSpectralValue = (track) => {
+  const spectralData = { atonal: track.atonal, tonal: track.tonal, dark: track.dark, bright: track.bright, percussive: track.percussive, smooth: track.smooth };
+  const validEntries = Object.entries(spectralData).filter(([, value]) => typeof value === 'number');
+  if (validEntries.length === 0) return null;
+  validEntries.sort(([, scoreA], [, scoreB]) => scoreB - scoreA);
+  return validEntries[0][1];
+};
+
+// Centralized sort function - updated to use getCompositeFeatureSortKey
+const sortTracks = (tracks, sortConfig, selectedFeatureCategory, getCompositeFeatureSortKeyFn, getTopSpectralValueFn) => {
+  if (!sortConfig || !sortConfig.key) return [...tracks];
+
+  const sortedTracks = [...tracks].sort((a, b) => {
+    let valA, valB;
+    if (sortConfig.key === 'features') {
+      switch (selectedFeatureCategory) {
+        case 'Style': 
+          valA = getCompositeFeatureSortKeyFn(a, 'style_features'); 
+          valB = getCompositeFeatureSortKeyFn(b, 'style_features'); 
+          break;
+        case 'Mood': 
+          valA = getCompositeFeatureSortKeyFn(a, 'mood_features'); 
+          valB = getCompositeFeatureSortKeyFn(b, 'mood_features'); 
+          break;
+        case 'Instrument': 
+          valA = getCompositeFeatureSortKeyFn(a, 'instrument_features'); 
+          valB = getCompositeFeatureSortKeyFn(b, 'instrument_features'); 
+          break;
+        case 'Spectral': 
+          valA = getTopSpectralValueFn(a); 
+          valB = getTopSpectralValueFn(b); 
+          break;
+        default: valA = ''; valB = ''; // Use empty string for default case
+      }
+    } else {
+      valA = a[sortConfig.key];
+      valB = b[sortConfig.key];
+    }
+
+    // Handle cases where sort key might be effectively null (e.g., empty string from getCompositeFeatureSortKey)
+    const aIsNull = valA === null || valA === undefined || valA === '';
+    const bIsNull = valB === null || valB === undefined || valB === '';
+
+    if (aIsNull && bIsNull) return 0;
+    if (aIsNull) return sortConfig.direction === 'ascending' ? 1 : -1;
+    if (bIsNull) return sortConfig.direction === 'ascending' ? -1 : 1;
+    
+    let comparison = 0;
+    if (typeof valA === 'number' && typeof valB === 'number') {
+      comparison = valA - valB;
+    } else {
+      comparison = String(valA).toLowerCase().localeCompare(String(valB).toLowerCase());
+    }
+    return sortConfig.direction === 'ascending' ? comparison : comparison * -1;
+  });
+  return sortedTracks;
+};
+
 function Main() {
   const [allTracks, setAllTracks] = useState([]);
   const [filteredTracks, setFilteredTracks] = useState([]);
@@ -16,13 +96,9 @@ function Main() {
   const [currentTime, setCurrentTime] = useState(0);
   const { currentWaveSurfer, setCurrentTrack: setContextTrack } = useContext(PlaybackContext);
   const timeUpdateIntervalRef = useRef(null);
-
-  // Autocomplete states removed
-  // const [searchTerm, setSearchTerm] = useState('');
-  // const [autocompleteSuggestions, setAutocompleteSuggestions] = useState([]);
-
-  // State for selected feature category for the new column
-  const [selectedFeatureCategory, setSelectedFeatureCategory] = useState('Style'); // Default to 'Style'
+  const [selectedFeatureCategory, setSelectedFeatureCategory] = useState('Style');
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchTracks = async () => {
@@ -46,7 +122,6 @@ function Main() {
           artwork_thumbnail_path: track.artwork_thumbnail_path || 'assets/default-artwork.png',
         }));
         setAllTracks(processedTracks);
-        setFilteredTracks(processedTracks);
       } catch (e) {
         console.error("Failed to fetch tracks:", e);
         setError(e.message);
@@ -57,30 +132,38 @@ function Main() {
     fetchTracks();
   }, []);
 
-  const handleTrackSelect = (trackId) => {
-    setSelectedTrackId(trackId);
-  };
-
-  // This is the primary search execution function
-  const executeSearch = (termToSearch) => {
-    const lowerCaseSearchTerm = termToSearch.toLowerCase().trim();
-    if (!lowerCaseSearchTerm) {
-      setFilteredTracks(allTracks);
-    } else {
-      const results = allTracks.filter(track =>
+  useEffect(() => {
+    let tracksToDisplay = [...allTracks];
+    if (searchTerm.trim() !== '') {
+      const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
+      tracksToDisplay = tracksToDisplay.filter(track =>
         (track.title && track.title.toLowerCase().includes(lowerCaseSearchTerm)) ||
         (track.artist && track.artist.toLowerCase().includes(lowerCaseSearchTerm)) ||
         (track.album && track.album.toLowerCase().includes(lowerCaseSearchTerm))
       );
-      setFilteredTracks(results);
     }
+    // Pass the new getCompositeFeatureSortKey to sortTracks
+    tracksToDisplay = sortTracks(tracksToDisplay, sortConfig, selectedFeatureCategory, getCompositeFeatureSortKey, getTopSpectralValue);
+    setFilteredTracks(tracksToDisplay);
+  }, [allTracks, searchTerm, sortConfig, selectedFeatureCategory]);
+
+  const handleTrackSelect = (trackId) => setSelectedTrackId(trackId);
+
+  const handleSearchTermChange = (newSearchTerm) => {
+    setSearchTerm(newSearchTerm);
   };
 
-  // handleSearchInputChange and handleSuggestionClick removed
-
-  const handleFeatureCategoryChange = (category) => {
-    setSelectedFeatureCategory(category);
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    } else if (sortConfig.key === key && sortConfig.direction === 'descending') {
+      direction = 'ascending';
+    }
+    setSortConfig({ key, direction });
   };
+
+  const handleFeatureCategoryChange = (category) => setSelectedFeatureCategory(category);
 
   const handlePlayTrack = (track) => {
     if (!track || !track.id) {
@@ -185,11 +268,14 @@ function Main() {
           onTrackSelect={handleTrackSelect}
           onPlayTrack={handlePlayTrack}
           onSeek={handleSeek}
-          onSearch={executeSearch}
-          isLoading={isLoading}
-          error={error}
+          searchTerm={searchTerm}
+          onSearchTermChange={handleSearchTermChange}
           selectedFeatureCategory={selectedFeatureCategory}
           onFeatureCategoryChange={handleFeatureCategoryChange}
+          sortConfig={sortConfig}
+          requestSort={requestSort}
+          isLoading={isLoading}
+          error={error}
         />
       </div>
       <Player

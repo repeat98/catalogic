@@ -1,18 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './SearchComponent.scss';
 
-const SearchComponent = ({ onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-
+const SearchComponent = ({ searchTerm, onSearchTermChange }) => {
   const handleInputChange = (event) => {
-    setSearchTerm(event.target.value);
+    if (onSearchTermChange) {
+      onSearchTermChange(event.target.value);
+    }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (onSearch) {
-      onSearch(searchTerm);
-    }
   };
 
   return (
