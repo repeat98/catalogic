@@ -915,7 +915,7 @@ function Main(_ref19) {
       return _ref20.apply(this, arguments);
     };
   }();
-  var createCrate = /*#__PURE__*/function () {
+  var createCrate = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/function () {
     var _ref21 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(crateName) {
       var response, newCrate;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
@@ -960,11 +960,11 @@ function Main(_ref19) {
         }
       }, _callee2, null, [[0, 12]]);
     }));
-    return function createCrate(_x) {
+    return function (_x) {
       return _ref21.apply(this, arguments);
     };
-  }();
-  var renameCrate = /*#__PURE__*/function () {
+  }(), [setCrates]);
+  var renameCrate = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/function () {
     var _ref22 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(crateId, newName) {
       var response;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
@@ -1002,11 +1002,11 @@ function Main(_ref19) {
         }
       }, _callee3, null, [[0, 7]]);
     }));
-    return function renameCrate(_x2, _x3) {
+    return function (_x2, _x3) {
       return _ref22.apply(this, arguments);
     };
-  }();
-  var deleteCrate = /*#__PURE__*/function () {
+  }(), [setCrates]);
+  var deleteCrate = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/function () {
     var _ref23 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee4(crateId) {
       var response;
       return _regeneratorRuntime().wrap(function _callee4$(_context4) {
@@ -1044,31 +1044,36 @@ function Main(_ref19) {
         }
       }, _callee4, null, [[0, 7]]);
     }));
-    return function deleteCrate(_x4) {
+    return function (_x4) {
       return _ref23.apply(this, arguments);
     };
-  }();
-  var addTrackToCrate = /*#__PURE__*/function () {
+  }(), [setCrates, selectedCrateId, setSelectedCrateId, setViewMode, setSelectedLibraryItem]);
+  var addTrackToCrate = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/function () {
     var _ref24 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee5(crateId, trackId) {
       var currentCrate, updatedTracks, response;
       return _regeneratorRuntime().wrap(function _callee5$(_context5) {
         while (1) switch (_context5.prev = _context5.next) {
           case 0:
-            _context5.prev = 0;
+            console.log('addTrackToCrate called with:', {
+              crateId: crateId,
+              trackId: trackId
+            });
+            _context5.prev = 1;
             currentCrate = crates[crateId];
             if (currentCrate) {
-              _context5.next = 4;
+              _context5.next = 6;
               break;
             }
+            console.log('Crate not found:', crateId);
             return _context5.abrupt("return");
-          case 4:
+          case 6:
             updatedTracks = _toConsumableArray(currentCrate.tracks || []);
             if (updatedTracks.includes(trackId)) {
-              _context5.next = 11;
+              _context5.next = 15;
               break;
             }
             updatedTracks.push(trackId);
-            _context5.next = 9;
+            _context5.next = 11;
             return fetch("http://localhost:3000/crates/".concat(crateId), {
               method: 'PUT',
               headers: {
@@ -1078,33 +1083,40 @@ function Main(_ref19) {
                 tracks: updatedTracks
               })
             });
-          case 9:
+          case 11:
             response = _context5.sent;
             if (response.ok) {
+              console.log('Successfully added track to crate');
               setCrates(function (prev) {
                 return _objectSpread(_objectSpread({}, prev), {}, _defineProperty({}, crateId, _objectSpread(_objectSpread({}, prev[crateId]), {}, {
                   tracks: updatedTracks
                 })));
               });
+            } else {
+              console.error('Failed to update crate on server');
             }
-          case 11:
             _context5.next = 16;
             break;
-          case 13:
-            _context5.prev = 13;
-            _context5.t0 = _context5["catch"](0);
-            console.error('Failed to add track to crate:', _context5.t0);
+          case 15:
+            console.log('Track already in crate');
           case 16:
+            _context5.next = 21;
+            break;
+          case 18:
+            _context5.prev = 18;
+            _context5.t0 = _context5["catch"](1);
+            console.error('Failed to add track to crate:', _context5.t0);
+          case 21:
           case "end":
             return _context5.stop();
         }
-      }, _callee5, null, [[0, 13]]);
+      }, _callee5, null, [[1, 18]]);
     }));
-    return function addTrackToCrate(_x5, _x6) {
+    return function (_x5, _x6) {
       return _ref24.apply(this, arguments);
     };
-  }();
-  var removeTrackFromCrate = /*#__PURE__*/function () {
+  }(), [crates, setCrates]);
+  var removeTrackFromCrate = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/function () {
     var _ref25 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee6(crateId, trackId) {
       var currentCrate, updatedTracks, response;
       return _regeneratorRuntime().wrap(function _callee6$(_context6) {
@@ -1152,14 +1164,15 @@ function Main(_ref19) {
         }
       }, _callee6, null, [[0, 11]]);
     }));
-    return function removeTrackFromCrate(_x7, _x8) {
+    return function (_x7, _x8) {
       return _ref25.apply(this, arguments);
     };
-  }();
+  }(), [crates, setCrates]);
 
   // Set crate management functions in ref for Sidebar access
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-    if (crateManagementRef.current) {
+    console.log('Setting up crateManagementRef.current:', !!crateManagementRef.current);
+    if (crateManagementRef.current !== null) {
       crateManagementRef.current = {
         createCrate: createCrate,
         renameCrate: renameCrate,
@@ -1167,8 +1180,11 @@ function Main(_ref19) {
         addTrackToCrate: addTrackToCrate,
         removeTrackFromCrate: removeTrackFromCrate
       };
+      console.log('crateManagementRef functions set');
+    } else {
+      console.log('crateManagementRef.current is null');
     }
-  }, []);
+  }, [createCrate, renameCrate, deleteCrate, addTrackToCrate, removeTrackFromCrate]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     var fetchTracksAndProcess = /*#__PURE__*/function () {
       var _ref26 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
@@ -1365,6 +1381,7 @@ function Main(_ref19) {
 
   // Drag and drop handlers
   var handleTrackDragStart = function handleTrackDragStart(event, track) {
+    console.log('Track drag started:', track.id, track.title);
     event.dataTransfer.setData('text/plain', JSON.stringify({
       trackId: track.id,
       trackData: track
@@ -2503,11 +2520,23 @@ var Sidebar = function Sidebar(_ref) {
     handleOpenContextMenu: handleOpenContextMenu,
     onCrateDrop: function onCrateDrop(event, crateId) {
       event.preventDefault();
+      console.log('Crate drop event:', {
+        crateId: crateId,
+        dataTransfer: event.dataTransfer
+      });
       try {
         var _crateManagementRef$c4;
         var data = JSON.parse(event.dataTransfer.getData('text/plain'));
+        console.log('Parsed drop data:', data);
         if (data.trackId && (_crateManagementRef$c4 = crateManagementRef.current) !== null && _crateManagementRef$c4 !== void 0 && _crateManagementRef$c4.addTrackToCrate) {
+          console.log('Calling addTrackToCrate via ref');
           crateManagementRef.current.addTrackToCrate(crateId, data.trackId);
+        } else {
+          var _crateManagementRef$c5;
+          console.log('Missing trackId or addTrackToCrate function:', {
+            trackId: data.trackId,
+            hasFunction: !!((_crateManagementRef$c5 = crateManagementRef.current) !== null && _crateManagementRef$c5 !== void 0 && _crateManagementRef$c5.addTrackToCrate)
+          });
         }
       } catch (error) {
         console.error('Error handling crate drop:', error);

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext, useCallback } from 'react';
 import Navbar from './Navbar';   // Import the Navbar component
 import Content from './Content'; // Import the Content component
 import Player from './Player';   // Import the Player component
@@ -288,7 +288,7 @@ function Main({
     }
   };
 
-  const createCrate = async (crateName) => {
+  const createCrate = useCallback(async (crateName) => {
     try {
       const response = await fetch('http://localhost:3000/crates', {
         method: 'POST',
@@ -304,9 +304,9 @@ function Main({
     } catch (error) {
       console.error('Failed to create crate:', error);
     }
-  };
+  }, [setCrates]);
 
-  const renameCrate = async (crateId, newName) => {
+  const renameCrate = useCallback(async (crateId, newName) => {
     try {
       const response = await fetch(`http://localhost:3000/crates/${crateId}`, {
         method: 'PUT',
@@ -323,9 +323,9 @@ function Main({
     } catch (error) {
       console.error('Failed to rename crate:', error);
     }
-  };
+  }, [setCrates]);
 
-  const deleteCrate = async (crateId) => {
+  const deleteCrate = useCallback(async (crateId) => {
     try {
       const response = await fetch(`http://localhost:3000/crates/${crateId}`, {
         method: 'DELETE'
@@ -347,12 +347,16 @@ function Main({
     } catch (error) {
       console.error('Failed to delete crate:', error);
     }
-  };
+  }, [setCrates, selectedCrateId, setSelectedCrateId, setViewMode, setSelectedLibraryItem]);
 
-  const addTrackToCrate = async (crateId, trackId) => {
+  const addTrackToCrate = useCallback(async (crateId, trackId) => {
+    console.log('addTrackToCrate called with:', { crateId, trackId });
     try {
       const currentCrate = crates[crateId];
-      if (!currentCrate) return;
+      if (!currentCrate) {
+        console.log('Crate not found:', crateId);
+        return;
+      }
 
       const updatedTracks = [...(currentCrate.tracks || [])];
       if (!updatedTracks.includes(trackId)) {
@@ -365,18 +369,23 @@ function Main({
         });
         
         if (response.ok) {
+          console.log('Successfully added track to crate');
           setCrates(prev => ({
             ...prev,
             [crateId]: { ...prev[crateId], tracks: updatedTracks }
           }));
+        } else {
+          console.error('Failed to update crate on server');
         }
+      } else {
+        console.log('Track already in crate');
       }
     } catch (error) {
       console.error('Failed to add track to crate:', error);
     }
-  };
+  }, [crates, setCrates]);
 
-  const removeTrackFromCrate = async (crateId, trackId) => {
+  const removeTrackFromCrate = useCallback(async (crateId, trackId) => {
     try {
       const currentCrate = crates[crateId];
       if (!currentCrate) return;
@@ -398,11 +407,12 @@ function Main({
     } catch (error) {
       console.error('Failed to remove track from crate:', error);
     }
-  };
+  }, [crates, setCrates]);
 
   // Set crate management functions in ref for Sidebar access
   useEffect(() => {
-    if (crateManagementRef.current) {
+    console.log('Setting up crateManagementRef.current:', !!crateManagementRef.current);
+    if (crateManagementRef.current !== null) {
       crateManagementRef.current = {
         createCrate,
         renameCrate,
@@ -410,8 +420,11 @@ function Main({
         addTrackToCrate,
         removeTrackFromCrate
       };
+      console.log('crateManagementRef functions set');
+    } else {
+      console.log('crateManagementRef.current is null');
     }
-  }, []);
+  }, [createCrate, renameCrate, deleteCrate, addTrackToCrate, removeTrackFromCrate]);
 
   useEffect(() => {
     const fetchTracksAndProcess = async () => {
@@ -508,6 +521,7 @@ function Main({
 
   // Drag and drop handlers
   const handleTrackDragStart = (event, track) => {
+    console.log('Track drag started:', track.id, track.title);
     event.dataTransfer.setData('text/plain', JSON.stringify({ trackId: track.id, trackData: track }));
     event.dataTransfer.effectAllowed = 'copy';
   };

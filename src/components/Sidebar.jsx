@@ -208,10 +208,18 @@ const Sidebar = ({
         handleOpenContextMenu={handleOpenContextMenu}
         onCrateDrop={(event, crateId) => {
           event.preventDefault();
+          console.log('Crate drop event:', { crateId, dataTransfer: event.dataTransfer });
           try {
             const data = JSON.parse(event.dataTransfer.getData('text/plain'));
+            console.log('Parsed drop data:', data);
             if (data.trackId && crateManagementRef.current?.addTrackToCrate) {
+              console.log('Calling addTrackToCrate via ref');
               crateManagementRef.current.addTrackToCrate(crateId, data.trackId);
+            } else {
+              console.log('Missing trackId or addTrackToCrate function:', {
+                trackId: data.trackId,
+                hasFunction: !!crateManagementRef.current?.addTrackToCrate
+              });
             }
           } catch (error) {
             console.error('Error handling crate drop:', error);
