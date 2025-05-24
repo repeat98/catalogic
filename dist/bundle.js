@@ -1495,7 +1495,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var wavesurfer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! wavesurfer.js */ "./node_modules/wavesurfer.js/dist/wavesurfer.esm.js");
 /* harmony import */ var _hooks_useInViewport__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../hooks/useInViewport */ "./src/hooks/useInViewport.js");
 /* harmony import */ var _context_PlaybackContext__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../context/PlaybackContext */ "./src/context/PlaybackContext.jsx");
-/* harmony import */ var _WaveformPreview_scss__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./WaveformPreview.scss */ "./src/components/WaveformPreview.scss");
+/* harmony import */ var _utils_waveformCache_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../utils/waveformCache.js */ "./src/utils/waveformCache.js");
+/* harmony import */ var _WaveformPreview_scss__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./WaveformPreview.scss */ "./src/components/WaveformPreview.scss");
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return r; }; var t, r = {}, e = Object.prototype, n = e.hasOwnProperty, o = "function" == typeof Symbol ? Symbol : {}, i = o.iterator || "@@iterator", a = o.asyncIterator || "@@asyncIterator", u = o.toStringTag || "@@toStringTag"; function c(t, r, e, n) { return Object.defineProperty(t, r, { value: e, enumerable: !n, configurable: !n, writable: !n }); } try { c({}, ""); } catch (t) { c = function c(t, r, e) { return t[r] = e; }; } function h(r, e, n, o) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype); return c(a, "_invoke", function (r, e, n) { var o = 1; return function (i, a) { if (3 === o) throw Error("Generator is already running"); if (4 === o) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var u = n.delegate; if (u) { var c = d(u, n); if (c) { if (c === f) continue; return c; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (1 === o) throw o = 4, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = 3; var h = s(r, e, n); if ("normal" === h.type) { if (o = n.done ? 4 : 2, h.arg === f) continue; return { value: h.arg, done: n.done }; } "throw" === h.type && (o = 4, n.method = "throw", n.arg = h.arg); } }; }(r, n, new Context(o || [])), !0), a; } function s(t, r, e) { try { return { type: "normal", arg: t.call(r, e) }; } catch (t) { return { type: "throw", arg: t }; } } r.wrap = h; var f = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var l = {}; c(l, i, function () { return this; }); var p = Object.getPrototypeOf, y = p && p(p(x([]))); y && y !== e && n.call(y, i) && (l = y); var v = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(l); function g(t) { ["next", "throw", "return"].forEach(function (r) { c(t, r, function (t) { return this._invoke(r, t); }); }); } function AsyncIterator(t, r) { function e(o, i, a, u) { var c = s(t[o], t, i); if ("throw" !== c.type) { var h = c.arg, f = h.value; return f && "object" == _typeof(f) && n.call(f, "__await") ? r.resolve(f.__await).then(function (t) { e("next", t, a, u); }, function (t) { e("throw", t, a, u); }) : r.resolve(f).then(function (t) { h.value = t, a(h); }, function (t) { return e("throw", t, a, u); }); } u(c.arg); } var o; c(this, "_invoke", function (t, n) { function i() { return new r(function (r, o) { e(t, n, r, o); }); } return o = o ? o.then(i, i) : i(); }, !0); } function d(r, e) { var n = e.method, o = r.i[n]; if (o === t) return e.delegate = null, "throw" === n && r.i["return"] && (e.method = "return", e.arg = t, d(r, e), "throw" === e.method) || "return" !== n && (e.method = "throw", e.arg = new TypeError("The iterator does not provide a '" + n + "' method")), f; var i = s(o, r.i, e.arg); if ("throw" === i.type) return e.method = "throw", e.arg = i.arg, e.delegate = null, f; var a = i.arg; return a ? a.done ? (e[r.r] = a.value, e.next = r.n, "return" !== e.method && (e.method = "next", e.arg = t), e.delegate = null, f) : a : (e.method = "throw", e.arg = new TypeError("iterator result is not an object"), e.delegate = null, f); } function w(t) { this.tryEntries.push(t); } function m(r) { var e = r[4] || {}; e.type = "normal", e.arg = t, r[4] = e; } function Context(t) { this.tryEntries = [[-1]], t.forEach(w, this), this.reset(!0); } function x(r) { if (null != r) { var e = r[i]; if (e) return e.call(r); if ("function" == typeof r.next) return r; if (!isNaN(r.length)) { var o = -1, a = function e() { for (; ++o < r.length;) if (n.call(r, o)) return e.value = r[o], e.done = !1, e; return e.value = t, e.done = !0, e; }; return a.next = a; } } throw new TypeError(_typeof(r) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, c(v, "constructor", GeneratorFunctionPrototype), c(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = c(GeneratorFunctionPrototype, u, "GeneratorFunction"), r.isGeneratorFunction = function (t) { var r = "function" == typeof t && t.constructor; return !!r && (r === GeneratorFunction || "GeneratorFunction" === (r.displayName || r.name)); }, r.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, c(t, u, "GeneratorFunction")), t.prototype = Object.create(v), t; }, r.awrap = function (t) { return { __await: t }; }, g(AsyncIterator.prototype), c(AsyncIterator.prototype, a, function () { return this; }), r.AsyncIterator = AsyncIterator, r.async = function (t, e, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(h(t, e, n, o), i); return r.isGeneratorFunction(e) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, g(v), c(v, u, "Generator"), c(v, i, function () { return this; }), c(v, "toString", function () { return "[object Generator]"; }), r.keys = function (t) { var r = Object(t), e = []; for (var n in r) e.unshift(n); return function t() { for (; e.length;) if ((n = e.pop()) in r) return t.value = n, t.done = !1, t; return t.done = !0, t; }; }, r.values = x, Context.prototype = { constructor: Context, reset: function reset(r) { if (this.prev = this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(m), !r) for (var e in this) "t" === e.charAt(0) && n.call(this, e) && !isNaN(+e.slice(1)) && (this[e] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0][4]; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(r) { if (this.done) throw r; var e = this; function n(t) { a.type = "throw", a.arg = r, e.next = t; } for (var o = e.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i[4], u = this.prev, c = i[1], h = i[2]; if (-1 === i[0]) return n("end"), !1; if (!c && !h) throw Error("try statement without catch or finally"); if (null != i[0] && i[0] <= u) { if (u < c) return this.method = "next", this.arg = t, n(c), !0; if (u < h) return n(h), !1; } } }, abrupt: function abrupt(t, r) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var n = this.tryEntries[e]; if (n[0] > -1 && n[0] <= this.prev && this.prev < n[2]) { var o = n; break; } } o && ("break" === t || "continue" === t) && o[0] <= r && r <= o[2] && (o = null); var i = o ? o[4] : {}; return i.type = t, i.arg = r, o ? (this.method = "next", this.next = o[2], f) : this.complete(i); }, complete: function complete(t, r) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && r && (this.next = r), f; }, finish: function finish(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[2] === t) return this.complete(e[4], e[3]), m(e), f; } }, "catch": function _catch(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[0] === t) { var n = e[4]; if ("throw" === n.type) { var o = n.arg; m(e); } return o; } } throw Error("illegal catch attempt"); }, delegateYield: function delegateYield(r, e, n) { return this.delegate = { i: x(r), r: e, n: n }, "next" === this.method && (this.arg = t), f; } }, r; }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
@@ -1506,6 +1507,7 @@ function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) 
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
 function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
 function _arrayWithHoles(r) { if (Array.isArray(r)) return r; }
+
 
 
 
@@ -1550,34 +1552,42 @@ var WaveformPreview = function WaveformPreview(_ref) {
     isReady = _useState6[0],
     setIsReady = _useState6[1];
   var isThisPreviewTheCurrentTrack = currentTrack && currentTrack.id === trackId;
-  var initializeWaveform = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-    var audioUrl, response, wavesurfer;
-    return _regeneratorRuntime().wrap(function _callee$(_context) {
-      while (1) switch (_context.prev = _context.next) {
+  var initializeWaveform = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+    var audioUrl, cachedPeaks, cachedData, response, wavesurfer;
+    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
         case 0:
           if (!(!waveformRef.current || isDestroyedRef.current || !trackId || wavesurferRef.current)) {
-            _context.next = 2;
+            _context2.next = 2;
             break;
           }
-          return _context.abrupt("return");
+          return _context2.abrupt("return");
         case 2:
           setIsLoading(true);
           setError(null);
           setIsReady(false);
-          _context.prev = 5;
+          _context2.prev = 5;
           audioUrl = "http://localhost:3000/audio/".concat(trackId);
-          _context.next = 9;
+          cachedPeaks = null; // Attempt to load cached waveform data
+          _context2.next = 10;
+          return (0,_utils_waveformCache_js__WEBPACK_IMPORTED_MODULE_4__.getCachedWaveform)(trackId);
+        case 10:
+          cachedData = _context2.sent;
+          if (cachedData && cachedData.peaks) {
+            cachedPeaks = cachedData.peaks;
+          }
+          _context2.next = 14;
           return fetch(audioUrl, {
             method: 'HEAD'
           });
-        case 9:
-          response = _context.sent;
+        case 14:
+          response = _context2.sent;
           if (response.ok) {
-            _context.next = 12;
+            _context2.next = 17;
             break;
           }
           throw new Error("Audio file not found: ".concat(response.status, " ").concat(response.statusText));
-        case 12:
+        case 17:
           wavesurfer = wavesurfer_js__WEBPACK_IMPORTED_MODULE_1__["default"].create({
             container: waveformRef.current,
             height: height,
@@ -1625,34 +1635,76 @@ var WaveformPreview = function WaveformPreview(_ref) {
             setIsLoading(false);
             setIsReady(false);
           });
-          wavesurfer.on('ready', function () {
-            setIsLoading(false);
-            setIsReady(true);
-            try {
-              wavesurfer.setVolume(0);
-            } catch (e) {
-              console.warn('Error setting initial volume to 0 for track', trackId, e);
-            }
-            wavesurfer.pause();
-          });
-          _context.next = 20;
-          return wavesurfer.load(audioUrl);
-        case 20:
-          _context.next = 28;
+          wavesurfer.on('ready', /*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+            var peaks;
+            return _regeneratorRuntime().wrap(function _callee$(_context) {
+              while (1) switch (_context.prev = _context.next) {
+                case 0:
+                  setIsLoading(false);
+                  setIsReady(true);
+                  try {
+                    wavesurfer.setVolume(0);
+                  } catch (e) {
+                    console.warn('Error setting initial volume to 0 for track', trackId, e);
+                  }
+                  wavesurfer.pause();
+
+                  // If waveform was not loaded from cache, export and cache its peaks
+                  if (!(!cachedPeaks && wavesurferRef.current)) {
+                    _context.next = 15;
+                    break;
+                  }
+                  _context.prev = 5;
+                  peaks = wavesurferRef.current.exportPeaks();
+                  if (!(peaks && peaks.length > 0)) {
+                    _context.next = 10;
+                    break;
+                  }
+                  _context.next = 10;
+                  return (0,_utils_waveformCache_js__WEBPACK_IMPORTED_MODULE_4__.cacheWaveform)(trackId, {
+                    peaks: peaks
+                  });
+                case 10:
+                  _context.next = 15;
+                  break;
+                case 12:
+                  _context.prev = 12;
+                  _context.t0 = _context["catch"](5);
+                  console.warn('Error exporting/caching peaks for track', trackId, _context.t0);
+                case 15:
+                case "end":
+                  return _context.stop();
+              }
+            }, _callee, null, [[5, 12]]);
+          })));
+          if (!cachedPeaks) {
+            _context2.next = 28;
+            break;
+          }
+          _context2.next = 26;
+          return wavesurfer.load(audioUrl, cachedPeaks);
+        case 26:
+          _context2.next = 30;
           break;
-        case 22:
-          _context.prev = 22;
-          _context.t0 = _context["catch"](5);
-          console.error('Error initializing waveform for track:', trackId, _context.t0);
+        case 28:
+          _context2.next = 30;
+          return wavesurfer.load(audioUrl);
+        case 30:
+          _context2.next = 38;
+          break;
+        case 32:
+          _context2.prev = 32;
+          _context2.t0 = _context2["catch"](5);
+          console.error('Error initializing waveform for track:', trackId, _context2.t0);
           setError('Error initializing waveform');
           setIsLoading(false);
           setIsReady(false);
-        case 28:
+        case 38:
         case "end":
-          return _context.stop();
+          return _context2.stop();
       }
-    }, _callee, null, [[5, 22]]);
-  })), [trackId, height, waveColor, progressColor, onSeek, onPlayClick, isThisPreviewTheCurrentTrack]);
+    }, _callee2, null, [[5, 32]]);
+  })), [trackId, height, waveColor, progressColor, onSeek, onPlayClick]);
   var cleanupWaveform = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
     if (initTimeoutRef.current) clearTimeout(initTimeoutRef.current);
     if (wavesurferRef.current) {
@@ -1888,6 +1940,182 @@ var useInViewport = function useInViewport() {
   return [ref, isInViewport];
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (useInViewport);
+
+/***/ }),
+
+/***/ "./src/utils/waveformCache.js":
+/*!************************************!*\
+  !*** ./src/utils/waveformCache.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   cacheWaveform: () => (/* binding */ cacheWaveform),
+/* harmony export */   getCachedWaveform: () => (/* binding */ getCachedWaveform),
+/* harmony export */   isWaveformCached: () => (/* binding */ isWaveformCached)
+/* harmony export */ });
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return r; }; var t, r = {}, e = Object.prototype, n = e.hasOwnProperty, o = "function" == typeof Symbol ? Symbol : {}, i = o.iterator || "@@iterator", a = o.asyncIterator || "@@asyncIterator", u = o.toStringTag || "@@toStringTag"; function c(t, r, e, n) { return Object.defineProperty(t, r, { value: e, enumerable: !n, configurable: !n, writable: !n }); } try { c({}, ""); } catch (t) { c = function c(t, r, e) { return t[r] = e; }; } function h(r, e, n, o) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype); return c(a, "_invoke", function (r, e, n) { var o = 1; return function (i, a) { if (3 === o) throw Error("Generator is already running"); if (4 === o) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var u = n.delegate; if (u) { var c = d(u, n); if (c) { if (c === f) continue; return c; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (1 === o) throw o = 4, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = 3; var h = s(r, e, n); if ("normal" === h.type) { if (o = n.done ? 4 : 2, h.arg === f) continue; return { value: h.arg, done: n.done }; } "throw" === h.type && (o = 4, n.method = "throw", n.arg = h.arg); } }; }(r, n, new Context(o || [])), !0), a; } function s(t, r, e) { try { return { type: "normal", arg: t.call(r, e) }; } catch (t) { return { type: "throw", arg: t }; } } r.wrap = h; var f = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var l = {}; c(l, i, function () { return this; }); var p = Object.getPrototypeOf, y = p && p(p(x([]))); y && y !== e && n.call(y, i) && (l = y); var v = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(l); function g(t) { ["next", "throw", "return"].forEach(function (r) { c(t, r, function (t) { return this._invoke(r, t); }); }); } function AsyncIterator(t, r) { function e(o, i, a, u) { var c = s(t[o], t, i); if ("throw" !== c.type) { var h = c.arg, f = h.value; return f && "object" == _typeof(f) && n.call(f, "__await") ? r.resolve(f.__await).then(function (t) { e("next", t, a, u); }, function (t) { e("throw", t, a, u); }) : r.resolve(f).then(function (t) { h.value = t, a(h); }, function (t) { return e("throw", t, a, u); }); } u(c.arg); } var o; c(this, "_invoke", function (t, n) { function i() { return new r(function (r, o) { e(t, n, r, o); }); } return o = o ? o.then(i, i) : i(); }, !0); } function d(r, e) { var n = e.method, o = r.i[n]; if (o === t) return e.delegate = null, "throw" === n && r.i["return"] && (e.method = "return", e.arg = t, d(r, e), "throw" === e.method) || "return" !== n && (e.method = "throw", e.arg = new TypeError("The iterator does not provide a '" + n + "' method")), f; var i = s(o, r.i, e.arg); if ("throw" === i.type) return e.method = "throw", e.arg = i.arg, e.delegate = null, f; var a = i.arg; return a ? a.done ? (e[r.r] = a.value, e.next = r.n, "return" !== e.method && (e.method = "next", e.arg = t), e.delegate = null, f) : a : (e.method = "throw", e.arg = new TypeError("iterator result is not an object"), e.delegate = null, f); } function w(t) { this.tryEntries.push(t); } function m(r) { var e = r[4] || {}; e.type = "normal", e.arg = t, r[4] = e; } function Context(t) { this.tryEntries = [[-1]], t.forEach(w, this), this.reset(!0); } function x(r) { if (null != r) { var e = r[i]; if (e) return e.call(r); if ("function" == typeof r.next) return r; if (!isNaN(r.length)) { var o = -1, a = function e() { for (; ++o < r.length;) if (n.call(r, o)) return e.value = r[o], e.done = !1, e; return e.value = t, e.done = !0, e; }; return a.next = a; } } throw new TypeError(_typeof(r) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, c(v, "constructor", GeneratorFunctionPrototype), c(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = c(GeneratorFunctionPrototype, u, "GeneratorFunction"), r.isGeneratorFunction = function (t) { var r = "function" == typeof t && t.constructor; return !!r && (r === GeneratorFunction || "GeneratorFunction" === (r.displayName || r.name)); }, r.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, c(t, u, "GeneratorFunction")), t.prototype = Object.create(v), t; }, r.awrap = function (t) { return { __await: t }; }, g(AsyncIterator.prototype), c(AsyncIterator.prototype, a, function () { return this; }), r.AsyncIterator = AsyncIterator, r.async = function (t, e, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(h(t, e, n, o), i); return r.isGeneratorFunction(e) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, g(v), c(v, u, "Generator"), c(v, i, function () { return this; }), c(v, "toString", function () { return "[object Generator]"; }), r.keys = function (t) { var r = Object(t), e = []; for (var n in r) e.unshift(n); return function t() { for (; e.length;) if ((n = e.pop()) in r) return t.value = n, t.done = !1, t; return t.done = !0, t; }; }, r.values = x, Context.prototype = { constructor: Context, reset: function reset(r) { if (this.prev = this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(m), !r) for (var e in this) "t" === e.charAt(0) && n.call(this, e) && !isNaN(+e.slice(1)) && (this[e] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0][4]; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(r) { if (this.done) throw r; var e = this; function n(t) { a.type = "throw", a.arg = r, e.next = t; } for (var o = e.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i[4], u = this.prev, c = i[1], h = i[2]; if (-1 === i[0]) return n("end"), !1; if (!c && !h) throw Error("try statement without catch or finally"); if (null != i[0] && i[0] <= u) { if (u < c) return this.method = "next", this.arg = t, n(c), !0; if (u < h) return n(h), !1; } } }, abrupt: function abrupt(t, r) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var n = this.tryEntries[e]; if (n[0] > -1 && n[0] <= this.prev && this.prev < n[2]) { var o = n; break; } } o && ("break" === t || "continue" === t) && o[0] <= r && r <= o[2] && (o = null); var i = o ? o[4] : {}; return i.type = t, i.arg = r, o ? (this.method = "next", this.next = o[2], f) : this.complete(i); }, complete: function complete(t, r) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && r && (this.next = r), f; }, finish: function finish(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[2] === t) return this.complete(e[4], e[3]), m(e), f; } }, "catch": function _catch(t) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var e = this.tryEntries[r]; if (e[0] === t) { var n = e[4]; if ("throw" === n.type) { var o = n.arg; m(e); } return o; } } throw Error("illegal catch attempt"); }, delegateYield: function delegateYield(r, e, n) { return this.delegate = { i: x(r), r: e, n: n }, "next" === this.method && (this.arg = t), f; } }, r; }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+/**
+ * Utility functions for caching and retrieving waveform data
+ */
+
+/**
+ * Check if a waveform is cached for a given track ID
+ * @param {string} trackId - The ID of the track
+ * @returns {Promise<boolean>} - Whether the waveform is cached
+ */
+var isWaveformCached = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee(trackId) {
+    var response, isCached;
+    return _regeneratorRuntime().wrap(function _callee$(_context) {
+      while (1) switch (_context.prev = _context.next) {
+        case 0:
+          _context.prev = 0;
+          console.log('Checking if waveform is cached for track:', trackId);
+          _context.next = 4;
+          return fetch("http://localhost:3000/waveforms/".concat(trackId));
+        case 4:
+          response = _context.sent;
+          isCached = response.ok;
+          console.log('Waveform cache check result for track', trackId, ':', isCached);
+          return _context.abrupt("return", isCached);
+        case 10:
+          _context.prev = 10;
+          _context.t0 = _context["catch"](0);
+          console.error('Error checking waveform cache for track', trackId, ':', _context.t0);
+          return _context.abrupt("return", false);
+        case 14:
+        case "end":
+          return _context.stop();
+      }
+    }, _callee, null, [[0, 10]]);
+  }));
+  return function isWaveformCached(_x) {
+    return _ref.apply(this, arguments);
+  };
+}();
+
+/**
+ * Get cached waveform data for a track
+ * @param {string} trackId - The ID of the track
+ * @returns {Promise<Object|null>} - The cached waveform data or null if not found
+ */
+var getCachedWaveform = /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee2(trackId) {
+    var response, data;
+    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      while (1) switch (_context2.prev = _context2.next) {
+        case 0:
+          _context2.prev = 0;
+          console.log('Getting cached waveform for track:', trackId);
+          _context2.next = 4;
+          return fetch("http://localhost:3000/waveforms/".concat(trackId));
+        case 4:
+          response = _context2.sent;
+          if (response.ok) {
+            _context2.next = 8;
+            break;
+          }
+          console.log('No cached waveform found for track', trackId);
+          return _context2.abrupt("return", null);
+        case 8:
+          _context2.next = 10;
+          return response.json();
+        case 10:
+          data = _context2.sent;
+          console.log('Retrieved cached waveform data for track', trackId, ':', data);
+          return _context2.abrupt("return", data);
+        case 15:
+          _context2.prev = 15;
+          _context2.t0 = _context2["catch"](0);
+          console.error('Error getting cached waveform for track', trackId, ':', _context2.t0);
+          return _context2.abrupt("return", null);
+        case 19:
+        case "end":
+          return _context2.stop();
+      }
+    }, _callee2, null, [[0, 15]]);
+  }));
+  return function getCachedWaveform(_x2) {
+    return _ref2.apply(this, arguments);
+  };
+}();
+
+/**
+ * Cache waveform data for a track
+ * @param {string} trackId - The ID of the track
+ * @param {Object} waveformData - The waveform data to cache
+ * @returns {Promise<boolean>} - Whether the caching was successful
+ */
+var cacheWaveform = /*#__PURE__*/function () {
+  var _ref3 = _asyncToGenerator(/*#__PURE__*/_regeneratorRuntime().mark(function _callee3(trackId, waveformData) {
+    var response, success, result;
+    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+      while (1) switch (_context3.prev = _context3.next) {
+        case 0:
+          _context3.prev = 0;
+          console.log('Caching waveform for track:', trackId);
+
+          // Validate waveform data
+          if (!(!waveformData || !Array.isArray(waveformData.peaks) || waveformData.peaks.length === 0)) {
+            _context3.next = 5;
+            break;
+          }
+          console.error('Invalid waveform data format for track', trackId, ':', waveformData);
+          return _context3.abrupt("return", false);
+        case 5:
+          _context3.next = 7;
+          return fetch("http://localhost:3000/waveforms/".concat(trackId), {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(waveformData)
+          });
+        case 7:
+          response = _context3.sent;
+          success = response.ok;
+          if (!success) {
+            _context3.next = 16;
+            break;
+          }
+          _context3.next = 12;
+          return response.json();
+        case 12:
+          result = _context3.sent;
+          console.log('Waveform cached successfully for track', trackId, ':', result);
+          _context3.next = 22;
+          break;
+        case 16:
+          _context3.t0 = console;
+          _context3.t1 = trackId;
+          _context3.next = 20;
+          return response.text();
+        case 20:
+          _context3.t2 = _context3.sent;
+          _context3.t0.error.call(_context3.t0, 'Failed to cache waveform for track', _context3.t1, ':', _context3.t2);
+        case 22:
+          return _context3.abrupt("return", success);
+        case 25:
+          _context3.prev = 25;
+          _context3.t3 = _context3["catch"](0);
+          console.error('Error caching waveform for track', trackId, ':', _context3.t3);
+          return _context3.abrupt("return", false);
+        case 29:
+        case "end":
+          return _context3.stop();
+      }
+    }, _callee3, null, [[0, 25]]);
+  }));
+  return function cacheWaveform(_x3, _x4) {
+    return _ref3.apply(this, arguments);
+  };
+}();
 
 /***/ }),
 

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useCallback, useContext } from 'rea
 import WaveSurfer from 'wavesurfer.js';
 import { useInViewport } from '../hooks/useInViewport';
 import { PlaybackContext } from '../context/PlaybackContext';
+import { getCachedWaveform, cacheWaveform } from '../utils/waveformCache.js';
 import './WaveformPreview.scss';
 
 const WaveformPreview = ({ 
@@ -42,6 +43,13 @@ const WaveformPreview = ({
     
     try {
       const audioUrl = `http://localhost:3000/audio/${trackId}`;
+      let cachedPeaks = null;
+
+      // Attempt to load cached waveform data
+      const cachedData = await getCachedWaveform(trackId);
+      if (cachedData && cachedData.peaks) {
+        cachedPeaks = cachedData.peaks;
+      }
       
       const response = await fetch(audioUrl, { method: 'HEAD' });
       if (!response.ok) {
@@ -100,16 +108,32 @@ const WaveformPreview = ({
         setIsReady(false);
       });
 
-      wavesurfer.on('ready', () => {
+      wavesurfer.on('ready', async () => {
         setIsLoading(false);
         setIsReady(true);
         try {
           wavesurfer.setVolume(0);
         } catch (e) { console.warn('Error setting initial volume to 0 for track', trackId, e); }
         wavesurfer.pause();
+
+        // If waveform was not loaded from cache, export and cache its peaks
+        if (!cachedPeaks && wavesurferRef.current) {
+          try {
+            const peaks = wavesurferRef.current.exportPeaks();
+            if (peaks && peaks.length > 0) {
+              await cacheWaveform(trackId, { peaks });
+            }
+          } catch (e) {
+            console.warn('Error exporting/caching peaks for track', trackId, e);
+          }
+        }
       });
       
-      await wavesurfer.load(audioUrl);
+      if (cachedPeaks) {
+        await wavesurfer.load(audioUrl, cachedPeaks);
+      } else {
+        await wavesurfer.load(audioUrl);
+      }
 
     } catch (err) {
       console.error('Error initializing waveform for track:', trackId, err);
@@ -117,7 +141,7 @@ const WaveformPreview = ({
       setIsLoading(false);
       setIsReady(false);
     }
-  }, [trackId, height, waveColor, progressColor, onSeek, onPlayClick, isThisPreviewTheCurrentTrack]);
+  }, [trackId, height, waveColor, progressColor, onSeek, onPlayClick]);
 
   const cleanupWaveform = useCallback(() => {
     if (initTimeoutRef.current) clearTimeout(initTimeoutRef.current);
