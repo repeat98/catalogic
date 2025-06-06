@@ -62,6 +62,14 @@ const Sidebar = ({
     setContextMenu({ isOpen: false });
   };
 
+  // New handler for Map view
+  const handleMapViewClick = () => {
+    onViewModeChange('map');
+    onLibraryItemSelect(null); // Deselect library item
+    onCrateSelect(null);      // Deselect crate
+    setContextMenu({ isOpen: false });
+  };
+
   // --- Item Management Functions ---
   const addItem = (categoryType) => {
     setModal({
@@ -189,6 +197,7 @@ const Sidebar = ({
     },
   ] : [];
 
+  const viewMode = onViewModeChange;
 
   return (
     <div data-layer="sidebar" className="Sidebar" ref={sidebarRef}>
@@ -204,6 +213,8 @@ const Sidebar = ({
         selectedCrateItem={selectedCrateId}
         handleLibraryItemClick={handleLibraryItemClick}
         handleCrateItemClick={handleCrateItemClick}
+        handleMapViewClick={handleMapViewClick}
+        viewMode={viewMode}
         addItem={addItem}
         handleOpenContextMenu={handleOpenContextMenu}
         onCrateDrop={(event, crateId) => {

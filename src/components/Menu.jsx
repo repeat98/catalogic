@@ -9,6 +9,8 @@ const Menu = ({
   selectedCrateItem,
   handleLibraryItemClick,
   handleCrateItemClick,
+  handleMapViewClick,
+  viewMode,
   addItem,
   handleOpenContextMenu,
   onCrateDrop,
@@ -25,19 +27,24 @@ const Menu = ({
         </div>
         <MenuItem
           label="Tracks"
-          isSelected={selectedLibraryItem === 'Tracks'}
+          isSelected={selectedLibraryItem === 'Tracks' && viewMode === 'library'}
           onClick={() => handleLibraryItemClick('Tracks')}
         />
         <MenuItem
           label="Künstler:innen"
-          isSelected={selectedLibraryItem === 'Künstler:innen'}
+          isSelected={selectedLibraryItem === 'Künstler:innen' && viewMode === 'library'}
           onClick={() => handleLibraryItemClick('Künstler:innen')}
         />
         <MenuItem
           label="Alben"
-          isSelected={selectedLibraryItem === 'Alben'}
+          isSelected={selectedLibraryItem === 'Alben' && viewMode === 'library'}
           onClick={() => handleLibraryItemClick('Alben')}
           showOptions={false}
+        />
+        <MenuItem
+          label="Map"
+          isSelected={viewMode === 'map'}
+          onClick={handleMapViewClick}
         />
       </div>
       <div data-layer="divider" className="Divider" />

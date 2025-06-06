@@ -2,6 +2,7 @@ import React from 'react';
 import Tracklist from './Tracklist';
 import SearchComponent from './SearchComponent';
 import FilterPanel from './FilterPanel';
+import TrackVisualizer from './TrackVisualizer';
 import './Content.scss';
 
 const Content = ({
@@ -69,6 +70,14 @@ const Content = ({
   };
 
   const viewInfo = getCurrentViewInfo();
+
+  if (viewMode === 'map') {
+    return (
+      <div data-layer="content" className="Content Content--mapView">
+        <TrackVisualizer tracks={filteredTracks} />
+      </div>
+    );
+  }
 
   return (
     <div data-layer="content" className="Content">

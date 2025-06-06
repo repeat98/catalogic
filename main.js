@@ -788,9 +788,8 @@ function initRoutes() {
   expressApp.get("/audio/:id", (req, res) => {
     const trackId = req.params.id;
     
-    // Query the database to get the track's path
+    // Get the file path from the database
     const query = "SELECT path FROM classified_tracks WHERE id = ?";
-    
     db.get(query, [trackId], (err, row) => {
       if (err) {
         console.error("SQL Error:", err.message);
@@ -798,111 +797,52 @@ function initRoutes() {
         return;
       }
 
-      if (!row || !row.path) {
-        res.status(404).json({ error: "Track not found or no path available" });
+      if (!row) {
+        res.status(404).json({ error: "Track not found" });
         return;
       }
 
-      // Check if the file exists
+      // Check if file exists
       if (!fs.existsSync(row.path)) {
         res.status(404).json({ error: "Audio file not found" });
         return;
       }
 
-      // Get file stats
-      const stat = fs.statSync(row.path);
-      const fileSize = stat.size;
-      const range = req.headers.range;
-
-      if (range) {
-        // Handle range requests for streaming
-        const parts = range.replace(/bytes=/, "").split("-");
-        const start = parseInt(parts[0], 10);
-        const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
-        const chunksize = (end - start) + 1;
-        const file = fs.createReadStream(row.path, { start, end });
-        const head = {
-          'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-          'Accept-Ranges': 'bytes',
-          'Content-Length': chunksize,
-          'Content-Type': 'audio/mpeg',
-        };
-        res.writeHead(206, head);
-        file.pipe(res);
-      } else {
-        // Handle full file requests
-        const head = {
-          'Content-Length': fileSize,
-          'Content-Type': 'audio/mpeg',
-        };
-        res.writeHead(200, head);
-        fs.createReadStream(row.path).pipe(res);
-      }
+      // Stream the audio file
+      res.sendFile(row.path);
     });
   });
 
-  // Route to get cached waveform
+  // Route to get waveform data
   expressApp.get("/waveforms/:id", (req, res) => {
     const trackId = req.params.id;
     const waveformPath = path.join(waveformsDir, `${trackId}.json`);
-    
+
+    if (!fs.existsSync(waveformPath)) {
+      res.status(404).json({ error: "Waveform not found" });
+      return;
+    }
+
     try {
-      if (fs.existsSync(waveformPath)) {
-        const waveformData = fs.readFileSync(waveformPath, 'utf8');
-        const parsedData = JSON.parse(waveformData);
-        
-        // Validate the cached data
-        if (parsedData && Array.isArray(parsedData.peaks) && parsedData.peaks.length > 0) {
-          console.log('Serving cached waveform for track', trackId, 'Size:', parsedData.peaks.length);
-          res.json(parsedData);
-        } else {
-          console.error('Invalid waveform data format for track', trackId, 'Data:', parsedData);
-          res.status(404).json({ error: "Invalid waveform data format" });
-        }
-      } else {
-        console.log('No cached waveform found for track', trackId);
-        res.status(404).json({ error: "Waveform not found" });
-      }
-    } catch (error) {
-      console.error("Error reading waveform cache for track", trackId, ":", error);
-      res.status(500).json({ error: "Failed to read waveform cache" });
+      const waveformData = JSON.parse(fs.readFileSync(waveformPath, 'utf8'));
+      res.json(waveformData);
+    } catch (err) {
+      console.error("Error reading waveform data:", err);
+      res.status(500).json({ error: "Failed to read waveform data" });
     }
   });
 
-  // Route to save waveform to cache
+  // Route to store waveform data
   expressApp.post("/waveforms/:id", (req, res) => {
     const trackId = req.params.id;
-    const waveformData = req.body;
     const waveformPath = path.join(waveformsDir, `${trackId}.json`);
-    
+
     try {
-      // Validate the waveform data before saving
-      if (!waveformData || !Array.isArray(waveformData.peaks) || waveformData.peaks.length === 0) {
-        console.error('Invalid waveform data format for track', trackId, 'Data:', waveformData);
-        return res.status(400).json({ error: "Invalid waveform data format" });
-      }
-
-      // Ensure the waveforms directory exists
-      if (!fs.existsSync(waveformsDir)) {
-        fs.mkdirSync(waveformsDir, { recursive: true });
-        console.log('Created waveforms directory:', waveformsDir);
-      }
-
-      // Write the waveform data to file
-      fs.writeFileSync(waveformPath, JSON.stringify(waveformData, null, 2));
-      console.log('Waveform cached successfully for track', trackId, 'at path:', waveformPath);
-      
-      // Verify the file was written correctly
-      if (fs.existsSync(waveformPath)) {
-        const fileStats = fs.statSync(waveformPath);
-        console.log('Waveform file size:', fileStats.size, 'bytes');
-        res.json({ success: true, fileSize: fileStats.size });
-      } else {
-        throw new Error('File was not written successfully');
-      }
-    } catch (error) {
-      console.error("Error saving waveform cache for track", trackId, ":", error);
-      res.status(500).json({ error: "Failed to save waveform cache" });
+      fs.writeFileSync(waveformPath, JSON.stringify(req.body));
+      res.json({ success: true });
+    } catch (err) {
+      console.error("Error writing waveform data:", err);
+      res.status(500).json({ error: "Failed to write waveform data" });
     }
   });
 }
