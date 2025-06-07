@@ -4,6 +4,7 @@ import Content from './Content'; // Import the Content component
 import Player from './Player';   // Import the Player component
 import { PlaybackContext } from '../context/PlaybackContext';
 import './Main.scss';         // Styles for the .Main container
+import Map from './Map';
 
 // Corrected helper function to strip prefix like "Category---"
 const stripFeaturePrefix = (tagName) => {
@@ -754,43 +755,49 @@ function Main({
     setFilterLogicMode(prevMode => prevMode === 'intersection' ? 'union' : 'intersection');
   };
 
+  const [activeTab, setActiveTab] = useState('Collection');
+
   return (
     <div className="Main">
-      <Navbar />
+      <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
       <div className="MainContent">
-        <Content
-          filteredTracks={filteredTracks}
-          selectedTrackId={selectedTrackId}
-          currentPlayingTrack={currentPlayingTrack}
-          isPlaying={isPlaying}
-          currentTime={currentTime}
-          onTrackSelect={handleTrackSelect}
-          onPlayTrack={handlePlayTrack}
-          onSeek={handleSeek}
-          searchTerm={searchTerm}
-          onSearchTermChange={handleSearchTermChange}
-          selectedFeatureCategory={selectedFeatureCategory}
-          onFeatureCategoryChange={handleFeatureCategoryChange}
-          sortConfig={sortConfig}
-          requestSort={requestSort}
-          isLoading={isLoading}
-          error={error}
-          showFilterPanel={showFilterPanel}
-          toggleFilterPanel={toggleFilterPanel}
-          filterOptions={filterOptions}
-          activeFilters={activeFilters}
-          onToggleFilter={handleToggleFilter}
-          filterLogicMode={filterLogicMode}
-          onToggleFilterLogicMode={toggleFilterLogicMode}
-          // Drag and drop props
-          onTrackDragStart={handleTrackDragStart}
-          // View state props
-          viewMode={viewMode}
-          selectedCrateId={selectedCrateId}
-          selectedLibraryItem={selectedLibraryItem}
-          crates={crates}
-          onRemoveTrackFromCrate={removeTrackFromCrate}
-        />
+        {activeTab === 'Map' ? (
+          <Map />
+        ) : (
+          <Content
+            filteredTracks={filteredTracks}
+            selectedTrackId={selectedTrackId}
+            currentPlayingTrack={currentPlayingTrack}
+            isPlaying={isPlaying}
+            currentTime={currentTime}
+            onTrackSelect={handleTrackSelect}
+            onPlayTrack={handlePlayTrack}
+            onSeek={handleSeek}
+            searchTerm={searchTerm}
+            onSearchTermChange={handleSearchTermChange}
+            selectedFeatureCategory={selectedFeatureCategory}
+            onFeatureCategoryChange={handleFeatureCategoryChange}
+            sortConfig={sortConfig}
+            requestSort={requestSort}
+            isLoading={isLoading}
+            error={error}
+            showFilterPanel={showFilterPanel}
+            toggleFilterPanel={toggleFilterPanel}
+            filterOptions={filterOptions}
+            activeFilters={activeFilters}
+            onToggleFilter={handleToggleFilter}
+            filterLogicMode={filterLogicMode}
+            onToggleFilterLogicMode={toggleFilterLogicMode}
+            // Drag and drop props
+            onTrackDragStart={handleTrackDragStart}
+            // View state props
+            viewMode={viewMode}
+            selectedCrateId={selectedCrateId}
+            selectedLibraryItem={selectedLibraryItem}
+            crates={crates}
+            onRemoveTrackFromCrate={removeTrackFromCrate}
+          />
+        )}
       </div>
       <Player
         currentPlayingTrack={currentPlayingTrack}

@@ -1,14 +1,23 @@
 import React from 'react';
 import './Navbar.scss';
 
-const Navbar = () => {
+const TABS = ['Collection', 'Map', 'Tags', 'Insights'];
+
+const Navbar = ({ activeTab = 'Collection', onTabChange }) => {
   return (
     <div data-layer="navbar" data-property-1="tab-bar" className="Navbar">
       <div data-layer="navbar-menu" className="NavbarMenu">
-        <div data-layer="navbar-menu-item" className="NavbarMenuItem active">Collection</div>
-        <div data-layer="navbar-menu-item" className="NavbarMenuItem">Map</div>
-        <div data-layer="navbar-menu-item" className="NavbarMenuItem">Tags</div>
-        <div data-layer="navbar-menu-item" className="NavbarMenuItem">Insights</div>
+        {TABS.map(tab => (
+          <div
+            key={tab}
+            data-layer="navbar-menu-item"
+            className={`NavbarMenuItem${activeTab === tab ? ' active' : ''}`}
+            onClick={() => onTabChange && onTabChange(tab)}
+            style={{ cursor: 'pointer' }}
+          >
+            {tab}
+          </div>
+        ))}
       </div>
       <div data-layer="window-control" className="WindowControl">
         <div data-layer="icons" className="Icons FullWindowIconContainer">
