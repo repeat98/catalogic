@@ -577,6 +577,37 @@ const TrackVisualizer = () => {
     y: yAxisFeature
   }), [xAxisFeature, yAxisFeature]);
 
+  const [filterPanelHeight, setFilterPanelHeight] = useState(300); // Default height
+  const filterPanelRef = useRef(null);
+  const isResizingRef = useRef(false);
+  const startYRef = useRef(0);
+  const startHeightRef = useRef(0);
+
+  // Mouse event handlers for resizing
+  const handleResizeMouseDown = (e) => {
+    isResizingRef.current = true;
+    startYRef.current = e.clientY;
+    startHeightRef.current = filterPanelHeight;
+    document.body.style.cursor = 'ns-resize';
+    document.addEventListener('mousemove', handleResizeMouseMove);
+    document.addEventListener('mouseup', handleResizeMouseUp);
+  };
+
+  const handleResizeMouseMove = (e) => {
+    if (!isResizingRef.current) return;
+    const deltaY = startYRef.current - e.clientY;
+    let newHeight = startHeightRef.current + deltaY;
+    newHeight = Math.max(100, Math.min(newHeight, 600)); // Clamp height
+    setFilterPanelHeight(newHeight);
+  };
+
+  const handleResizeMouseUp = () => {
+    isResizingRef.current = false;
+    document.body.style.cursor = '';
+    document.removeEventListener('mousemove', handleResizeMouseMove);
+    document.removeEventListener('mouseup', handleResizeMouseUp);
+  };
+
   useEffect(() => {
     const updateDimensions = () => {
       if (viewModeRef.current) {
@@ -2053,13 +2084,22 @@ const TrackVisualizer = () => {
           )}
         </div>
       </div>
-      <div className="FilterPanelWrapper">
+      <div
+        className="FilterPanelWrapper"
+        ref={filterPanelRef}
+        style={{ height: filterPanelHeight }}
+      >
+        <div
+          className="resize-handle"
+          onMouseDown={handleResizeMouseDown}
+          style={{ cursor: 'ns-resize', height: 8 }}
+        />
         <FilterPanel
           filterOptions={filterOptions}
           activeFilters={selectedFeatures}
           onToggleFilter={visualizationMode === VISUALIZATION_MODES.XY ? handleAxisFeatureSelect : handleFeatureToggle}
           filterLogicMode={filterLogicMode}
-          onToggleFilterLogicMode={() => setFilterLogicMode(prev => 
+          onToggleFilterLogicMode={() => setFilterLogicMode(prev =>
             prev === 'intersection' ? 'union' : 'intersection'
           )}
           axisAssignments={visualizationMode === VISUALIZATION_MODES.XY ? axisAssignments : undefined}

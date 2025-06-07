@@ -13,8 +13,8 @@ body {
 
 /* Styles for the main application window */
 .AppWindow {
-  width: 100%; /* Fallback width, primary sizing handled by flex */
-  height: 100%; /* Fallback height, primary sizing handled by flex */
+  width: 100vw; /* Fallback width, primary sizing handled by flex */
+  height: 100vh; /* Fallback height, primary sizing handled by flex */
   background: #292929; /* User-specified, was already present */
   
   overflow: hidden; /* Kept, important for border-radius and preventing content overflow */

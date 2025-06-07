@@ -761,9 +761,7 @@ function Main({
     <div className="Main">
       <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
       <div className="MainContent">
-        {activeTab === 'Map' ? (
-          <Map />
-        ) : (
+        <div style={{ display: activeTab === 'Collection' ? 'block' : 'none' }}>
           <Content
             filteredTracks={filteredTracks}
             selectedTrackId={selectedTrackId}
@@ -797,7 +795,10 @@ function Main({
             crates={crates}
             onRemoveTrackFromCrate={removeTrackFromCrate}
           />
-        )}
+        </div>
+        <div style={{ display: activeTab === 'Map' ? 'block' : 'none' }}>
+          <Map />
+        </div>
       </div>
       <Player
         currentPlayingTrack={currentPlayingTrack}
