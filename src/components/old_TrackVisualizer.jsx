@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import './TrackVisualizer.scss';
 // import WaveSurfer from 'wavesurfer.js'; // WaveSurfer is used by the Waveform component, not directly here usually
-import defaultArtwork from "../../assets/default-artwork.png";
-import Waveform from './Waveform';
+const defaultArtwork = require('../../assets/default-artwork.png');
+import WaveformPreview from './WaveformPreview';
 import FilterPanel from './FilterPanel';
 import { PlaybackContext } from '../context/PlaybackContext';
 import * as d3 from 'd3';
+import Waveform from './Waveform';  // Uncomment this import
 
 // --- Dark Mode Theme Variables (mirroring SCSS for JS logic if needed) ---
 const DARK_MODE_TEXT_PRIMARY = '#e0e0e0';
@@ -1339,8 +1340,6 @@ const TrackVisualizer = () => {
                     audioPath={audioPath}
                     isInteractive={true}
                     onPlay={() => {}}
-                    initialPosition={cursorPositionRelative}
-                    seekTo={cursorPositionRelative}
                   />
                 </PlaybackContext.Provider>
               </div>
@@ -2092,13 +2091,14 @@ const TrackVisualizer = () => {
         <div
           className="resize-handle"
           onMouseDown={handleResizeMouseDown}
+          style={{ cursor: 'ns-resize', height: 8 }}
         />
         <FilterPanel
           filterOptions={filterOptions}
           activeFilters={selectedFeatures}
           onToggleFilter={visualizationMode === VISUALIZATION_MODES.XY ? handleAxisFeatureSelect : handleFeatureToggle}
           filterLogicMode={filterLogicMode}
-          onToggleFilterLogicMode={() => setFilterLogicMode(prev => 
+          onToggleFilterLogicMode={() => setFilterLogicMode(prev =>
             prev === 'intersection' ? 'union' : 'intersection'
           )}
           axisAssignments={visualizationMode === VISUALIZATION_MODES.XY ? axisAssignments : undefined}

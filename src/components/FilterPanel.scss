@@ -22,16 +22,21 @@
 }
 
 .FilterPanelOuterContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
   background-color: #252525;
   border: 1px solid #383838;
   border-radius: 4px;
-  margin-bottom: 16px;
   padding: 10px;
 }
 
 .FilterPanelHeader {
+  flex-shrink: 0;
+  height: 30px;
   display: flex;
-  justify-content: flex-end; // Position button to the right, or center/start as preferred
+  justify-content: flex-end;
   margin-bottom: 10px;
 }
 
@@ -51,19 +56,19 @@
 }
 
 .FilterPanelContainer {
+  flex: 1 1 auto;
+  overflow: hidden;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  // padding: 15px; // Padding moved to OuterContainer
-  // background-color: #252525; // Moved to OuterContainer
-  // border-radius: 4px; // Moved to OuterContainer
-  // margin-bottom: 16px; // Controlled by OuterContainer
-  // border: 1px solid #383838; // Moved to OuterContainer
 }
 
 .FilterCategory {
-  flex: 1 1 180px; // Allow categories to grow and shrink, with a base size
+  flex: 1 1 180px;
   min-width: 150px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .FilterCategoryTitle {
@@ -82,7 +87,7 @@
 
 .FilterSearchInput {
   width: 100%;
-  padding: 6px 30px 6px 8px; // Add right padding for clear button
+  padding: 6px 30px 6px 8px;
   font-size: 0.8rem;
   background-color: #1a1a1a;
   color: #e0e0e0;
@@ -136,18 +141,38 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: 150px; // Limit height and make scrollable
+  height: calc(100% - 80px);
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #666 #2a2a2a;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #2a2a2a;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #666;
+    border-radius: 4px;
+    border: 2px solid #2a2a2a;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #888;
+  }
 }
 
 .FilterCheckboxItem label {
-  display: flex; // Use flex for alignment of checkbox, name, and count
+  display: flex;
   align-items: center;
   padding: 4px 0;
   font-size: 0.85rem;
   color: #ccc;
   cursor: pointer;
-  gap: 6px; // Space between checkbox and text
+  gap: 6px;
 }
 
 .FilterCheckboxItem input[type="checkbox"] {
@@ -160,12 +185,16 @@
 }
 
 .FilterOptionName {
-  flex-grow: 1; // Allow name to take available space
+  flex-grow: 1;
 }
 
 .FilterOptionCount {
-  color: #888; // Dimmer color for the count
+  color: #888;
   font-size: 0.75rem;
-  margin-left: auto; // Push count to the right if using flex on label
+  margin-left: auto;
   padding-left: 5px;
+}
+
+.collection-mode .FilterCheckboxList {
+  max-height: 150px;
 } 

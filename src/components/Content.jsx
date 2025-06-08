@@ -106,13 +106,15 @@ const Content = ({
         </button>
       </div>
       {showFilterPanel && (
-        <FilterPanel 
-          filterOptions={filterOptions} 
-          activeFilters={activeFilters} 
-          onToggleFilter={onToggleFilter} 
-          filterLogicMode={filterLogicMode}
-          onToggleFilterLogicMode={onToggleFilterLogicMode}
-        />
+        <div className={viewMode === 'library' ? 'collection-mode' : undefined}>
+          <FilterPanel 
+            filterOptions={filterOptions} 
+            activeFilters={activeFilters} 
+            onToggleFilter={onToggleFilter} 
+            filterLogicMode={filterLogicMode}
+            onToggleFilterLogicMode={onToggleFilterLogicMode}
+          />
+        </div>
       )}
       <Tracklist
         tracks={filteredTracks}
