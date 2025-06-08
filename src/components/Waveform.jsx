@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useContext } from 'react';
 import WaveSurfer from 'wavesurfer.js';
 import PropTypes from 'prop-types';
 import './Waveform.scss';
-import { PlaybackContext } from '../../context/PlaybackContext';
+import { PlaybackContext } from '../context/PlaybackContext';
 
 const Waveform = ({ trackId, audioPath, isInteractive = false, onPlay }) => {
   const waveformRef = useRef(null);

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import './FilterPanelC.scss';
+import './FilterPanel.scss';
 
 const FilterCategory = ({ title, options, activeItems, onToggle }) => {
   const [searchTerm, setSearchTerm] = useState('');

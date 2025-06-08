@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import './Map.scss';
 
-const TrackVisualizer = lazy(() => import('./map/TrackVisualizer'));
+const TrackVisualizer = lazy(() => import('./TrackVisualizer'));
 
 const Map = () => {
   return (
