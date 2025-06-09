@@ -1750,7 +1750,7 @@ const TrackVisualizer = () => {
             const prob = parseFloat(value);
             
             // Update most probable genre if this one has higher probability
-            if (genrePart && !isNaN(prob) && prob > maxGenreProb) {
+            if (visualizationMode !== VISUALIZATION_MODES.XY && genrePart && !isNaN(prob) && prob > maxGenreProb) {
               maxGenreProb = prob;
               mostProbableGenre = genrePart;
             }
@@ -1765,7 +1765,7 @@ const TrackVisualizer = () => {
           });
           
           // Add the most probable genre
-          if (mostProbableGenre) {
+          if (visualizationMode !== VISUALIZATION_MODES.XY && mostProbableGenre) {
             const genre = { name: mostProbableGenre, count: 1 };
             const existingGenre = options.genre.find(g => g.name === genre.name);
             if (existingGenre) existingGenre.count++;
@@ -1824,7 +1824,7 @@ const TrackVisualizer = () => {
     });
 
     return options;
-  }, [tracks]);
+  }, [tracks, visualizationMode]);
 
   // Debounce threshold update for smooth slider
   useEffect(() => {
