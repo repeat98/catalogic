@@ -2110,6 +2110,7 @@ const TrackVisualizer = () => {
           onSuggestionClick={handleSuggestionClick}
           showSuggestions={showSuggestions}
           selectedSuggestionIndex={selectedSuggestionIndex}
+          activeTab="Map"
         />
       </div>
     </div>
