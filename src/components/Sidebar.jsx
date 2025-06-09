@@ -9,18 +9,29 @@ const generateId = () => `item_${Date.now()}_${Math.random().toString(36).substr
 
 const Sidebar = ({ 
   crates,
+  tags,
   selectedCrateId,
+  selectedTagId,
   selectedLibraryItem,
   onCrateSelect,
+  onTagSelect,
   onLibraryItemSelect,
   onViewModeChange,
-  crateManagementRef
+  crateManagementRef,
+  tagManagementRef
 }) => {
   // Convert crates object to array format for UI
   const cratesItems = Object.entries(crates).map(([id, crate]) => ({
     id,
     label: crate.name,
     trackCount: crate.tracks ? crate.tracks.length : 0
+  }));
+
+  // Convert tags object to array format for UI
+  const tagsItems = Object.entries(tags).map(([id, tag]) => ({
+    id,
+    label: tag.name,
+    trackCount: tag.tracks ? tag.tracks.length : 0
   }));
 
   const [myTagsItems, setMyTagsItems] = useState([
@@ -33,7 +44,7 @@ const Sidebar = ({
     x: 0,
     y: 0,
     item: null, // { id, label }
-    categoryType: null, // 'crates' or 'mytags'
+    categoryType: null, // 'crates' or 'tags'
   });
 
   // Modal State
@@ -62,6 +73,12 @@ const Sidebar = ({
     setContextMenu({ isOpen: false });
   };
 
+  const handleTagItemClick = (tagId) => {
+    onTagSelect(tagId);
+    onViewModeChange('tag');
+    setContextMenu({ isOpen: false });
+  };
+
   // --- Item Management Functions ---
   const addItem = (categoryType) => {
     setModal({
@@ -81,6 +98,8 @@ const Sidebar = ({
     if (window.confirm(`Are you sure you want to delete this ${categoryType === 'crates' ? 'crate' : 'tag'}?`)) {
       if (categoryType === 'crates' && crateManagementRef.current?.deleteCrate) {
         await crateManagementRef.current.deleteCrate(itemId);
+      } else if (categoryType === 'tags' && tagManagementRef.current?.deleteTag) {
+        await tagManagementRef.current.deleteTag(itemId);
       } else if (categoryType === 'mytags') {
         setMyTagsItems(prev => prev.filter(item => item.id !== itemId));
       }
@@ -109,6 +128,8 @@ const Sidebar = ({
     if (type === 'create') {
       if (categoryType === 'crates' && crateManagementRef.current?.createCrate) {
         await crateManagementRef.current.createCrate(inputValue);
+      } else if (categoryType === 'tags' && tagManagementRef.current?.createTag) {
+        await tagManagementRef.current.createTag(inputValue);
       } else if (categoryType === 'mytags') {
         const newItem = { id: generateId(), label: inputValue };
         setMyTagsItems(prev => [...prev, newItem]);
@@ -117,6 +138,8 @@ const Sidebar = ({
       if (inputValue !== currentLabel) {
         if (categoryType === 'crates' && crateManagementRef.current?.renameCrate) {
           await crateManagementRef.current.renameCrate(itemId, inputValue);
+        } else if (categoryType === 'tags' && tagManagementRef.current?.renameTag) {
+          await tagManagementRef.current.renameTag(itemId, inputValue);
         } else if (categoryType === 'mytags') {
           const updateFn = (prevItems) => prevItems.map(item =>
             item.id === itemId ? { ...item, label: inputValue } : item
@@ -129,8 +152,31 @@ const Sidebar = ({
     setModal({ ...modal, isOpen: false });
   };
 
-  const handleModalClose = () => {
-    setModal({ ...modal, isOpen: false });
+  const handleModalClose = async (value) => {
+    if (value && modal.isOpen) {
+      if (modal.type === 'create') {
+        if (modal.categoryType === 'crates') {
+          await crateManagementRef.current.createCrate(value);
+        } else if (modal.categoryType === 'tags') {
+          await tagManagementRef.current.createTag(value);
+        } else if (modal.categoryType === 'mytags') {
+          const newItem = { id: generateId(), label: value };
+          setMyTagsItems(prev => [...prev, newItem]);
+        }
+      } else if (modal.type === 'rename') {
+        if (modal.categoryType === 'crates' && crateManagementRef.current?.renameCrate) {
+          await crateManagementRef.current.renameCrate(modal.itemId, value);
+        } else if (modal.categoryType === 'tags' && tagManagementRef.current?.renameTag) {
+          await tagManagementRef.current.renameTag(modal.itemId, value);
+        } else if (modal.categoryType === 'mytags') {
+          const updateFn = (prevItems) => prevItems.map(item =>
+            item.id === modal.itemId ? { ...item, label: value } : item
+          );
+          setMyTagsItems(updateFn);
+        }
+      }
+    }
+    setModal({ isOpen: false });
   };
 
   // --- Context Menu Logic ---
@@ -200,10 +246,13 @@ const Sidebar = ({
       <Menu
         selectedLibraryItem={selectedLibraryItem}
         cratesItems={cratesItems}
+        tagsItems={tagsItems}
         myTagsItems={myTagsItems}
         selectedCrateItem={selectedCrateId}
+        selectedTagItem={selectedTagId}
         handleLibraryItemClick={handleLibraryItemClick}
         handleCrateItemClick={handleCrateItemClick}
+        handleTagItemClick={handleTagItemClick}
         addItem={addItem}
         handleOpenContextMenu={handleOpenContextMenu}
         onCrateDrop={(event, crateId) => {
@@ -225,7 +274,30 @@ const Sidebar = ({
             console.error('Error handling crate drop:', error);
           }
         }}
+        onTagDrop={(event, tagId) => {
+          event.preventDefault();
+          console.log('Tag drop event:', { tagId, dataTransfer: event.dataTransfer });
+          try {
+            const data = JSON.parse(event.dataTransfer.getData('text/plain'));
+            console.log('Parsed drop data:', data);
+            if (data.trackId && tagManagementRef.current?.addTrackToTag) {
+              console.log('Calling addTrackToTag via ref');
+              tagManagementRef.current.addTrackToTag(tagId, data.trackId);
+            } else {
+              console.log('Missing trackId or addTrackToTag function:', {
+                trackId: data.trackId,
+                hasFunction: !!tagManagementRef.current?.addTrackToTag
+              });
+            }
+          } catch (error) {
+            console.error('Error handling tag drop:', error);
+          }
+        }}
         onCrateDragOver={(event) => {
+          event.preventDefault();
+          event.dataTransfer.dropEffect = 'copy';
+        }}
+        onTagDragOver={(event) => {
           event.preventDefault();
           event.dataTransfer.dropEffect = 'copy';
         }}

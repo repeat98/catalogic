@@ -1,26 +1,94 @@
 /* Content.scss */
 .Content {
-  flex-grow: 1;
-  padding: 0px;
-  background-color: #2e2e2e;
-  color: #e0e0e0;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  background: #121212;
+  color: #fff;
   overflow: hidden;
-  position: relative;
-  padding: 24px 24px 0px 24px;
+}
+
+.ViewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #333;
+}
+
+.ViewInfo {
+  .ViewTitle {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 500;
+  }
+
+  .ViewSubtitle {
+    color: #888;
+    font-size: 14px;
+  }
+}
+
+.CrateActions {
+  .CrateActionButton {
+    background: #333;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background: #444;
+    }
+  }
+}
+
+.SearchAndFilterControls {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  gap: 16px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #333;
+}
+
+.FilterToggleButton {
+  background: #333;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background: #444;
+  }
+}
+
+.ContentMain {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.TracklistContainer {
+  flex: 1;
+  overflow: auto;
+  min-width: 0; // Prevent flex item from overflowing
 }
 
 .ContentLoading,
 .ContentError {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  font-size: 1.2rem;
-  color: #aaa;
-  padding: 20px;
+  padding: 32px;
   text-align: center;
+  color: #888;
+  font-style: italic;
 }
 
 .ContentError {
@@ -47,54 +115,4 @@
 .AudioErrorText {
   color: #ff8a80; // More visible error color
   font-weight: 500;
-}
-
-.ViewHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
-  background-color: #1e1e1e;
-  border-bottom: 1px solid #333;
-  margin-bottom: 16px;
-  border-radius: 6px;
-}
-
-.ViewInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.ViewTitle {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #e0e0e0;
-  margin: 0;
-}
-
-.ViewSubtitle {
-  font-size: 0.9rem;
-  color: #999;
-  font-weight: 400;
-}
-
-.CrateActions {
-  display: flex;
-  gap: 8px;
-}
-
-.CrateActionButton {
-  padding: 8px 16px;
-  font-size: 0.9rem;
-  background-color: #4a4a4a;
-  color: white;
-  border: 1px solid #666;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.CrateActionButton:hover {
-  background-color: #5a5a5a;
 }

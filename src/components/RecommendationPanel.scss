@@ -1,0 +1,135 @@
+.RecommendationPanel {
+  background: #1a1a1a;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  min-width: 350px;
+  max-width: 450px;
+  overflow-y: auto;
+
+  h3 {
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    font-weight: 500;
+  }
+}
+
+.RecommendationPanelLoading,
+.RecommendationPanelEmpty {
+  padding: 32px;
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  margin: auto;
+}
+
+.RecommendationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.RecommendationItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #2a2a2a;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background: #333;
+  }
+}
+
+.TrackDetails {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.TrackInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.TrackTitle {
+  font-weight: 500;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.TrackArtist {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.SimilarityScore {
+  font-size: 12px;
+  color: #777;
+}
+
+.WaveformContainer {
+  height: 35px;
+  width: 100%;
+}
+
+.TrackActions {
+  display: flex;
+  gap: 8px;
+  margin-left: 16px;
+}
+
+.PreviewButton,
+.AcceptButton,
+.RejectButton {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  border: none;
+  background: #333;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+
+  &:hover {
+    background: #444;
+  }
+}
+
+.PreviewButton {
+  background: #4a4a4a;
+  &:hover {
+    background: #5a5a5a;
+  }
+}
+
+.AcceptButton {
+  background: #2d5a27;
+  &:hover {
+    background: #366e2f;
+  }
+}
+
+.RejectButton {
+  background: #5a2727;
+  &:hover {
+    background: #6e2f2f;
+  }
+} 

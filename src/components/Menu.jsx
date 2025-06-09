@@ -5,16 +5,18 @@ import './Menu.scss';
 const Menu = ({
   selectedLibraryItem,
   cratesItems,
-  myTagsItems,
+  tagsItems,
   selectedCrateItem,
+  selectedTagItem,
   handleLibraryItemClick,
   handleCrateItemClick,
+  handleTagItemClick,
   addItem,
   handleOpenContextMenu,
   onCrateDrop,
+  onTagDrop,
   onCrateDragOver,
-  // selectedTagItem, // Prop for future selection handling
-  // handleTagItemClick, // Prop for future selection handling
+  onTagDragOver,
 }) => {
   return (
     <div data-layer="menu" className="Menu">
@@ -67,23 +69,26 @@ const Menu = ({
       </div>
       <div data-layer="divider" className="Divider" />
 
-      {/* MY TAGS Category (dynamic items) */}
+      {/* TAGS Category (dynamic items) */}
       <div data-layer="menu-category" className="MenuCategory">
         <div data-layer="category-label-wrapper" className="CategoryLabelWrapper">
-          <div data-layer="label" className="Label">MY TAGS</div>
-          <button className="AddButton" onClick={() => addItem('mytags')} aria-label="Add Tag" title="Add Tag">
+          <div data-layer="label" className="Label">TAGS</div>
+          <button className="AddButton" onClick={() => addItem('tags')} aria-label="Add Tag" title="Add Tag">
             <span className="AddIconSymbol">+</span>
           </button>
         </div>
-        {myTagsItems.map(item => (
+        {tagsItems.map(item => (
           <MenuItem
             key={item.id}
             id={item.id}
-            label={item.label}
-            // isSelected={selectedTagItem === item.id} // Implement selection if needed
-            // onClick={() => handleTagItemClick(item.id)} // Implement selection if needed
+            label={`${item.label} (${item.trackCount || 0})`}
+            isSelected={selectedTagItem === item.id}
+            onClick={() => handleTagItemClick(item.id)}
             showOptions={true}
-            onOpenContextMenu={(e) => handleOpenContextMenu(e, item, 'mytags')}
+            onOpenContextMenu={(e) => handleOpenContextMenu(e, item, 'tags')}
+            onDrop={(e) => onTagDrop && onTagDrop(e, item.id)}
+            onDragOver={onTagDragOver}
+            isDragTarget={true}
           />
         ))}
       </div>

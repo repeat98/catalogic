@@ -2,6 +2,7 @@ import React from 'react';
 import Tracklist from './Tracklist';
 import SearchComponent from './SearchComponent';
 import FilterPanel from './FilterPanel';
+import RecommendationPanel from './RecommendationPanel';
 import './Content.scss';
 
 const Content = ({
@@ -38,9 +39,13 @@ const Content = ({
   // View state props
   viewMode,
   selectedCrateId,
+  selectedTagId,
   selectedLibraryItem,
   crates,
-  onRemoveTrackFromCrate
+  tags,
+  onRemoveTrackFromCrate,
+  onRemoveTrackFromTag,
+  allTracks
 }) => {
 
   if (isLoading) {
@@ -59,6 +64,12 @@ const Content = ({
         subtitle: 'Crate',
         trackCount: filteredTracks.length
       };
+    } else if (viewMode === 'tag' && selectedTagId && tags[selectedTagId]) {
+      return {
+        title: tags[selectedTagId].name,
+        subtitle: 'Tag',
+        trackCount: filteredTracks.length
+      };
     } else {
       return {
         title: selectedLibraryItem || 'Tracks',
@@ -70,6 +81,14 @@ const Content = ({
 
   const viewInfo = getCurrentViewInfo();
 
+  // Get current tag's tracks for recommendations
+  const getCurrentTagTracks = () => {
+    if (viewMode === 'tag' && selectedTagId && tags[selectedTagId]) {
+      return tags[selectedTagId].tracks || [];
+    }
+    return [];
+  };
+
   return (
     <div data-layer="content" className="Content">
       <div className="ViewHeader">
@@ -77,13 +96,13 @@ const Content = ({
           <h2 className="ViewTitle">{viewInfo.title}</h2>
           <span className="ViewSubtitle">{viewInfo.subtitle} • {viewInfo.trackCount} tracks</span>
         </div>
-        {viewMode === 'crate' && selectedCrateId && (
+        {(viewMode === 'crate' || viewMode === 'tag') && (
           <div className="CrateActions">
             <button 
               className="CrateActionButton"
-              title="Clear crate filters to see all tracks in this crate"
+              title={`Clear ${viewMode} filters to see all tracks in this ${viewMode}`}
               onClick={() => {
-                // Clear all filters when viewing a crate
+                // Clear all filters when viewing a crate or tag
                 Object.keys(activeFilters).forEach(category => {
                   if (activeFilters[category] && activeFilters[category].length > 0) {
                     activeFilters[category].forEach(value => onToggleFilter(category, value));
@@ -91,7 +110,7 @@ const Content = ({
                 });
               }}
             >
-              Show All Crate Tracks
+              Show All {viewMode === 'crate' ? 'Crate' : 'Tag'} Tracks
             </button>
           </div>
         )}
@@ -116,23 +135,47 @@ const Content = ({
           />
         </div>
       )}
-      <Tracklist
-        tracks={filteredTracks}
-        selectedTrackId={selectedTrackId}
-        onTrackSelect={onTrackSelect}
-        onPlayTrack={onPlayTrack}
-        currentPlayingTrackId={currentPlayingTrack?.id}
-        isAudioPlaying={isPlaying}
-        currentTime={currentTime}
-        onSeek={onSeek}
-        selectedFeatureCategory={selectedFeatureCategory}
-        onFeatureCategoryChange={onFeatureCategoryChange}
-        // Pass sorting props to Tracklist
-        sortConfig={sortConfig}
-        requestSort={requestSort}
-        // Pass drag and drop props to Tracklist
-        onTrackDragStart={onTrackDragStart}
-      />
+      <div className="ContentMain">
+        <div className="TracklistContainer">
+          <Tracklist
+            tracks={filteredTracks}
+            selectedTrackId={selectedTrackId}
+            onTrackSelect={onTrackSelect}
+            onPlayTrack={onPlayTrack}
+            currentPlayingTrackId={currentPlayingTrack?.id}
+            isAudioPlaying={isPlaying}
+            currentTime={currentTime}
+            onSeek={onSeek}
+            selectedFeatureCategory={selectedFeatureCategory}
+            onFeatureCategoryChange={onFeatureCategoryChange}
+            // Pass sorting props to Tracklist
+            sortConfig={sortConfig}
+            requestSort={requestSort}
+            // Pass drag and drop props to Tracklist
+            onTrackDragStart={onTrackDragStart}
+          />
+        </div>
+        {viewMode === 'tag' && selectedTagId && (
+          <RecommendationPanel
+            currentTracks={getCurrentTagTracks()}
+            allTracks={allTracks}
+            onAcceptRecommendation={(trackId) => {
+              if (selectedTagId) {
+                onRemoveTrackFromTag(selectedTagId, trackId);
+              }
+            }}
+            onRejectRecommendation={(trackId) => {
+              // For now, just remove from recommendations
+              // In the future, we could store rejected recommendations to avoid showing them again
+            }}
+            onPlayTrack={onPlayTrack}
+            currentPlayingTrack={currentPlayingTrack}
+            isPlaying={isPlaying}
+            onSeek={onSeek}
+            currentTime={currentTime}
+          />
+        )}
+      </div>
     </div>
   );
 };

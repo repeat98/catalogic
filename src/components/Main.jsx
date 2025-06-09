@@ -243,14 +243,19 @@ const sortTracks = (tracks, sortConfig, selectedFeatureCategory, activeFilters, 
 
 function Main({ 
   crates, 
-  setCrates, 
+  setCrates,
+  tags,
+  setTags,
   selectedCrateId, 
-  setSelectedCrateId, 
+  setSelectedCrateId,
+  selectedTagId,
+  setSelectedTagId,
   selectedLibraryItem, 
   setSelectedLibraryItem, 
   viewMode, 
   setViewMode,
-  crateManagementRef 
+  crateManagementRef,
+  tagManagementRef
 }) {
   const [allTracks, setAllTracks] = useState([]);
   const [filteredTracks, setFilteredTracks] = useState([]);
@@ -410,9 +415,134 @@ function Main({
     }
   }, [crates, setCrates]);
 
-  // Set crate management functions in ref for Sidebar access
+  // Tag management functions
+  const fetchTags = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/tags');
+      if (response.ok) {
+        const tagsData = await response.json();
+        setTags(tagsData);
+      }
+    } catch (error) {
+      console.error('Failed to fetch tags:', error);
+      setTags({});
+    }
+  };
+
+  const createTag = useCallback(async (tagName) => {
+    try {
+      const response = await fetch('http://localhost:3000/tags', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: tagName, tracks: [] })
+      });
+      
+      if (response.ok) {
+        const newTag = await response.json();
+        setTags(prev => ({ ...prev, [newTag.id]: newTag }));
+        return newTag;
+      }
+    } catch (error) {
+      console.error('Failed to create tag:', error);
+    }
+  }, [setTags]);
+
+  const renameTag = useCallback(async (tagId, newName) => {
+    try {
+      const response = await fetch(`http://localhost:3000/tags/${tagId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newName })
+      });
+      
+      if (response.ok) {
+        setTags(prev => ({
+          ...prev,
+          [tagId]: { ...prev[tagId], name: newName }
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to rename tag:', error);
+    }
+  }, [setTags]);
+
+  const deleteTag = useCallback(async (tagId) => {
+    try {
+      const response = await fetch(`http://localhost:3000/tags/${tagId}`, {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+        setTags(prev => {
+          const updated = { ...prev };
+          delete updated[tagId];
+          return updated;
+        });
+        // If we're currently viewing the deleted tag, switch back to library
+        if (selectedTagId === tagId) {
+          setSelectedTagId(null);
+          setViewMode('library');
+          setSelectedLibraryItem('Tracks');
+        }
+      }
+    } catch (error) {
+      console.error('Failed to delete tag:', error);
+    }
+  }, [setTags, selectedTagId, setSelectedTagId, setViewMode, setSelectedLibraryItem]);
+
+  const addTrackToTag = useCallback(async (tagId, trackId) => {
+    try {
+      const currentTag = tags[tagId];
+      if (!currentTag) return;
+
+      const updatedTracks = [...(currentTag.tracks || [])];
+      if (!updatedTracks.includes(trackId)) {
+        updatedTracks.push(trackId);
+        
+        const response = await fetch(`http://localhost:3000/tags/${tagId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tracks: updatedTracks })
+        });
+        
+        if (response.ok) {
+          setTags(prev => ({
+            ...prev,
+            [tagId]: { ...prev[tagId], tracks: updatedTracks }
+          }));
+        }
+      }
+    } catch (error) {
+      console.error('Failed to add track to tag:', error);
+    }
+  }, [tags, setTags]);
+
+  const removeTrackFromTag = useCallback(async (tagId, trackId) => {
+    try {
+      const currentTag = tags[tagId];
+      if (!currentTag) return;
+
+      const updatedTracks = (currentTag.tracks || []).filter(id => id !== trackId);
+      
+      const response = await fetch(`http://localhost:3000/tags/${tagId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tracks: updatedTracks })
+      });
+      
+      if (response.ok) {
+        setTags(prev => ({
+          ...prev,
+          [tagId]: { ...prev[tagId], tracks: updatedTracks }
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to remove track from tag:', error);
+    }
+  }, [tags, setTags]);
+
+  // Set crate and tag management functions in refs for Sidebar access
   useEffect(() => {
-    console.log('Setting up crateManagementRef.current:', !!crateManagementRef.current);
     if (crateManagementRef.current !== null) {
       crateManagementRef.current = {
         createCrate,
@@ -421,11 +551,20 @@ function Main({
         addTrackToCrate,
         removeTrackFromCrate
       };
-      console.log('crateManagementRef functions set');
-    } else {
-      console.log('crateManagementRef.current is null');
     }
   }, [createCrate, renameCrate, deleteCrate, addTrackToCrate, removeTrackFromCrate]);
+
+  useEffect(() => {
+    if (tagManagementRef.current !== null) {
+      tagManagementRef.current = {
+        createTag,
+        renameTag,
+        deleteTag,
+        addTrackToTag,
+        removeTrackFromTag
+      };
+    }
+  }, [createTag, renameTag, deleteTag, addTrackToTag, removeTrackFromTag]);
 
   useEffect(() => {
     const fetchTracksAndProcess = async () => {
@@ -437,8 +576,8 @@ function Main({
         const processedTracks = data.map(track => ({ ...track, artwork_thumbnail_path: track.artwork_thumbnail_path || 'assets/default-artwork.png' }));
         setAllTracks(processedTracks);
 
-        // Also fetch crates
-        await fetchCrates();
+        // Also fetch crates and tags
+        await Promise.all([fetchCrates(), fetchTags()]);
 
         // Aggregate filter options once all tracks are fetched
         const genres = {};
@@ -483,8 +622,11 @@ function Main({
         });
 
       } catch (e) {
-        console.error("Failed to fetch tracks or process filters:", e); setError(e.message);
-      } finally { setIsLoading(false); }
+        console.error("Failed to fetch tracks or process filters:", e);
+        setError(e.message);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchTracksAndProcess();
   }, []);
@@ -547,10 +689,13 @@ function Main({
   useEffect(() => {
     let tracksToDisplay = [...allTracks];
     
-    // 1. Check if we're viewing a crate
+    // 1. Check if we're viewing a crate or tag
     if (viewMode === 'crate' && selectedCrateId && crates[selectedCrateId]) {
       const crateTrackIds = crates[selectedCrateId].tracks || [];
       tracksToDisplay = allTracks.filter(track => crateTrackIds.includes(track.id));
+    } else if (viewMode === 'tag' && selectedTagId && tags[selectedTagId]) {
+      const tagTrackIds = tags[selectedTagId].tracks || [];
+      tracksToDisplay = allTracks.filter(track => tagTrackIds.includes(track.id));
     }
     
     // 2. Apply Search Filter
@@ -629,7 +774,7 @@ function Main({
       getSpecificSpectralScore
     );
     setFilteredTracks(tracksToDisplay);
-  }, [allTracks, searchTerm, sortConfig, selectedFeatureCategory, activeFilters, filterLogicMode, viewMode, selectedCrateId, crates]);
+  }, [allTracks, searchTerm, sortConfig, selectedFeatureCategory, activeFilters, filterLogicMode, viewMode, selectedCrateId, selectedTagId, crates, tags]);
 
   const handleTrackSelect = (trackId) => setSelectedTrackId(trackId);
 
@@ -786,14 +931,16 @@ function Main({
             onToggleFilter={handleToggleFilter}
             filterLogicMode={filterLogicMode}
             onToggleFilterLogicMode={toggleFilterLogicMode}
-            // Drag and drop props
             onTrackDragStart={handleTrackDragStart}
-            // View state props
             viewMode={viewMode}
             selectedCrateId={selectedCrateId}
+            selectedTagId={selectedTagId}
             selectedLibraryItem={selectedLibraryItem}
             crates={crates}
+            tags={tags}
             onRemoveTrackFromCrate={removeTrackFromCrate}
+            onRemoveTrackFromTag={removeTrackFromTag}
+            allTracks={allTracks}
           />
         </div>
         <div style={{ display: activeTab === 'Map' ? 'block' : 'none' }}>
@@ -804,6 +951,7 @@ function Main({
         currentPlayingTrack={currentPlayingTrack}
         isPlaying={isPlaying}
         currentTime={currentTime}
+        onSeek={handleSeek}
       />
     </div>
   );

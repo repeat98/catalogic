@@ -273,6 +273,25 @@ function initDatabase() {
     }
   });
 
+  // Create tags table if it doesn't exist
+  const createTagsTableQuery = `
+    CREATE TABLE IF NOT EXISTS tags (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      tracks TEXT DEFAULT '[]',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+  
+  db.run(createTagsTableQuery, (err) => {
+    if (err) {
+      console.error("Error creating tags table:", err.message);
+    } else {
+      console.log("Tags table created or already exists.");
+    }
+  });
+
   // Check if new columns exist in 'classified_tracks' table
   const checkColumnsQuery = "PRAGMA table_info(classified_tracks);";
   db.all(checkColumnsQuery, [], (err, columns) => {
@@ -904,6 +923,149 @@ function initRoutes() {
       console.error("Error saving waveform cache for track", trackId, ":", error);
       res.status(500).json({ error: "Failed to save waveform cache" });
     }
+  });
+
+  // Tag management routes
+  
+  // Get all tags
+  expressApp.get("/tags", (req, res) => {
+    const query = `
+      SELECT id, name, tracks, created_at, updated_at
+      FROM tags
+      ORDER BY created_at DESC
+    `;
+
+    db.all(query, [], (err, rows) => {
+      if (err) {
+        console.error("SQL Error:", err.message);
+        res.status(500).json({ error: "Failed to retrieve tags" });
+        return;
+      }
+
+      // Parse tracks JSON and format for client
+      const tags = {};
+      rows.forEach(row => {
+        try {
+          tags[row.id] = {
+            id: row.id,
+            name: row.name,
+            tracks: row.tracks ? JSON.parse(row.tracks) : [],
+            created_at: row.created_at,
+            updated_at: row.updated_at
+          };
+        } catch (e) {
+          console.error(`Error parsing tracks for tag ID ${row.id}:`, e);
+          tags[row.id] = {
+            id: row.id,
+            name: row.name,
+            tracks: [],
+            created_at: row.created_at,
+            updated_at: row.updated_at
+          };
+        }
+      });
+
+      res.json(tags);
+    });
+  });
+
+  // Create a new tag
+  expressApp.post("/tags", (req, res) => {
+    const { name, tracks = [] } = req.body;
+
+    if (!name || !name.trim()) {
+      return res.status(400).json({ error: "Tag name is required" });
+    }
+
+    const query = `
+      INSERT INTO tags (name, tracks, created_at, updated_at)
+      VALUES (?, ?, datetime('now'), datetime('now'))
+    `;
+
+    db.run(query, [name.trim(), JSON.stringify(tracks)], function(err) {
+      if (err) {
+        console.error("SQL Error:", err.message);
+        res.status(500).json({ error: "Failed to create tag" });
+        return;
+      }
+
+      res.json({
+        id: this.lastID,
+        name: name.trim(),
+        tracks,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      });
+    });
+  });
+
+  // Update a tag
+  expressApp.put("/tags/:id", (req, res) => {
+    const tagId = req.params.id;
+    const { name, tracks } = req.body;
+
+    let updates = [];
+    let values = [];
+
+    if (name !== undefined) {
+      updates.push("name = ?");
+      values.push(name.trim());
+    }
+
+    if (tracks !== undefined) {
+      updates.push("tracks = ?");
+      values.push(JSON.stringify(tracks));
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({ error: "No updates provided" });
+    }
+
+    updates.push("updated_at = datetime('now')");
+    values.push(tagId);
+
+    const query = `
+      UPDATE tags 
+      SET ${updates.join(", ")}
+      WHERE id = ?
+    `;
+
+    db.run(query, values, function(err) {
+      if (err) {
+        console.error("SQL Error:", err.message);
+        res.status(500).json({ error: "Failed to update tag" });
+        return;
+      }
+
+      if (this.changes === 0) {
+        res.status(404).json({ error: "Tag not found" });
+        return;
+      }
+
+      res.json({ success: true });
+    });
+  });
+
+  // Delete a tag
+  expressApp.delete("/tags/:id", (req, res) => {
+    const tagId = req.params.id;
+
+    const query = "DELETE FROM tags WHERE id = ?";
+
+    db.run(query, [tagId], function(err) {
+      if (err) {
+        console.error("SQL Error:", err.message);
+        res.status(500).json({ error: "Failed to delete tag" });
+        return;
+      }
+
+      if (this.changes === 0) {
+        res.status(404).json({ error: "Tag not found" });
+        return;
+      }
+
+      res.json({ success: true });
+    });
   });
 }
 
