@@ -157,10 +157,21 @@
 
 // Drag and drop styles
 .MenuItemInstanceWrapper.DragTarget {
+  position: relative;
+  
+  // Regular hover state (subtle indication that it's a drop target)
   &:hover {
     .Property1Default, .Property1Options, .Property1Selected, .Property1OptionSelected {
-      border: 2px dashed #4a9eff;
-      background-color: rgba(74, 158, 255, 0.1) !important;
+      border: 1px solid rgba(74, 158, 255, 0.3);
+    }
+  }
+  
+  // Active drag-over state (when something is being dragged over it)
+  &.drag-over {
+    .Property1Default, .Property1Options, .Property1Selected, .Property1OptionSelected {
+      border: 2px dashed #4a9eff !important;
+      background-color: rgba(74, 158, 255, 0.15) !important;
+      box-shadow: 0 0 8px rgba(74, 158, 255, 0.3);
     }
   }
 }

@@ -59,6 +59,9 @@ const HIGHLIGHT_COLOR = '#FF5A16';
 
 const VISUALIZATION_MODES = { SIMILARITY: 'similarity', XY: 'xy' };
 
+// Add this constant at the top of the file with other constants
+const LASSO_COLOR = '#6A82FB';
+
 
 // --- Helper Functions ---
 
@@ -523,8 +526,6 @@ const TrackVisualizer = () => {
 
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const lastZoomStateRef = useRef({ k: 1, x: 0, y: 0 });
 
   const VIEW_BOX_VALUE = `0 0 ${svgDimensions.width} ${svgDimensions.height}`;
@@ -536,12 +537,8 @@ const TrackVisualizer = () => {
   const hoverTimeoutRef = useRef(null);
   const isHoveringRef = useRef(false);
   const tooltipRef = useRef(null);
-  const lastMousePosRef = useRef({ x: 0, y: 0 });
-  const velocityRef = useRef({ x: 0, y: 0 });
-  const lastTimeRef = useRef(Date.now());
-  const animationFrameRef = useRef(null);
-  const lastPinchDistanceRef = useRef(null);
-  const lastPinchCenterRef = useRef(null);
+  // Refs for D3 zoom behavior
+  // (Old touch/mouse event refs removed as they're now handled by D3)
 
   const searchInputRef = useRef(null);
   const suggestionsRef = useRef(null);
@@ -674,146 +671,8 @@ const TrackVisualizer = () => {
     });
   }, []);
 
-  const handleTouchStart = useCallback((e) => {
-    if (e.touches.length === 2) {
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
-      lastPinchDistanceRef.current = Math.hypot(
-        touch2.clientX - touch1.clientX,
-        touch2.clientY - touch1.clientY
-      );
-      lastPinchCenterRef.current = {
-        x: (touch1.clientX + touch2.clientX) / 2,
-        y: (touch1.clientY + touch2.clientY) / 2
-      };
-    }
-  }, []);
-
-  const handleTouchMove = useCallback((e) => {
-    if (e.touches.length === 2) {
-      const touch1 = e.touches[0];
-      const touch2 = e.touches[1];
-      const currentDistance = Math.hypot(
-        touch2.clientX - touch1.clientX,
-        touch2.clientY - touch1.clientY
-      );
-      const currentCenter = {
-        x: (touch1.clientX + touch2.clientX) / 2,
-        y: (touch1.clientY + touch2.clientY) / 2
-      };
-
-      if (lastPinchDistanceRef.current !== null) {
-        const scale = currentDistance / lastPinchDistanceRef.current;
-        const svgRect = e.currentTarget.getBoundingClientRect();
-        const centerX = currentCenter.x - svgRect.left;
-        const centerY = currentCenter.y - svgRect.top;
-
-        setZoom(prevZoom => {
-          const newZoom = Math.min(Math.max(prevZoom * scale, 1), 200);
-          setPan(prevPan => ({
-            x: prevPan.x - (centerX - prevPan.x) * (newZoom / prevZoom - 1),
-            y: prevPan.y - (centerY - prevPan.y) * (newZoom / prevZoom - 1)
-          }));
-          return newZoom;
-        });
-      }
-
-      // Handle panning during pinch
-      if (lastPinchCenterRef.current) {
-        const deltaX = currentCenter.x - lastPinchCenterRef.current.x;
-        const deltaY = currentCenter.y - lastPinchCenterRef.current.y;
-        setPan(prevPan => ({
-          x: prevPan.x + deltaX,
-          y: prevPan.y + deltaY
-        }));
-      }
-
-      lastPinchDistanceRef.current = currentDistance;
-      lastPinchCenterRef.current = currentCenter;
-    }
-  }, []);
-
-  const handleTouchEnd = useCallback(() => {
-    lastPinchDistanceRef.current = null;
-    lastPinchCenterRef.current = null;
-  }, []);
-
-  const handleMouseDown = useCallback((e) => {
-    if (e.button === 0) {
-      setIsDragging(true);
-      setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
-      lastMousePosRef.current = { x: e.clientX, y: e.clientY };
-      lastTimeRef.current = Date.now();
-      velocityRef.current = { x: 0, y: 0 };
-      
-      // Cancel any ongoing animation
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    }
-  }, [pan]);
-
-  const handleMouseMove = useCallback((e) => {
-    if (isDragging) {
-      const currentTime = Date.now();
-      const deltaTime = currentTime - lastTimeRef.current;
-      
-      if (deltaTime > 0) {
-        const deltaX = e.clientX - lastMousePosRef.current.x;
-        const deltaY = e.clientY - lastMousePosRef.current.y;
-        
-        // Calculate velocity (pixels per millisecond)
-        velocityRef.current = {
-          x: deltaX / deltaTime,
-          y: deltaY / deltaTime
-        };
-        
-        // Update pan with increased sensitivity
-        setPan({
-          x: e.clientX - dragStart.x,
-          y: e.clientY - dragStart.y
-        });
-        
-        lastMousePosRef.current = { x: e.clientX, y: e.clientY };
-        lastTimeRef.current = currentTime;
-      }
-    }
-  }, [isDragging, dragStart]);
-
-  const handleMouseUp = useCallback(() => {
-    if (isDragging) {
-      setIsDragging(false);
-      
-      // Apply momentum if velocity is significant
-      if (Math.abs(velocityRef.current.x) > 0.1 || Math.abs(velocityRef.current.y) > 0.1) {
-        const applyMomentum = () => {
-          const currentTime = Date.now();
-          const deltaTime = currentTime - lastTimeRef.current;
-          
-          // Decay velocity
-          velocityRef.current = {
-            x: velocityRef.current.x * Math.pow(0.95, deltaTime / 16),
-            y: velocityRef.current.y * Math.pow(0.95, deltaTime / 16)
-          };
-          
-          // Apply velocity to pan
-          setPan(prevPan => ({
-            x: prevPan.x + velocityRef.current.x * deltaTime,
-            y: prevPan.y + velocityRef.current.y * deltaTime
-          }));
-          
-          lastTimeRef.current = currentTime;
-          
-          // Continue animation if velocity is still significant
-          if (Math.abs(velocityRef.current.x) > 0.01 || Math.abs(velocityRef.current.y) > 0.01) {
-            animationFrameRef.current = requestAnimationFrame(applyMomentum);
-          }
-        };
-        
-        animationFrameRef.current = requestAnimationFrame(applyMomentum);
-      }
-    }
-  }, [isDragging]);
+  // Note: Touch and mouse event handlers are now handled by D3 zoom behavior
+  // These functions are kept for backward compatibility but are no longer used
 
   const handleReset = useCallback(() => {
     if (d3ContainerRef.current?.svg && zoomBehaviorRef.current) {
@@ -1414,13 +1273,7 @@ const TrackVisualizer = () => {
   }, []);
 
   // Clean up animation frame on unmount
-  useEffect(() => {
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, []);
+  // Cleanup handled by D3 zoom behavior now
 
   // Function to generate search suggestions
   const generateSuggestions = useCallback((query) => {
@@ -1551,9 +1404,30 @@ const TrackVisualizer = () => {
     // Create main group for all elements
     const g = svg.append("g");
 
-    // Initialize zoom behavior
+    // Custom filter function for zoom behavior
+    const customZoomFilter = (event) => {
+      // Allow zoom only on wheel events or programmatic calls
+      return event.type === 'wheel' || !event.sourceEvent;
+    };
+
+    // Custom filter function for pan behavior  
+    const customPanFilter = (event) => {
+      // Allow pan only on middle mouse button (button 1) or touch events
+      return (event.type === 'mousedown' && event.button === 1) || 
+             (event.type === 'touchstart' && event.touches.length === 2);
+    };
+
+    // Initialize zoom behavior with custom filtering
     zoomBehaviorRef.current = d3.zoom()
       .scaleExtent([1, 200])
+      .filter((event) => {
+        // Block ALL default zoom/pan behaviors - we'll handle everything manually
+        if (event.type === 'mousedown' || event.type === 'wheel' || event.type === 'touchstart' || event.type === 'touchmove') {
+          return false;
+        }
+        // Only allow programmatic transforms
+        return !event.sourceEvent;
+      })
       .on("zoom", (event) => {
         setZoom(event.transform.k);
         setPan({ x: event.transform.x, y: event.transform.y });
@@ -1561,8 +1435,222 @@ const TrackVisualizer = () => {
         g.attr("transform", event.transform);
       });
 
-    // Apply zoom behavior to SVG
+    // Apply zoom behavior to SVG (but all input events are filtered out)
     svg.call(zoomBehaviorRef.current);
+
+    // Improved trackpad and mouse detection for Electron
+    let isCurrentlyPanning = false;
+    let panTimeout = null;
+
+    // Handle all wheel events (mouse wheel and trackpad)
+    svg.on("wheel", function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      console.log('Wheel event:', {
+        deltaX: event.deltaX,
+        deltaY: event.deltaY,
+        deltaZ: event.deltaZ,
+        deltaMode: event.deltaMode,
+        ctrlKey: event.ctrlKey,
+        metaKey: event.metaKey,
+        shiftKey: event.shiftKey
+      });
+      
+      // Better trackpad detection for Electron/macOS
+      const hasHorizontalScroll = Math.abs(event.deltaX) > 0;
+      const hasSmallDelta = Math.abs(event.deltaY) < 50 && Math.abs(event.deltaY) > 0;
+      const isFloatingPoint = (event.deltaY % 1) !== 0;
+      const isTrackpad = hasHorizontalScroll || hasSmallDelta || isFloatingPoint;
+      
+      console.log('Input detection:', {
+        hasHorizontalScroll,
+        hasSmallDelta,
+        isFloatingPoint,
+        isTrackpad,
+        inputType: isTrackpad ? 'trackpad' : 'mouse'
+      });
+      
+      if (isTrackpad) {
+        // TRACKPAD: Two-finger pinch zoom ONLY with Command/Meta key
+        if (event.metaKey || event.ctrlKey) {
+          console.log('Trackpad ZOOM with modifier key');
+          const scaleFactor = 1 - (event.deltaY * 0.005); // Smaller multiplier for smoother zoom
+          const rect = svg.node().getBoundingClientRect();
+          const point = [event.clientX - rect.left, event.clientY - rect.top];
+          
+          svg.call(zoomBehaviorRef.current.scaleBy, scaleFactor, point);
+        } else {
+          // TRACKPAD: Two-finger swipe for panning
+          console.log('Trackpad PAN');
+          isCurrentlyPanning = true;
+          
+          // Clear existing timeout
+          if (panTimeout) clearTimeout(panTimeout);
+          
+          const deltaX = -event.deltaX * 1; // Adjust sensitivity
+          const deltaY = -event.deltaY * 1;
+          
+          svg.call(zoomBehaviorRef.current.translateBy, deltaX, deltaY);
+          
+          // Reset panning flag after a short delay
+          panTimeout = setTimeout(() => {
+            isCurrentlyPanning = false;
+          }, 100);
+        }
+      } else {
+        // MOUSE WHEEL: Always zoom
+        console.log('Mouse wheel ZOOM');
+        const scaleFactor = event.deltaY > 0 ? 0.85 : 1.15;
+        const rect = svg.node().getBoundingClientRect();
+        const point = [event.clientX - rect.left, event.clientY - rect.top];
+        
+        svg.call(zoomBehaviorRef.current.scaleBy, scaleFactor, point);
+      }
+    });
+
+    // Handle middle mouse button panning
+    let middleMousePanning = false;
+    let lastMousePos = null;
+
+    svg.on("mousedown", function(event) {
+      // Skip if event originated from a track dot (for drag functionality)
+      if (event.target.classList.contains('track-dot')) {
+        return;
+      }
+      
+      if (event.button === 1) { // Middle mouse button
+        event.preventDefault();
+        console.log('Middle mouse button down - start panning');
+        middleMousePanning = true;
+        lastMousePos = { x: event.clientX, y: event.clientY };
+        svg.style("cursor", "grabbing");
+      }
+    });
+
+    svg.on("mousemove", function(event) {
+      // Skip if event originated from a track dot (for drag functionality)
+      if (event.target.classList.contains('track-dot')) {
+        return;
+      }
+      
+      if (middleMousePanning && lastMousePos) {
+        event.preventDefault();
+        const deltaX = event.clientX - lastMousePos.x;
+        const deltaY = event.clientY - lastMousePos.y;
+        
+        svg.call(zoomBehaviorRef.current.translateBy, deltaX, deltaY);
+        
+        lastMousePos = { x: event.clientX, y: event.clientY };
+      }
+    });
+
+    svg.on("mouseup", function(event) {
+      // Skip if event originated from a track dot (for drag functionality)
+      if (event.target.classList.contains('track-dot')) {
+        return;
+      }
+      
+      if (event.button === 1 && middleMousePanning) {
+        event.preventDefault();
+        console.log('Middle mouse button up - stop panning');
+        middleMousePanning = false;
+        lastMousePos = null;
+        svg.style("cursor", "default");
+      }
+    });
+
+    // Handle mouse leave to stop panning
+    svg.on("mouseleave", function() {
+      if (middleMousePanning) {
+        console.log('Mouse left SVG - stop panning');
+        middleMousePanning = false;
+        lastMousePos = null;
+        svg.style("cursor", "default");
+      }
+    });
+
+    // Touch handling for mobile/tablet devices (disabled for now on desktop)
+    // Note: We're focusing on mouse/trackpad controls for Electron desktop app
+    if ('ontouchstart' in window && navigator.maxTouchPoints > 0) {
+      console.log('Touch device detected - enabling touch controls');
+      
+      let touchStartDistance = null;
+      let touchStartCenter = null;
+      let lastTouchCenter = null;
+      let lastPinchScale = 1;
+
+      svg.on("touchstart", function(event) {
+        if (event.touches.length === 2) {
+          console.log('Touch start - two fingers');
+          const touch1 = event.touches[0];
+          const touch2 = event.touches[1];
+          
+          touchStartDistance = Math.hypot(
+            touch2.clientX - touch1.clientX,
+            touch2.clientY - touch1.clientY
+          );
+          
+          touchStartCenter = {
+            x: (touch1.clientX + touch2.clientX) / 2,
+            y: (touch1.clientY + touch2.clientY) / 2
+          };
+          
+          lastTouchCenter = { ...touchStartCenter };
+          event.preventDefault();
+        }
+      });
+
+      svg.on("touchmove", function(event) {
+        if (event.touches.length === 2 && touchStartDistance) {
+          const touch1 = event.touches[0];
+          const touch2 = event.touches[1];
+          
+          const currentDistance = Math.hypot(
+            touch2.clientX - touch1.clientX,
+            touch2.clientY - touch1.clientY
+          );
+          
+          const currentCenter = {
+            x: (touch1.clientX + touch2.clientX) / 2,
+            y: (touch1.clientY + touch2.clientY) / 2
+          };
+
+          // Handle pinch zoom on mobile (no modifier key needed)
+          const scaleChange = currentDistance / touchStartDistance;
+          const rect = svg.node().getBoundingClientRect();
+          const point = [currentCenter.x - rect.left, currentCenter.y - rect.top];
+          
+          if (Math.abs(scaleChange - 1) > 0.05) {
+            svg.call(zoomBehaviorRef.current.scaleBy, scaleChange / lastPinchScale, point);
+            lastPinchScale = scaleChange;
+          }
+
+          // Handle two-finger pan
+          if (lastTouchCenter) {
+            const panDeltaX = currentCenter.x - lastTouchCenter.x;
+            const panDeltaY = currentCenter.y - lastTouchCenter.y;
+            
+            svg.call(zoomBehaviorRef.current.translateBy, panDeltaX, panDeltaY);
+          }
+
+          lastTouchCenter = { ...currentCenter };
+          event.preventDefault();
+        }
+      });
+
+      svg.on("touchend", function(event) {
+        if (event.touches.length < 2) {
+          console.log('Touch end - resetting touch state');
+          touchStartDistance = null;
+          touchStartCenter = null;
+          lastTouchCenter = null;
+          lastPinchScale = 1;
+        }
+      });
+    } else {
+      console.log('Desktop device - touch controls disabled');
+    }
 
     // Apply the last known zoom state if it exists, otherwise use identity
     if (zoomBehaviorRef.current) {
@@ -1882,12 +1970,18 @@ const TrackVisualizer = () => {
       .attr("r", 0)
       .attr("class", "track-dot")
       .style("transition", "none")
+      .style("cursor", "grab")
+      .style("pointer-events", "all")
       .on("mouseover", (event, d) => handleMouseOver(d, event))
       .on("mouseout", handleMouseOut)
       .on("click", (event, d) => handleDotClick(d));
 
     // Update all dots (including new ones) with smooth transitions
-    dots.merge(dotsEnter)
+    const mergedDots = dots.merge(dotsEnter);
+    
+    mergedDots
+      .style("cursor", "grab")
+      .style("pointer-events", "all")
       .transition()
       .duration(750) // Increased duration for smoother transitions
       .ease(d3.easeCubicInOut) // Add easing for smoother motion
@@ -1897,7 +1991,107 @@ const TrackVisualizer = () => {
       .attr("fill", (d, i) => trackColors[i]?.color || NOISE_CLUSTER_COLOR);
 
     // Store updated selection
-    d3ContainerRef.current.dots = dots.merge(dotsEnter);
+    d3ContainerRef.current.dots = mergedDots;
+
+    // Apply D3 drag behavior for drag-and-drop functionality
+    mergedDots.call(d3.drag()
+      .filter((event) => {
+        // Only allow drag on left mouse button
+        return event.button === 0;
+      })
+      .on("start", (event, d) => {
+        console.log('Track drag started:', { trackId: d.id, trackTitle: d.title || 'Unknown' });
+        
+        // Prevent event bubbling to parent SVG
+        event.sourceEvent.stopPropagation();
+        event.sourceEvent.preventDefault();
+        
+        // Change cursor to grabbing
+        d3.select(event.sourceEvent.target).style("cursor", "grabbing");
+        
+        // Create a custom drag indicator
+        const dragIndicator = d3ContainerRef.current.g.append("circle")
+          .attr("class", "drag-indicator")
+          .attr("cx", d.x)
+          .attr("cy", d.y)
+          .attr("r", 8)
+          .attr("fill", "#6A82FB")
+          .attr("stroke", "#ffffff")
+          .attr("stroke-width", 2)
+          .attr("opacity", 0.8)
+          .style("pointer-events", "none");
+        
+        // Store drag data for the drop handling
+        event.sourceEvent.dragData = {
+          trackId: d.id,
+          trackData: d,
+          dragIndicator: dragIndicator
+        };
+      })
+      .on("drag", (event, d) => {
+        // Prevent event bubbling
+        event.sourceEvent.stopPropagation();
+        event.sourceEvent.preventDefault();
+        
+        // Update drag indicator position
+        if (event.sourceEvent.dragData?.dragIndicator) {
+          event.sourceEvent.dragData.dragIndicator
+            .attr("cx", event.x)
+            .attr("cy", event.y);
+        }
+        
+        // Check if we're over a valid drop target and provide visual feedback
+        const dropTarget = document.elementFromPoint(event.sourceEvent.clientX, event.sourceEvent.clientY);
+        const menuItem = dropTarget?.closest('.MenuItemInstanceWrapper.DragTarget');
+        
+        // Remove previous hover states
+        document.querySelectorAll('.MenuItemInstanceWrapper.DragTarget').forEach(item => {
+          item.classList.remove('drag-over');
+        });
+        
+        // Add hover state to current target
+        if (menuItem) {
+          menuItem.classList.add('drag-over');
+        }
+      })
+      .on("end", (event, d) => {
+        console.log('Track drag ended');
+        
+        // Prevent event bubbling
+        event.sourceEvent.stopPropagation();
+        event.sourceEvent.preventDefault();
+        
+        // Reset cursor
+        d3.select(event.sourceEvent.target).style("cursor", "grab");
+        
+        // Remove drag indicator
+        if (event.sourceEvent.dragData?.dragIndicator) {
+          event.sourceEvent.dragData.dragIndicator.remove();
+        }
+        
+        // Remove all drag-over states
+        document.querySelectorAll('.MenuItemInstanceWrapper.DragTarget').forEach(item => {
+          item.classList.remove('drag-over');
+        });
+        
+        // Check if we're over a valid drop target
+        const dropTarget = document.elementFromPoint(event.sourceEvent.clientX, event.sourceEvent.clientY);
+        if (dropTarget) {
+          // Find the closest MenuItemInstanceWrapper
+          const menuItem = dropTarget.closest('.MenuItemInstanceWrapper.DragTarget');
+          if (menuItem) {
+            // Trigger custom drop event
+            const customDropEvent = new CustomEvent('trackDrop', {
+              detail: {
+                trackId: d.id,
+                trackData: d
+              }
+            });
+            menuItem.dispatchEvent(customDropEvent);
+          }
+        }
+      })
+    );
 
     // Update axis labels for XY mode with smooth transitions
     if (visualizationMode === VISUALIZATION_MODES.XY && xAxisFeature && yAxisFeature) {
@@ -1986,6 +2180,8 @@ const TrackVisualizer = () => {
     }
   }, [plotDataToUse, trackColors, visualizationMode, xAxisFeature, yAxisFeature, svgDimensions, filterLogicMode, selectedFeatures, getFeatureColors]);
 
+
+
   // Choose which plotData to use
   const plotDataToUse = visualizationMode === VISUALIZATION_MODES.XY ? xyPlotData : plotData;
 
@@ -2003,6 +2199,173 @@ const TrackVisualizer = () => {
     });
     return Array.from(options).sort();
   }, [tracks]);
+
+  const [isLassoMode, setIsLassoMode] = useState(false);
+  const [lassoPoints, setLassoPoints] = useState([]);
+  const [selectedTracks, setSelectedTracks] = useState([]);
+  const lassoPathRef = useRef(null);
+  const isDrawingRef = useRef(false);
+
+  // Add this state for tracking the Shift key
+  const [isShiftPressed, setIsShiftPressed] = useState(false);
+
+  // Add these event listeners for the Shift key
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Shift') {
+        setIsShiftPressed(true);
+      }
+    };
+
+    const handleKeyUp = (event) => {
+      if (event.key === 'Shift') {
+        setIsShiftPressed(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+
+  // Update the lasso selection useEffect
+  useEffect(() => {
+    if (!svgRef.current || !plotDataToUse.length) return;
+
+    const svg = d3.select(svgRef.current);
+    
+    // Add lasso path if it doesn't exist
+    if (!lassoPathRef.current) {
+      lassoPathRef.current = svg.append("path")
+        .attr("class", "lasso-path")
+        .style("fill", "rgba(106, 130, 251, 0.1)")
+        .style("stroke", LASSO_COLOR)
+        .style("stroke-width", "2")
+        .style("pointer-events", "none")
+        .style("display", "none");
+    }
+
+    // Handle mouse events for lasso selection
+    const handleMouseDown = (event) => {
+      // Skip if event originated from a track dot (for drag functionality)
+      if (event.target.classList.contains('track-dot')) {
+        return;
+      }
+      
+      if (!isLassoMode || !isShiftPressed) return;
+      
+      // Prevent default panning behavior
+      event.stopPropagation();
+      
+      isDrawingRef.current = true;
+      const [x, y] = d3.pointer(event);
+      setLassoPoints([[x, y]]);
+      lassoPathRef.current.style("display", "block");
+    };
+
+    const handleMouseMove = (event) => {
+      // Skip if event originated from a track dot (for drag functionality)
+      if (event.target.classList.contains('track-dot')) {
+        return;
+      }
+      
+      if (!isLassoMode || !isDrawingRef.current || !isShiftPressed) return;
+      
+      // Prevent default panning behavior
+      event.stopPropagation();
+      
+      const [x, y] = d3.pointer(event);
+      setLassoPoints(prev => [...prev, [x, y]]);
+      
+      // Update lasso path
+      const lineGenerator = d3.line()
+        .x(d => d[0])
+        .y(d => d[1])
+        .curve(d3.curveLinear);
+      
+      lassoPathRef.current
+        .attr("d", lineGenerator([...lassoPoints, [x, y]]));
+    };
+
+    const handleMouseUp = (event) => {
+      // Skip if event originated from a track dot (for drag functionality)
+      if (event.target.classList.contains('track-dot')) {
+        return;
+      }
+      
+      if (!isLassoMode || !isDrawingRef.current) return;
+      
+      // Prevent default panning behavior
+      event.stopPropagation();
+      
+      isDrawingRef.current = false;
+      
+      // Close the lasso path
+      const lineGenerator = d3.line()
+        .x(d => d[0])
+        .y(d => d[1])
+        .curve(d3.curveLinear);
+      
+      const closedPoints = [...lassoPoints, lassoPoints[0]];
+      lassoPathRef.current.attr("d", lineGenerator(closedPoints));
+      
+      // Get the current transform
+      const transform = d3.zoomTransform(svg.node());
+      
+      // Check which points are inside the lasso
+      const selectedPoints = plotDataToUse.filter(point => {
+        // Transform the point coordinates to account for zoom and pan
+        const transformedX = point.x * transform.k + transform.x;
+        const transformedY = point.y * transform.k + transform.y;
+        
+        // Check if the transformed point is inside the lasso polygon
+        return d3.polygonContains(closedPoints, [transformedX, transformedY]);
+      });
+      
+      setSelectedTracks(selectedPoints);
+      setLassoPoints([]);
+      lassoPathRef.current.style("display", "none");
+    };
+
+    // Add event listeners
+    svg.on("mousedown", handleMouseDown)
+       .on("mousemove", handleMouseMove)
+       .on("mouseup", handleMouseUp);
+
+    return () => {
+      svg.on("mousedown", null)
+         .on("mousemove", null)
+         .on("mouseup", null);
+    };
+  }, [isLassoMode, plotDataToUse, lassoPoints, isShiftPressed]);
+
+  // Add this before the return statement
+  const handleLassoModeToggle = () => {
+    setIsLassoMode(!isLassoMode);
+    if (isLassoMode) {
+      setLassoPoints([]);
+      if (lassoPathRef.current) {
+        lassoPathRef.current.style("display", "none");
+      }
+    }
+  };
+
+  // Add this after the handleLassoModeToggle function
+  const handleClearSelection = () => {
+    setSelectedTracks([]);
+    setLassoPoints([]);
+    if (lassoPathRef.current) {
+      lassoPathRef.current.style("display", "none");
+    }
+  };
+
+
+
+
 
   if (loading) return <div className="track-visualizer-loading">Loading tracks and features...</div>;
   if (loading) return <div className="track-visualizer-loading">Loading tracks and features...</div>;
@@ -2044,11 +2407,21 @@ const TrackVisualizer = () => {
           >
             X/Y
           </button>
-          {visualizationMode === VISUALIZATION_MODES.XY && (
-            <span style={{ marginLeft: 16, color: '#b0b0b0', fontWeight: 500 }}>
-              Assign axes: Click a feature below ({xyAxisAssignNext.toUpperCase()} next)
-            </span>
-          )}
+          <button
+            style={{
+              backgroundColor: isLassoMode ? LASSO_COLOR : '#232323',
+              color: isLassoMode ? '#fff' : '#b0b0b0',
+              border: `1.5px solid ${LASSO_COLOR}`,
+              borderRadius: 6,
+              padding: '4px 14px',
+              fontWeight: 500,
+              cursor: 'pointer',
+              fontSize: '1em',
+            }}
+            onClick={handleLassoModeToggle}
+          >
+            Lasso Select (Shift + Drag)
+          </button>
         </div>
         <div className="visualization-area" ref={viewModeRef}>
           <svg
@@ -2113,6 +2486,43 @@ const TrackVisualizer = () => {
           activeTab="Map"
         />
       </div>
+      {selectedTracks.length > 0 && (
+        <div className="temporary-playlist">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+            <h3>Selected Tracks ({selectedTracks.length})</h3>
+            <button
+              onClick={handleClearSelection}
+              style={{
+                backgroundColor: '#4a4a4a',
+                color: '#e0e0e0',
+                border: 'none',
+                borderRadius: '4px',
+                padding: '4px 8px',
+                cursor: 'pointer',
+                fontSize: '0.9em',
+                transition: 'background-color 0.2s ease',
+                '&:hover': {
+                  backgroundColor: '#5a5a5a',
+                }
+              }}
+            >
+              Clear Selection
+            </button>
+          </div>
+          <div className="track-list">
+            {selectedTracks.map(track => (
+              <div key={track.id} className="track-item">
+                <div style={{ fontWeight: 500 }}>{track.title || 'Unknown Title'}</div>
+                {track.artist && (
+                  <div style={{ fontSize: '0.9em', color: '#b0b0b0', marginTop: '4px' }}>
+                    {track.artist}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
