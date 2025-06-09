@@ -1738,6 +1738,16 @@ const TrackVisualizer = () => {
     return options;
   }, [tracks]);
 
+  const finalFilterOptions = useMemo(() => {
+    if (visualizationMode === VISUALIZATION_MODES.XY) {
+      const { genre, ...rest } = filterOptions;
+      return rest;
+    }
+    return filterOptions;
+  }, [visualizationMode, filterOptions]);
+
+  const [highlightedPoints, setHighlightedPoints] = useState([]);
+
   // Debounce threshold update for smooth slider
   useEffect(() => {
     if (thresholdDebounceRef.current) clearTimeout(thresholdDebounceRef.current);
@@ -2094,7 +2104,7 @@ const TrackVisualizer = () => {
           onMouseDown={handleResizeMouseDown}
         />
         <FilterPanel
-          filterOptions={filterOptions}
+          filterOptions={finalFilterOptions}
           activeFilters={selectedFeatures}
           onToggleFilter={visualizationMode === VISUALIZATION_MODES.XY ? handleAxisFeatureSelect : handleFeatureToggle}
           filterLogicMode={filterLogicMode}
