@@ -45,7 +45,8 @@ const Content = ({
   tags,
   onRemoveTrackFromCrate,
   onRemoveTrackFromTag,
-  allTracks
+  allTracks,
+  onAddTrackToTag
 }) => {
 
   if (isLoading) {
@@ -148,32 +149,35 @@ const Content = ({
             onSeek={onSeek}
             selectedFeatureCategory={selectedFeatureCategory}
             onFeatureCategoryChange={onFeatureCategoryChange}
-            // Pass sorting props to Tracklist
             sortConfig={sortConfig}
             requestSort={requestSort}
-            // Pass drag and drop props to Tracklist
             onTrackDragStart={onTrackDragStart}
+            viewMode={viewMode}
+            onRemoveTrackFromTag={viewMode === 'tag' ? onRemoveTrackFromTag : undefined}
+            selectedTagId={selectedTagId}
           />
         </div>
         {viewMode === 'tag' && selectedTagId && (
-          <RecommendationPanel
-            currentTracks={getCurrentTagTracks()}
-            allTracks={allTracks}
-            onAcceptRecommendation={(trackId) => {
-              if (selectedTagId) {
-                onRemoveTrackFromTag(selectedTagId, trackId);
-              }
-            }}
-            onRejectRecommendation={(trackId) => {
-              // For now, just remove from recommendations
-              // In the future, we could store rejected recommendations to avoid showing them again
-            }}
-            onPlayTrack={onPlayTrack}
-            currentPlayingTrack={currentPlayingTrack}
-            isPlaying={isPlaying}
-            onSeek={onSeek}
-            currentTime={currentTime}
-          />
+          <div className="RecommendationPanelContainer">
+            <RecommendationPanel
+              currentTracks={getCurrentTagTracks()}
+              allTracks={allTracks}
+              onAcceptRecommendation={(trackId) => {
+                if (selectedTagId) {
+                  onAddTrackToTag(selectedTagId, trackId);
+                }
+              }}
+              onRejectRecommendation={(trackId) => {
+                // For now, just remove from recommendations
+                // In the future, we could store rejected recommendations to avoid showing them again
+              }}
+              onPlayTrack={onPlayTrack}
+              currentPlayingTrack={currentPlayingTrack}
+              isPlaying={isPlaying}
+              onSeek={onSeek}
+              currentTime={currentTime}
+            />
+          </div>
         )}
       </div>
     </div>

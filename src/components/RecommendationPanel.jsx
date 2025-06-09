@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import WaveformPreview from './WaveformPreview';
 import './RecommendationPanel.scss';
 
@@ -16,94 +16,123 @@ const RecommendationPanel = ({
   const [recommendations, setRecommendations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Calculate similarity scores for all tracks
-  const calculateSimilarityScores = () => {
-    if (!currentTracks.length || !allTracks.length) return [];
+  const calculateSimilarityScores = useMemo(() => {
+    console.log('Calculating recommendations with:', {
+      currentTracksCount: currentTracks?.length,
+      allTracksCount: allTracks?.length
+    });
 
-    // Get all tracks that are not in the current tag
+    if (!currentTracks?.length || !allTracks?.length) {
+      console.log('No tracks available for recommendations');
+      return [];
+    }
+
+    // 1. Calculate the average profile of tracks in the current tag
+    const tagTracks = allTracks.filter(track => currentTracks.includes(track.id));
+    console.log('Tag tracks found:', tagTracks.length);
+
+    if (!tagTracks.length) {
+      console.log('No tracks found in current tag');
+      return [];
+    }
+
+    const averageProfile = {
+      style_features: {},
+    };
+
+    const styleKeys = new Set();
+    tagTracks.forEach(track => {
+      if (track.style_features) {
+        Object.keys(track.style_features).forEach(k => styleKeys.add(k));
+      }
+    });
+
+    console.log('Style keys found:', Array.from(styleKeys));
+
+    if (styleKeys.size === 0) {
+      console.log('No style features found in tag tracks');
+      return [];
+    }
+
+    styleKeys.forEach(k => averageProfile.style_features[k] = 0);
+
+    tagTracks.forEach(track => {
+      styleKeys.forEach(k => {
+        averageProfile.style_features[k] += (track.style_features?.[k] || 0);
+      });
+    });
+
+    const numTagTracks = tagTracks.length;
+    styleKeys.forEach(k => {
+      averageProfile.style_features[k] /= numTagTracks;
+    });
+
+    console.log('Average profile calculated:', averageProfile);
+
+    // 2. Score candidate tracks against the average profile
     const candidateTracks = allTracks.filter(track => !currentTracks.includes(track.id));
+    console.log('Candidate tracks found:', candidateTracks.length);
 
-    // Calculate similarity scores for each candidate track
-    const scoredTracks = candidateTracks.map(track => {
-      let totalScore = 0;
-      let featureCount = 0;
+    if (candidateTracks.length === 0) {
+      console.log('No candidate tracks available');
+      return [];
+    }
 
-      // Compare with each track in the current tag
-      currentTracks.forEach(currentTrackId => {
-        const currentTrack = allTracks.find(t => t.id === currentTrackId);
-        if (!currentTrack) return;
-
-        // Compare genre scores
-        if (track.genre_scores && currentTrack.genre_scores) {
-          Object.keys(track.genre_scores).forEach(genre => {
-            if (currentTrack.genre_scores[genre]) {
-              const score = 1 - Math.abs(track.genre_scores[genre] - currentTrack.genre_scores[genre]);
-              totalScore += score;
-              featureCount++;
-            }
-          });
-        }
-
-        // Compare style scores
-        if (track.style_scores && currentTrack.style_scores) {
-          Object.keys(track.style_scores).forEach(style => {
-            if (currentTrack.style_scores[style]) {
-              const score = 1 - Math.abs(track.style_scores[style] - currentTrack.style_scores[style]);
-              totalScore += score;
-              featureCount++;
-            }
-          });
-        }
-
-        // Compare mood scores
-        if (track.mood_scores && currentTrack.mood_scores) {
-          Object.keys(track.mood_scores).forEach(mood => {
-            if (currentTrack.mood_scores[mood]) {
-              const score = 1 - Math.abs(track.mood_scores[mood] - currentTrack.mood_scores[mood]);
-              totalScore += score;
-              featureCount++;
-            }
-          });
-        }
-
-        // Compare spectral features
-        const spectralFeatures = ['atonal', 'tonal', 'dark', 'bright', 'percussive', 'smooth'];
-        spectralFeatures.forEach(feature => {
-          if (track[feature] !== undefined && currentTrack[feature] !== undefined) {
-            const score = 1 - Math.abs(track[feature] - currentTrack[feature]);
-            totalScore += score;
-            featureCount++;
-          }
-        });
+    let scoredTracks = candidateTracks.map(track => {
+      let totalStyleDifference = 0;
+      
+      styleKeys.forEach(k => {
+        const candidateScore = track.style_features?.[k] || 0;
+        const averageScore = averageProfile.style_features[k];
+        totalStyleDifference += Math.abs(candidateScore - averageScore);
       });
 
-      // Calculate average score
-      const averageScore = featureCount > 0 ? totalScore / featureCount : 0;
-
+      const avgStyleDifference = totalStyleDifference / styleKeys.size;
+      
       return {
-        ...track,
-        similarityScore: averageScore
+        track,
+        styleDifference: avgStyleDifference,
       };
     });
 
-    // Sort by similarity score and return top 10
-    return scoredTracks
+    // 3. Normalize scores
+    const maxStyleDiff = Math.max(...scoredTracks.map(item => item.styleDifference));
+    console.log('Max style difference:', maxStyleDiff);
+
+    if (maxStyleDiff > 0) {
+      scoredTracks = scoredTracks.map(item => {
+        const styleScore = 1 - (item.styleDifference / maxStyleDiff);
+        return {
+          ...item.track,
+          similarityScore: styleScore
+        };
+      });
+    } else {
+      scoredTracks = scoredTracks.map(item => ({...item.track, similarityScore: 1}));
+    }
+
+    // 4. Sort by similarity score and return top 10
+    const finalRecommendations = scoredTracks
       .sort((a, b) => b.similarityScore - a.similarityScore)
       .slice(0, 10);
-  };
+
+    console.log('Final recommendations count:', finalRecommendations.length);
+    return finalRecommendations;
+  }, [currentTracks, allTracks]);
 
   useEffect(() => {
     setIsLoading(true);
-    const newRecommendations = calculateSimilarityScores();
+    const newRecommendations = calculateSimilarityScores;
+    console.log('Setting new recommendations:', newRecommendations.length);
     setRecommendations(newRecommendations);
     setIsLoading(false);
-  }, [currentTracks, allTracks]);
+  }, [calculateSimilarityScores]);
 
   if (isLoading) {
     return <div className="RecommendationPanelLoading">Calculating recommendations...</div>;
   }
 
-  if (!currentTracks.length) {
+  if (!currentTracks?.length) {
     return <div className="RecommendationPanelEmpty">Add some tracks to get recommendations</div>;
   }
 
@@ -111,51 +140,55 @@ const RecommendationPanel = ({
     <div className="RecommendationPanel">
       <h3>Recommended Tracks</h3>
       <div className="RecommendationsList">
-        {recommendations.map(track => (
-          <div key={track.id} className="RecommendationItem">
-            <div className="TrackDetails">
-              <div className="TrackInfo">
-                <div className="TrackTitle">{track.title}</div>
-                <div className="TrackArtist">{track.artist}</div>
-                <div className="SimilarityScore">
-                  Similarity: {Math.round(track.similarityScore * 100)}%
+        {recommendations.length > 0 ? (
+          recommendations.map(track => (
+            <div key={track.id} className="RecommendationItem">
+              <div className="TrackDetails">
+                <div className="TrackInfo">
+                  <div className="TrackTitle">{track.title}</div>
+                  <div className="TrackArtist">{track.artist}</div>
+                  <div className="SimilarityScore">
+                    Similarity: {Math.round(track.similarityScore * 100)}%
+                  </div>
+                </div>
+                <div className="WaveformContainer">
+                  <WaveformPreview
+                    trackId={track.id}
+                    isPlaying={currentPlayingTrack?.id === track.id && isPlaying}
+                    currentTime={currentPlayingTrack?.id === track.id ? currentTime : 0}
+                    onSeek={onSeek}
+                    onPlayClick={() => onPlayTrack(track)}
+                  />
                 </div>
               </div>
-              <div className="WaveformContainer">
-                <WaveformPreview
-                  trackId={track.id}
-                  isPlaying={currentPlayingTrack?.id === track.id && isPlaying}
-                  currentTime={currentPlayingTrack?.id === track.id ? currentTime : 0}
-                  onSeek={onSeek}
-                  onPlayClick={() => onPlayTrack(track)}
-                />
+              <div className="TrackActions">
+                <button
+                  className="PreviewButton"
+                  onClick={() => onPlayTrack(track)}
+                  title="Preview track"
+                >
+                  {currentPlayingTrack?.id === track.id && isPlaying ? '⏸' : '▶'}
+                </button>
+                <button
+                  className="AcceptButton"
+                  onClick={() => onAcceptRecommendation(track.id)}
+                  title="Add to tag"
+                >
+                  ✓
+                </button>
+                <button
+                  className="RejectButton"
+                  onClick={() => onRejectRecommendation(track.id)}
+                  title="Dismiss recommendation"
+                >
+                  ✕
+                </button>
               </div>
             </div>
-            <div className="TrackActions">
-              <button
-                className="PreviewButton"
-                onClick={() => onPlayTrack(track)}
-                title="Preview track"
-              >
-                {currentPlayingTrack?.id === track.id && isPlaying ? '⏸' : '▶'}
-              </button>
-              <button
-                className="AcceptButton"
-                onClick={() => onAcceptRecommendation(track.id)}
-                title="Add to tag"
-              >
-                ✓
-              </button>
-              <button
-                className="RejectButton"
-                onClick={() => onRejectRecommendation(track.id)}
-                title="Dismiss recommendation"
-              >
-                ✕
-              </button>
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <div className="RecommendationPanelEmpty">No suitable recommendations found.</div>
+        )}
       </div>
     </div>
   );

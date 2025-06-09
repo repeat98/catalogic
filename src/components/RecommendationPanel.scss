@@ -1,14 +1,11 @@
 .RecommendationPanel {
   background: #1a1a1a;
-  border-radius: 8px;
   padding: 16px;
-  margin: 16px;
   color: #fff;
   display: flex;
   flex-direction: column;
-  min-width: 350px;
-  max-width: 450px;
-  overflow-y: auto;
+  width: 100%;
+  box-sizing: border-box;
 
   h3 {
     margin: 0 0 16px 0;
@@ -30,6 +27,8 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  max-height: calc(40vh - 100px); // Account for header and padding
+  overflow-y: auto;
 }
 
 .RecommendationItem {

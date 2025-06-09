@@ -2,15 +2,35 @@
 .Content {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  background: #121212;
+  flex: 1;
+  background: #1a1a1a;
   color: #fff;
   overflow: hidden;
 }
 
+.ContentMain {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.TracklistContainer {
+  flex: 1;
+  overflow: auto;
+  min-height: 0; // Important for flex child scrolling
+}
+
+.RecommendationPanelContainer {
+  border-top: 1px solid #333;
+  background: #1a1a1a;
+  overflow: auto;
+  max-height: 40vh; // Limit height to 40% of viewport height
+}
+
 .ViewHeader {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 16px;
   background: #1a1a1a;
@@ -18,50 +38,37 @@
 }
 
 .ViewInfo {
-  .ViewTitle {
-    margin: 0;
-    font-size: 24px;
-    font-weight: 500;
-  }
+  flex: 1;
+  min-width: 0;
+}
 
-  .ViewSubtitle {
-    color: #888;
-    font-size: 14px;
-  }
+.ViewTitle {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ViewSubtitle {
+  font-size: 14px;
+  color: #888;
+  margin: 4px 0 0 0;
 }
 
 .CrateActions {
-  .CrateActionButton {
-    background: #333;
-    color: #fff;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.2s;
-
-    &:hover {
-      background: #444;
-    }
-  }
-}
-
-.SearchAndFilterControls {
   display: flex;
-  align-items: center;
-  padding: 16px;
-  gap: 16px;
-  background: #1a1a1a;
-  border-bottom: 1px solid #333;
+  gap: 8px;
+  margin-left: 16px;
 }
 
-.FilterToggleButton {
+.ActionButton {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
   background: #333;
   color: #fff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.2s;
@@ -69,18 +76,6 @@
   &:hover {
     background: #444;
   }
-}
-
-.ContentMain {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-}
-
-.TracklistContainer {
-  flex: 1;
-  overflow: auto;
-  min-width: 0; // Prevent flex item from overflowing
 }
 
 .ContentLoading,

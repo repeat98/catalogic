@@ -14,7 +14,20 @@ const formatTime = (time) => {
   return time || '-';
 };
 
-const Track = ({ track, columns, isSelected, onTrackClick, onPlayClick, isPlaying, isCurrentTrack, renderCell, onDragStart }) => {
+const Track = ({ 
+  track, 
+  columns, 
+  isSelected, 
+  onTrackClick, 
+  onPlayClick, 
+  isPlaying, 
+  isCurrentTrack, 
+  renderCell, 
+  onDragStart,
+  viewMode,
+  onRemoveTrackFromTag,
+  selectedTagId
+}) => {
   const handleMainClick = () => {
     if (onTrackClick) {
       onTrackClick();
@@ -31,6 +44,13 @@ const Track = ({ track, columns, isSelected, onTrackClick, onPlayClick, isPlayin
   const handleDragStart = (e) => {
     if (onDragStart) {
       onDragStart(e, track);
+    }
+  };
+
+  const handleRemoveClick = (e) => {
+    e.stopPropagation();
+    if (onRemoveTrackFromTag && selectedTagId) {
+      onRemoveTrackFromTag(selectedTagId, track.id);
     }
   };
 
@@ -72,6 +92,17 @@ const Track = ({ track, columns, isSelected, onTrackClick, onPlayClick, isPlayin
           </td>
         );
       })}
+      {viewMode === 'tag' && onRemoveTrackFromTag && (
+        <td className="TrackCell TrackActions">
+          <button 
+            className="RemoveButton"
+            onClick={handleRemoveClick}
+            title="Remove from tag"
+          >
+            ✕
+          </button>
+        </td>
+      )}
     </tr>
   );
 };

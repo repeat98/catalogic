@@ -67,7 +67,11 @@ const Tracklist = ({
   sortConfig,
   requestSort,
   // Drag and drop props
-  onTrackDragStart
+  onTrackDragStart,
+  // View mode props
+  viewMode,
+  onRemoveTrackFromTag,
+  selectedTagId
 }) => {
   const [columnConfig, setColumnConfig] = useState(
     initialColumnsConfig.map(col => ({ ...col, currentWidth: col.width }))
@@ -282,6 +286,9 @@ const Tracklist = ({
                 </div>
               </th>
             ))}
+            {viewMode === 'tag' && onRemoveTrackFromTag && (
+              <th className="TrackHeader" style={{ width: '50px' }}></th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -298,11 +305,14 @@ const Tracklist = ({
                 isPlaying={isAudioPlaying && currentPlayingTrackId === track.id}
                 renderCell={renderCell}
                 onDragStart={onTrackDragStart}
+                viewMode={viewMode}
+                onRemoveTrackFromTag={onRemoveTrackFromTag}
+                selectedTagId={selectedTagId}
               />
             ))
           ) : (
             <tr>
-              <td colSpan={columnConfig.length} className="NoTracksMessage">
+              <td colSpan={columnConfig.length + (viewMode === 'tag' && onRemoveTrackFromTag ? 1 : 0)} className="NoTracksMessage">
                 No tracks found. Add music to your library.
               </td>
             </tr>

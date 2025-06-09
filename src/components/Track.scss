@@ -72,3 +72,25 @@
       color: #e0e0e0;
     }
   }
+
+  .TrackActions {
+    width: 50px;
+    text-align: center;
+    padding-right: 16px;
+  }
+
+  .RemoveButton {
+    background: none;
+    border: none;
+    color: #b0b0b0;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: #ff4444;
+      background-color: rgba(255, 68, 68, 0.1);
+    }
+  }

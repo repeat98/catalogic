@@ -908,22 +908,32 @@ function Main({
       <div className="MainContent">
         <div style={{ display: activeTab === 'Collection' ? 'block' : 'none' }}>
           <Content
+            viewMode={viewMode}
+            selectedCrateId={selectedCrateId}
+            selectedTagId={selectedTagId}
+            crates={crates}
+            tags={tags}
+            selectedLibraryItem={selectedLibraryItem}
             filteredTracks={filteredTracks}
             selectedTrackId={selectedTrackId}
+            onTrackSelect={handleTrackSelect}
+            onPlayTrack={handlePlayTrack}
             currentPlayingTrack={currentPlayingTrack}
             isPlaying={isPlaying}
             currentTime={currentTime}
-            onTrackSelect={handleTrackSelect}
-            onPlayTrack={handlePlayTrack}
             onSeek={handleSeek}
             searchTerm={searchTerm}
             onSearchTermChange={handleSearchTermChange}
-            selectedFeatureCategory={selectedFeatureCategory}
-            onFeatureCategoryChange={handleFeatureCategoryChange}
             sortConfig={sortConfig}
             requestSort={requestSort}
-            isLoading={isLoading}
-            error={error}
+            selectedFeatureCategory={selectedFeatureCategory}
+            onFeatureCategoryChange={handleFeatureCategoryChange}
+            onTrackDragStart={handleTrackDragStart}
+            onAddTrackToCrate={addTrackToCrate}
+            onRemoveTrackFromCrate={removeTrackFromCrate}
+            onAddTrackToTag={addTrackToTag}
+            onRemoveTrackFromTag={removeTrackFromTag}
+            allTracks={allTracks}
             showFilterPanel={showFilterPanel}
             toggleFilterPanel={toggleFilterPanel}
             filterOptions={filterOptions}
@@ -931,16 +941,6 @@ function Main({
             onToggleFilter={handleToggleFilter}
             filterLogicMode={filterLogicMode}
             onToggleFilterLogicMode={toggleFilterLogicMode}
-            onTrackDragStart={handleTrackDragStart}
-            viewMode={viewMode}
-            selectedCrateId={selectedCrateId}
-            selectedTagId={selectedTagId}
-            selectedLibraryItem={selectedLibraryItem}
-            crates={crates}
-            tags={tags}
-            onRemoveTrackFromCrate={removeTrackFromCrate}
-            onRemoveTrackFromTag={removeTrackFromTag}
-            allTracks={allTracks}
           />
         </div>
         <div style={{ display: activeTab === 'Map' ? 'block' : 'none' }}>
