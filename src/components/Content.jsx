@@ -90,6 +90,45 @@ const Content = ({
     return [];
   };
 
+  const handleExport = () => {
+    const trackIdsToExport = new Set(filteredTracks.map(t => t.id));
+    const tracksToExport = allTracks.filter(t => trackIdsToExport.has(t.id));
+    const playlistName = viewInfo.title;
+
+    if (!tracksToExport || tracksToExport.length === 0) {
+      alert('No tracks to export.');
+      return;
+    }
+
+    let m3uContent = '#EXTM3U\n';
+    tracksToExport.forEach(track => {
+      const duration = Math.round(track.duration || -1);
+      const artist = track.artist || 'Unknown Artist';
+      const title = track.title || 'Unknown Title';
+      const filePath = track.path || '';
+
+      if (filePath.trim() === '') {
+        console.warn(`Track ${artist} - ${title} (ID: ${track.id}) is missing a file path and will be skipped.`);
+        return;
+      }
+
+      // #EXTINF:duration,track-title
+      m3uContent += `#EXTINF:${duration},${artist} - ${title}\n`;
+      // file path
+      m3uContent += `${filePath}\n`;
+    });
+
+    const blob = new Blob([m3uContent], { type: 'audio/x-mpegurl' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${playlistName}.m3u`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div data-layer="content" className="Content">
       <div className="ViewHeader">
@@ -99,7 +138,14 @@ const Content = ({
         </div>
         {(viewMode === 'crate' || viewMode === 'tag') && (
           <div className="CrateActions">
-            <button 
+            <button
+              className="ActionButton"
+              onClick={handleExport}
+              title="Export as M3U playlist"
+            >
+              Export M3U
+            </button>
+            <button
               className="CrateActionButton"
               title={`Clear ${viewMode} filters to see all tracks in this ${viewMode}`}
               onClick={() => {
@@ -158,7 +204,7 @@ const Content = ({
           />
         </div>
         {viewMode === 'tag' && selectedTagId && (
-          <div className="RecommendationPanelContainer">
+          <div className={`RecommendationPanelContainer ${selectedTagId ? 'visible' : ''}`}>
             <RecommendationPanel
               currentTracks={getCurrentTagTracks()}
               allTracks={allTracks}

@@ -28,7 +28,7 @@ const RecommendationPanel = ({
       return [];
     }
 
-    // 1. Calculate the average profile of tracks in the current tag
+    // 1. Calculate the average feature vector of tracks in the current tag
     const tagTracks = allTracks.filter(track => currentTracks.includes(track.id));
     console.log('Tag tracks found:', tagTracks.length);
 
@@ -37,40 +37,44 @@ const RecommendationPanel = ({
       return [];
     }
 
-    const averageProfile = {
-      style_features: {},
-    };
-
-    const styleKeys = new Set();
-    tagTracks.forEach(track => {
+    // Get all unique feature keys from all tracks to create a consistent vector space
+    const allFeatureKeys = new Set();
+    allTracks.forEach(track => {
       if (track.style_features) {
-        Object.keys(track.style_features).forEach(k => styleKeys.add(k));
+        Object.keys(track.style_features).forEach(key => allFeatureKeys.add(key));
       }
     });
 
-    console.log('Style keys found:', Array.from(styleKeys));
-
-    if (styleKeys.size === 0) {
-      console.log('No style features found in tag tracks');
+    if (allFeatureKeys.size === 0) {
+      console.log('No style features found in any tracks');
       return [];
     }
 
-    styleKeys.forEach(k => averageProfile.style_features[k] = 0);
+    const averageVector = {};
+    allFeatureKeys.forEach(key => averageVector[key] = 0);
 
+    let tracksWithFeatures = 0;
     tagTracks.forEach(track => {
-      styleKeys.forEach(k => {
-        averageProfile.style_features[k] += (track.style_features?.[k] || 0);
-      });
+      if (track.style_features && Object.keys(track.style_features).length > 0) {
+        tracksWithFeatures++;
+        allFeatureKeys.forEach(key => {
+          averageVector[key] += track.style_features[key] || 0;
+        });
+      }
     });
 
-    const numTagTracks = tagTracks.length;
-    styleKeys.forEach(k => {
-      averageProfile.style_features[k] /= numTagTracks;
+    if (tracksWithFeatures === 0) {
+        console.log('No tracks in tag have style features');
+        return [];
+    }
+
+    allFeatureKeys.forEach(key => {
+      averageVector[key] /= tracksWithFeatures;
     });
 
-    console.log('Average profile calculated:', averageProfile);
+    console.log('Average vector calculated');
 
-    // 2. Score candidate tracks against the average profile
+    // 2. Score candidate tracks against the average vector using cosine similarity
     const candidateTracks = allTracks.filter(track => !currentTracks.includes(track.id));
     console.log('Candidate tracks found:', candidateTracks.length);
 
@@ -78,44 +82,44 @@ const RecommendationPanel = ({
       console.log('No candidate tracks available');
       return [];
     }
+    
+    const cosineSimilarity = (vecA, vecB, keys) => {
+      let dotProduct = 0;
+      let magnitudeA = 0;
+      let magnitudeB = 0;
+
+      for (const key of keys) {
+        const valA = vecA[key] || 0;
+        const valB = vecB[key] || 0;
+        dotProduct += valA * valB;
+        magnitudeA += valA * valA;
+        magnitudeB += valB * valB;
+      }
+      
+      magnitudeA = Math.sqrt(magnitudeA);
+      magnitudeB = Math.sqrt(magnitudeB);
+  
+      if (magnitudeA === 0 || magnitudeB === 0) {
+        return 0;
+      }
+  
+      return dotProduct / (magnitudeA * magnitudeB);
+    };
 
     let scoredTracks = candidateTracks.map(track => {
-      let totalStyleDifference = 0;
-      
-      styleKeys.forEach(k => {
-        const candidateScore = track.style_features?.[k] || 0;
-        const averageScore = averageProfile.style_features[k];
-        totalStyleDifference += Math.abs(candidateScore - averageScore);
-      });
-
-      const avgStyleDifference = totalStyleDifference / styleKeys.size;
+      const trackVector = track.style_features || {};
+      const similarity = cosineSimilarity(averageVector, trackVector, allFeatureKeys);
       
       return {
-        track,
-        styleDifference: avgStyleDifference,
+        ...track,
+        similarityScore: similarity,
       };
-    });
+    }).filter(t => t.similarityScore > 0.1); // Filter out very dissimilar tracks
 
-    // 3. Normalize scores
-    const maxStyleDiff = Math.max(...scoredTracks.map(item => item.styleDifference));
-    console.log('Max style difference:', maxStyleDiff);
-
-    if (maxStyleDiff > 0) {
-      scoredTracks = scoredTracks.map(item => {
-        const styleScore = 1 - (item.styleDifference / maxStyleDiff);
-        return {
-          ...item.track,
-          similarityScore: styleScore
-        };
-      });
-    } else {
-      scoredTracks = scoredTracks.map(item => ({...item.track, similarityScore: 1}));
-    }
-
-    // 4. Sort by similarity score and return top 10
+    // 3. Sort by similarity score and return top 20
     const finalRecommendations = scoredTracks
       .sort((a, b) => b.similarityScore - a.similarityScore)
-      .slice(0, 10);
+      .slice(0, 20);
 
     console.log('Final recommendations count:', finalRecommendations.length);
     return finalRecommendations;
