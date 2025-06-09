@@ -15,6 +15,7 @@ const RecommendationPanel = ({
 }) => {
   const [recommendations, setRecommendations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [rejectedTrackIds, setRejectedTrackIds] = useState([]);
 
   const calculateSimilarityScores = useMemo(() => {
     console.log('Calculating recommendations with:', {
@@ -128,6 +129,12 @@ const RecommendationPanel = ({
     setIsLoading(false);
   }, [calculateSimilarityScores]);
 
+  // Handler for rejecting a recommendation
+  const handleRejectRecommendation = (trackId) => {
+    setRejectedTrackIds(prev => [...prev, trackId]);
+    if (onRejectRecommendation) onRejectRecommendation(trackId);
+  };
+
   if (isLoading) {
     return <div className="RecommendationPanelLoading">Calculating recommendations...</div>;
   }
@@ -140,16 +147,16 @@ const RecommendationPanel = ({
     <div className="RecommendationPanel">
       <h3>Recommended Tracks</h3>
       <div className="RecommendationsList">
-        {recommendations.length > 0 ? (
-          recommendations.map(track => (
+        {recommendations.filter(track => !rejectedTrackIds.includes(track.id)).length > 0 ? (
+          recommendations.filter(track => !rejectedTrackIds.includes(track.id)).map(track => (
             <div key={track.id} className="RecommendationItem">
               <div className="TrackDetails">
                 <div className="TrackInfo">
                   <div className="TrackTitle">{track.title}</div>
                   <div className="TrackArtist">{track.artist}</div>
-                  <div className="SimilarityScore">
-                    Similarity: {Math.round(track.similarityScore * 100)}%
-                  </div>
+                </div>
+                <div className="SimilarityScore">
+                  {Math.round(track.similarityScore * 100)}%
                 </div>
                 <div className="WaveformContainer">
                   <WaveformPreview
@@ -178,7 +185,7 @@ const RecommendationPanel = ({
                 </button>
                 <button
                   className="RejectButton"
-                  onClick={() => onRejectRecommendation(track.id)}
+                  onClick={() => handleRejectRecommendation(track.id)}
                   title="Dismiss recommendation"
                 >
                   ✕
