@@ -450,22 +450,42 @@ function Main({
         processedTracks.forEach(track => {
           // Process style_features for Genre and Style
           if (track.style_features && typeof track.style_features === 'object') {
-            Object.keys(track.style_features).forEach(fullTag => {
-              const parts = fullTag.split('---');
-              const genreName = parts.length > 1 ? parts[0] : 'Unknown Genre'; // Genre is before ---
-              const styleName = parts.length > 1 ? parts[1] : fullTag;     // Style is after ---
+            // Find the most probable genre for this track
+            let maxGenreProb = 0;
+            let mostProbableGenre = null;
+            
+            Object.entries(track.style_features).forEach(([name, value]) => {
+              const [genrePart, stylePart] = name.split('---');
+              const prob = parseFloat(value);
               
-              genres[genreName] = (genres[genreName] || 0) + 1;
-              styles[styleName] = (styles[styleName] || 0) + 1;
+              // Update most probable genre if this one has higher probability
+              if (genrePart && !isNaN(prob) && prob > maxGenreProb) {
+                maxGenreProb = prob;
+                mostProbableGenre = genrePart;
+              }
+              
+              // Add style if it exists
+              if (stylePart) {
+                styles[stylePart] = (styles[stylePart] || 0) + 1;
+              }
             });
+            
+            // Add the most probable genre
+            if (mostProbableGenre) {
+              genres[mostProbableGenre] = (genres[mostProbableGenre] || 0) + 1;
+            }
           }
           // Process mood_features
           if (track.mood_features && typeof track.mood_features === 'object') {
-            Object.keys(track.mood_features).forEach(tag => moods[stripFeaturePrefix(tag)] = (moods[stripFeaturePrefix(tag)] || 0) + 1);
+            Object.entries(track.mood_features).forEach(([name, value]) => {
+              moods[name] = (moods[name] || 0) + 1;
+            });
           }
           // Process instrument_features
           if (track.instrument_features && typeof track.instrument_features === 'object') {
-            Object.keys(track.instrument_features).forEach(tag => instruments[stripFeaturePrefix(tag)] = (instruments[stripFeaturePrefix(tag)] || 0) + 1);
+            Object.entries(track.instrument_features).forEach(([name, value]) => {
+              instruments[name] = (instruments[name] || 0) + 1;
+            });
           }
         });
         
@@ -794,6 +814,7 @@ function Main({
             selectedLibraryItem={selectedLibraryItem}
             crates={crates}
             onRemoveTrackFromCrate={removeTrackFromCrate}
+            activeTab={activeTab}
           />
         </div>
         <div style={{ display: activeTab === 'Map' ? 'block' : 'none' }}>

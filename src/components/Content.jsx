@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Tracklist from './Tracklist';
 import SearchComponent from './SearchComponent';
 import FilterPanel from './FilterPanel';
@@ -40,8 +40,10 @@ const Content = ({
   selectedCrateId,
   selectedLibraryItem,
   crates,
-  onRemoveTrackFromCrate
+  onRemoveTrackFromCrate,
+  activeTab
 }) => {
+  const [highlightThreshold, setHighlightThreshold] = useState(0.5);
 
   if (isLoading) {
     return <div className="ContentLoading">Loading tracks...</div>;
@@ -113,6 +115,9 @@ const Content = ({
             onToggleFilter={onToggleFilter} 
             filterLogicMode={filterLogicMode}
             onToggleFilterLogicMode={onToggleFilterLogicMode}
+            highlightThreshold={highlightThreshold}
+            onHighlightThresholdChange={setHighlightThreshold}
+            activeTab={activeTab}
           />
         </div>
       )}
