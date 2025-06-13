@@ -391,6 +391,45 @@ function Main({
     }
   }, [crates, setCrates]);
 
+  const addTracksToCrate = useCallback(async (crateId, trackIds) => {
+    console.log('addTracksToCrate called with:', { crateId, trackIds });
+    try {
+      const currentCrate = crates[crateId];
+      if (!currentCrate) {
+        console.log('Crate not found:', crateId);
+        return;
+      }
+
+      const existingTracks = currentCrate.tracks || [];
+      const newTracks = trackIds.filter(trackId => !existingTracks.includes(trackId));
+      
+      if (newTracks.length === 0) {
+        console.log('All tracks already in crate');
+        return;
+      }
+
+      const updatedTracks = [...existingTracks, ...newTracks];
+      
+      const response = await fetch(`http://localhost:3000/crates/${crateId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tracks: updatedTracks })
+      });
+      
+      if (response.ok) {
+        console.log(`Successfully added ${newTracks.length} tracks to crate`);
+        setCrates(prev => ({
+          ...prev,
+          [crateId]: { ...prev[crateId], tracks: updatedTracks }
+        }));
+      } else {
+        console.error('Failed to update crate on server');
+      }
+    } catch (error) {
+      console.error('Failed to add tracks to crate:', error);
+    }
+  }, [crates, setCrates]);
+
   const removeTrackFromCrate = useCallback(async (crateId, trackId) => {
     try {
       const currentCrate = crates[crateId];
@@ -549,10 +588,11 @@ function Main({
         renameCrate,
         deleteCrate,
         addTrackToCrate,
+        addTracksToCrate,
         removeTrackFromCrate
       };
     }
-  }, [createCrate, renameCrate, deleteCrate, addTrackToCrate, removeTrackFromCrate]);
+  }, [createCrate, renameCrate, deleteCrate, addTrackToCrate, addTracksToCrate, removeTrackFromCrate]);
 
   useEffect(() => {
     if (tagManagementRef.current !== null) {
@@ -944,7 +984,13 @@ function Main({
           />
         </div>
         <div style={{ display: activeTab === 'Map' ? 'block' : 'none' }}>
-          <Map />
+          <Map
+            onPlayTrack={handlePlayTrack}
+            currentPlayingTrackId={currentPlayingTrack?.id}
+            isAudioPlaying={isPlaying}
+            currentTime={currentTime}
+            onSeek={handleSeek}
+          />
         </div>
       </div>
       <Player

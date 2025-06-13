@@ -11,19 +11,31 @@ export const PlaybackProvider = ({ children }) => {
 
   /**
    * Sets the currently playing WaveSurfer instance.
-   * Pauses any previously playing instance to ensure only one plays at a time.
+   * Stops any previously playing instance and resets its progress.
    * @param {WaveSurfer} wavesurfer - The WaveSurfer instance to set as currently playing.
    */
   const setPlayingWaveSurfer = (newWaveSurferInstance) => {
+    // Stop and reset the previous instance if it's different from the new one
     if (currentWaveSurfer.current && currentWaveSurfer.current !== newWaveSurferInstance) {
       try {
-        currentWaveSurfer.current.pause();
+        currentWaveSurfer.current.stop(); // This stops playback and resets progress
         currentWaveSurfer.current.setVolume(0);
       } catch (error) {
-        console.warn('[Context] Error pausing or muting previous WaveSurfer:', error);
+        console.warn('[Context] Error stopping previous WaveSurfer:', error);
       }
     }
+    
+    // Set the new instance as current
     currentWaveSurfer.current = newWaveSurferInstance;
+    
+    // Ensure the new instance has full volume (only for new instances)
+    if (newWaveSurferInstance && currentWaveSurfer.current !== newWaveSurferInstance) {
+      try {
+        newWaveSurferInstance.setVolume(1);
+      } catch (error) {
+        console.warn('[Context] Error setting volume on new WaveSurfer:', error);
+      }
+    }
   };
 
   /**

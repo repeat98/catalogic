@@ -1,0 +1,9 @@
+numpy==1.26.4
+matplotlib
+essentia-tensorflow
+tqdm
+scikit-learn
+tinytag
+mutagen
+librosa
+plotly

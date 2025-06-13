@@ -11,6 +11,7 @@ const WaveformPreview = ({
   currentTime,
   onSeek,
   onPlayClick,
+  onPendingSeek,
   height = 30,
   waveColor = '#4a4a4a',
   progressColor = '#666666'
@@ -30,6 +31,8 @@ const WaveformPreview = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isReady, setIsReady] = useState(false);
+  const [pendingSeekTime, setPendingSeekTime] = useState(null);
+  const [justAppliedSeek, setJustAppliedSeek] = useState(false);
 
   const isThisPreviewTheCurrentTrack = currentTrack && currentTrack.id === trackId;
 
@@ -96,6 +99,17 @@ const WaveformPreview = ({
           }
         } else {
           if (onPlayClick) {
+            // Store the intended seek position for when this track becomes current
+            const duration = wavesurfer.getDuration();
+            if (duration > 0) {
+              const seekTime = relativePos * duration;
+              setPendingSeekTime(seekTime);
+              
+              // Notify parent about the pending seek BEFORE calling onPlayClick
+              if (onPendingSeek) {
+                onPendingSeek(seekTime);
+              }
+            }
             onPlayClick();
           }
         }
@@ -194,7 +208,7 @@ const WaveformPreview = ({
   }, [isThisPreviewTheCurrentTrack, isReady, setPlayingWaveSurfer, trackId]);
 
   useEffect(() => {
-    if (wavesurferRef.current && isReady && currentTime !== undefined) {
+    if (wavesurferRef.current && isReady && currentTime !== undefined && !justAppliedSeek && pendingSeekTime === null) {
       const duration = wavesurferRef.current.getDuration();
       if (duration > 0) {
         const currentWaveTime = wavesurferRef.current.getCurrentTime();
@@ -202,6 +216,7 @@ const WaveformPreview = ({
 
         if (timeDifference > 0.2) {
           if (isThisPreviewTheCurrentTrack && isPlaying) {
+            // Don't sync during active playback to avoid interrupting user seeks
           } else {
             const seekPosition = Math.min(1, Math.max(0, currentTime / duration));
             wavesurferRef.current.seekTo(seekPosition);
@@ -209,7 +224,52 @@ const WaveformPreview = ({
         }
       }
     }
-  }, [currentTime, isReady, trackId, isThisPreviewTheCurrentTrack, isPlaying]);
+  }, [currentTime, isReady, trackId, isThisPreviewTheCurrentTrack, isPlaying, justAppliedSeek, pendingSeekTime]);
+
+  // Effect to apply pending seek when track becomes current
+  useEffect(() => {
+    if (isThisPreviewTheCurrentTrack && isReady && wavesurferRef.current && pendingSeekTime !== null) {
+      // Apply the pending seek immediately and synchronously
+      try {
+        const duration = wavesurferRef.current.getDuration();
+        if (duration > 0) {
+          const seekPosition = Math.min(1, Math.max(0, pendingSeekTime / duration));
+          
+          // Set flag to prevent currentTime sync from interfering
+          setJustAppliedSeek(true);
+          
+          // Apply seek immediately
+          wavesurferRef.current.seekTo(seekPosition);
+          
+          // Start playback if needed - but wait a tick to ensure seek is applied
+          setTimeout(() => {
+            if (wavesurferRef.current && !wavesurferRef.current.isPlaying()) {
+              wavesurferRef.current.setVolume(1);
+              wavesurferRef.current.play().catch(e => {
+                console.warn('Error playing after pending seek:', e);
+              });
+            }
+          }, 50); // Very short delay just to ensure seek is applied
+          
+          setPendingSeekTime(null); // Clear the pending seek immediately
+          
+          // Clear the flag after a short delay to allow normal sync to resume
+          setTimeout(() => setJustAppliedSeek(false), 300);
+        }
+      } catch (e) {
+        console.warn('Error applying pending seek:', e);
+        setPendingSeekTime(null); // Clear on error
+        setJustAppliedSeek(false);
+      }
+    }
+  }, [isThisPreviewTheCurrentTrack, isReady, pendingSeekTime]);
+
+  // Clear pending seek if track changes to a different one
+  useEffect(() => {
+    if (!isThisPreviewTheCurrentTrack && pendingSeekTime !== null) {
+      setPendingSeekTime(null);
+    }
+  }, [isThisPreviewTheCurrentTrack, pendingSeekTime]);
 
   return (
     <div ref={containerRef} className="WaveformPreview">

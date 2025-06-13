@@ -257,18 +257,25 @@ const Sidebar = ({
         handleOpenContextMenu={handleOpenContextMenu}
         onCrateDrop={(event, crateId) => {
           event.preventDefault();
-          console.log('Crate drop event:', { crateId, dataTransfer: event.dataTransfer });
           try {
             const data = JSON.parse(event.dataTransfer.getData('text/plain'));
-            console.log('Parsed drop data:', data);
-            if (data.trackId && crateManagementRef.current?.addTrackToCrate) {
-              console.log('Calling addTrackToCrate via ref');
-              crateManagementRef.current.addTrackToCrate(crateId, data.trackId);
-            } else {
-              console.log('Missing trackId or addTrackToCrate function:', {
-                trackId: data.trackId,
-                hasFunction: !!crateManagementRef.current?.addTrackToCrate
-              });
+            
+            if (crateManagementRef.current?.addTrackToCrate) {
+              // Handle multi-track drop
+              if (data.allTracks && data.isMultiTrackDrop) {
+                const trackIds = data.allTracks.map(track => track.id);
+                if (crateManagementRef.current.addTracksToCrate) {
+                  crateManagementRef.current.addTracksToCrate(crateId, trackIds);
+                } else {
+                  // Fallback to individual calls
+                  data.allTracks.forEach(track => {
+                    crateManagementRef.current.addTrackToCrate(crateId, track.id);
+                  });
+                }
+              } else if (data.trackId) {
+                // Handle single track drop (backward compatibility)
+                crateManagementRef.current.addTrackToCrate(crateId, data.trackId);
+              }
             }
           } catch (error) {
             console.error('Error handling crate drop:', error);

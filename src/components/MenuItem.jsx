@@ -55,27 +55,51 @@ const MenuItem = ({
   };
 
   const handleTrackDrop = (e) => {
-    console.log('Track dropped on MenuItem:', { id, trackData: e.detail });
     setIsDraggedOver(false);
     
-    // Create a synthetic event that matches the expected format
-    const syntheticEvent = {
-      preventDefault: () => {},
-      dataTransfer: {
-        getData: (type) => {
-          if (type === 'text/plain') {
-            return JSON.stringify({
-              trackId: e.detail.trackId,
-              trackData: e.detail.trackData
-            });
+    // Handle multiple tracks if present
+    if (e.detail.allTracks && e.detail.isMultiTrackDrop) {
+      // Create a synthetic event with all tracks
+      const syntheticEvent = {
+        preventDefault: () => {},
+        dataTransfer: {
+          getData: (type) => {
+            if (type === 'text/plain') {
+              return JSON.stringify({
+                trackId: e.detail.trackId, // Primary track for compatibility
+                trackData: e.detail.trackData, // Primary track data for compatibility
+                allTracks: e.detail.allTracks, // All tracks
+                isMultiTrackDrop: true
+              });
+            }
+            return '';
           }
-          return '';
         }
+      };
+      
+      if (onDrop) {
+        onDrop(syntheticEvent);
       }
-    };
-    
-    if (onDrop) {
-      onDrop(syntheticEvent);
+    } else {
+      // Handle single track (backward compatibility)
+      const syntheticEvent = {
+        preventDefault: () => {},
+        dataTransfer: {
+          getData: (type) => {
+            if (type === 'text/plain') {
+              return JSON.stringify({
+                trackId: e.detail.trackId,
+                trackData: e.detail.trackData
+              });
+            }
+            return '';
+          }
+        }
+      };
+      
+      if (onDrop) {
+        onDrop(syntheticEvent);
+      }
     }
   };
 
