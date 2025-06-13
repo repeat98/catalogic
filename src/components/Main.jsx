@@ -990,6 +990,14 @@ function Main({
             isAudioPlaying={isPlaying}
             currentTime={currentTime}
             onSeek={handleSeek}
+            crates={crates}
+            tags={tags}
+            selectedCrateId={selectedCrateId}
+            selectedTagId={selectedTagId}
+            viewMode={viewMode}
+            onCrateSelect={setSelectedCrateId}
+            onTagSelect={setSelectedTagId}
+            onViewModeChange={setViewMode}
           />
         </div>
       </div>

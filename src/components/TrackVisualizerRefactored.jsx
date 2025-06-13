@@ -1,3 +1,22 @@
+/**
+ * TrackVisualizerRefactored Component
+ * 
+ * This component provides a visual representation of music tracks in the Map tab.
+ * Features:
+ * - Interactive track plotting with similarity clustering
+ * - Collection filtering: Switch between viewing all tracks, specific crates, or specific tags
+ * - Feature-based filtering and highlighting
+ * - Track playback integration
+ * - Lasso selection for multiple tracks
+ * 
+ * Collection Filtering:
+ * The component now supports filtering tracks by crates and tags. Users can:
+ * - View all tracks in the library
+ * - Filter to show only tracks from a selected crate
+ * - Filter to show only tracks from a selected tag
+ * The collection filter selector appears at the top of the visualization.
+ */
+
 import React, { useState, useCallback, useMemo, useRef } from 'react';
 import './TrackVisualizer.scss';
 
@@ -27,11 +46,31 @@ const TrackVisualizerRefactored = ({
   currentPlayingTrackId,
   isAudioPlaying,
   currentTime,
-  onSeek
+  onSeek,
+  // Filtering props for crates/tags
+  crates,
+  tags,
+  selectedCrateId,
+  selectedTagId,
+  viewMode,
+  // Callback props for changing collection filters
+  onCrateSelect,
+  onTagSelect,
+  onViewModeChange
 }) => {
   // Core state
   const [svgDimensions] = useState({ width: window.innerWidth, height: window.innerHeight - 150 });
-  const { tracks, plotData, loading, error, featureMetadata, featureMinMax, refetch } = useTrackData(svgDimensions);
+  const { tracks, plotData, loading, error, featureMetadata, featureMinMax, refetch } = useTrackData(
+    svgDimensions,
+    // Pass filtering parameters
+    {
+      crates,
+      tags,
+      selectedCrateId,
+      selectedTagId,
+      viewMode
+    }
+  );
   
   // UI state
   const [tooltip, setTooltip] = useState(null);
@@ -307,22 +346,10 @@ const TrackVisualizerRefactored = ({
     hoverTimeoutRef.current = setTimeout(() => {
       isHoveringRef.current = true;
 
-      const tooltipWidth = 300;
-      const tooltipHeight = 200;
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-
-      let x = event.clientX - tooltipWidth / 2;
-      let y = event.clientY - tooltipHeight - 2;
-
-      if (x + tooltipWidth > viewportWidth) x = viewportWidth - tooltipWidth - 2;
-      if (x < 2) x = 2;
-      if (y < 2) y = event.clientY + 2;
-      if (y + tooltipHeight > viewportHeight) y = viewportHeight - tooltipHeight - 2;
-
+      // Simply pass the dot's coordinates - the Tooltip component handles positioning itself
       setTooltip({
         track: trackData,
-        position: { x, y }
+        position: { x: event.clientX, y: event.clientY }
       });
     }, 150);
   }, []);
@@ -606,6 +633,56 @@ const TrackVisualizerRefactored = ({
     };
   }, []);
 
+  // Simple play handler matching Tracklist pattern
+  const handlePlayClickPassthrough = useCallback((track) => {
+    if (onPlayTrack) {
+      onPlayTrack(track);
+    }
+  }, [onPlayTrack]);
+
+  // Collection filter handlers
+  const handleCollectionFilterChange = useCallback((filterType, filterId) => {
+    if (filterType === 'all') {
+      // Switch to library view showing all tracks 
+      if (onViewModeChange) {
+        onViewModeChange('library');
+      }
+    } else if (filterType === 'crate' && onCrateSelect && onViewModeChange) {
+      onCrateSelect(filterId);
+      onViewModeChange('crate');
+    } else if (filterType === 'tag' && onTagSelect && onViewModeChange) {
+      onTagSelect(filterId);
+      onViewModeChange('tag');
+    }
+  }, [onCrateSelect, onTagSelect, onViewModeChange]);
+
+  // Get current collection info for display
+  const getCurrentCollectionInfo = () => {
+    if (viewMode === 'crate' && selectedCrateId && crates && crates[selectedCrateId]) {
+      return {
+        type: 'crate',
+        id: selectedCrateId,
+        name: crates[selectedCrateId].name,
+        trackCount: tracks.length
+      };
+    } else if (viewMode === 'tag' && selectedTagId && tags && tags[selectedTagId]) {
+      return {
+        type: 'tag', 
+        id: selectedTagId,
+        name: tags[selectedTagId].name,
+        trackCount: tracks.length
+      };
+    } else {
+      return {
+        type: 'all',
+        name: 'All Tracks',
+        trackCount: tracks.length
+      };
+    }
+  };
+
+  const currentCollection = getCurrentCollectionInfo();
+
   // Loading and error states
   if (loading) return <div className="track-visualizer-loading">Loading tracks and features...</div>;
   if (error) return (
@@ -638,11 +715,61 @@ const TrackVisualizerRefactored = ({
             isAudioPlaying={isAudioPlaying}
             currentTime={currentTime}
             onSeek={onSeek}
-            onPlayTrack={onPlayTrack}
+            onPlayTrack={handlePlayClickPassthrough}
           />
         )}
         
         <div className="VisualizationContainer">
+          {/* Collection Filter Selector */}
+          <div className="collection-filter-container">
+            <div className="collection-info">
+              <span className="collection-label">Viewing:</span>
+              <span className="collection-name">
+                {currentCollection.name} ({currentCollection.trackCount} tracks)
+              </span>
+            </div>
+            
+            <div className="collection-selectors">
+              <select 
+                className="collection-select"
+                onChange={(e) => handleCollectionFilterChange('all', null)}
+                value={currentCollection.type === 'all' ? 'all' : ''}
+              >
+                <option value="all">All Tracks</option>
+              </select>
+              
+              {crates && Object.keys(crates).length > 0 && (
+                <select 
+                  className="collection-select"
+                  value={currentCollection.type === 'crate' ? currentCollection.id : ''}
+                  onChange={(e) => e.target.value && handleCollectionFilterChange('crate', e.target.value)}
+                >
+                  <option value="">Select Crate...</option>
+                  {Object.entries(crates).map(([id, crate]) => (
+                    <option key={id} value={id}>
+                      📦 {crate.name} ({crate.tracks ? crate.tracks.length : 0})
+                    </option>
+                  ))}
+                </select>
+              )}
+              
+              {tags && Object.keys(tags).length > 0 && (
+                <select 
+                  className="collection-select"
+                  value={currentCollection.type === 'tag' ? currentCollection.id : ''}
+                  onChange={(e) => e.target.value && handleCollectionFilterChange('tag', e.target.value)}
+                >
+                  <option value="">Select Tag...</option>
+                  {Object.entries(tags).map(([id, tag]) => (
+                    <option key={id} value={id}>
+                      🏷️ {tag.name} ({tag.tracks ? tag.tracks.length : 0})
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+          </div>
+          
           <Controls
             visualizationMode={visualizationMode}
             onVisualizationModeChange={setVisualizationMode}
@@ -679,7 +806,7 @@ const TrackVisualizerRefactored = ({
               isAudioPlaying={isAudioPlaying}
               currentTime={currentTime}
               onSeek={onSeek}
-              onPlayTrack={onPlayTrack}
+              onPlayTrack={handlePlayClickPassthrough}
             />
           )}
         </div>

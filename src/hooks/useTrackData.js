@@ -8,13 +8,16 @@ import {
   hdbscan 
 } from '../utils/dataProcessingUtils.js';
 
-export const useTrackData = (svgDimensions) => {
+export const useTrackData = (svgDimensions, filterOptions = {}) => {
   const [tracks, setTracks] = useState([]);
   const [plotData, setPlotData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [featureMetadata, setFeatureMetadata] = useState({ names: [], categories: [] });
   const [featureMinMax, setFeatureMinMax] = useState({});
+
+  // Extract filtering parameters
+  const { crates, tags, selectedCrateId, selectedTagId, viewMode } = filterOptions;
 
   const fetchTracksData = useCallback(async () => {
     try {
@@ -34,12 +37,22 @@ export const useTrackData = (svgDimensions) => {
         throw new Error("Invalid data: Expected array.");
       }
 
-      const keysWithCats = getAllFeatureKeysAndCategories(rawData);
+      // Apply filtering based on selected crate or tag
+      let filteredData = rawData;
+      if (viewMode === 'crate' && selectedCrateId && crates && crates[selectedCrateId]) {
+        const crateTrackIds = crates[selectedCrateId].tracks || [];
+        filteredData = rawData.filter(track => crateTrackIds.includes(track.id));
+      } else if (viewMode === 'tag' && selectedTagId && tags && tags[selectedTagId]) {
+        const tagTrackIds = tags[selectedTagId].tracks || [];
+        filteredData = rawData.filter(track => tagTrackIds.includes(track.id));
+      }
+
+      const keysWithCats = getAllFeatureKeysAndCategories(filteredData);
       const featureNames = keysWithCats.map(kc => kc.name);
       const featureCats = keysWithCats.map(kc => kc.category);
       setFeatureMetadata({ names: featureNames, categories: featureCats });
 
-      const parsedTracks = rawData.map(track => {
+      const parsedTracks = filteredData.map(track => {
         if (!track || typeof track !== 'object' || !track.id) return null;
         try {
           const featureVector = mergeFeatureVectors(track, featureNames);
@@ -57,7 +70,7 @@ export const useTrackData = (svgDimensions) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [crates, tags, selectedCrateId, selectedTagId, viewMode]);
 
   // Compute feature min/max values for normalization
   useEffect(() => {

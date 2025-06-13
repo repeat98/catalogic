@@ -9,7 +9,17 @@ const Map = ({
   currentPlayingTrackId,
   isAudioPlaying,
   currentTime,
-  onSeek
+  onSeek,
+  // Filtering props for crates/tags
+  crates,
+  tags,
+  selectedCrateId,
+  selectedTagId,
+  viewMode,
+  // Callback props for changing collection filters
+  onCrateSelect,
+  onTagSelect,
+  onViewModeChange
 }) => {
   return (
     <div className="Map">
@@ -20,6 +30,16 @@ const Map = ({
           isAudioPlaying={isAudioPlaying}
           currentTime={currentTime}
           onSeek={onSeek}
+          // Pass filtering props
+          crates={crates}
+          tags={tags}
+          selectedCrateId={selectedCrateId}
+          selectedTagId={selectedTagId}
+          viewMode={viewMode}
+          // Pass callback props
+          onCrateSelect={onCrateSelect}
+          onTagSelect={onTagSelect}
+          onViewModeChange={onViewModeChange}
         />
       </Suspense>
     </div>

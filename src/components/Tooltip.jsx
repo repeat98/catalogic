@@ -29,14 +29,47 @@ const Tooltip = React.forwardRef(({
     }
   };
 
+  // Calculate position with viewport boundary checks
+  const calculatePosition = () => {
+    const tooltipWidth = 300; // maxWidth from CSS
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    
+    let x = position.x;
+    let y = position.y - 4; // 4px above the dot
+    let transform = 'translate(-50%, -100%)'; // Center horizontally and position above
+    
+    // Check if tooltip would go off the left edge
+    if (x - tooltipWidth / 2 < 10) {
+      x = tooltipWidth / 2 + 10;
+    }
+    
+    // Check if tooltip would go off the right edge
+    if (x + tooltipWidth / 2 > viewportWidth - 10) {
+      x = viewportWidth - tooltipWidth / 2 - 10;
+    }
+    
+    // Check if tooltip would go off the top edge
+    // If so, position it below the dot instead
+    if (y < 10) {
+      y = position.y + 4; // 4px below the dot
+      transform = 'translate(-50%, 0%)'; // Position below instead of above
+    }
+    
+    return { x, y, transform };
+  };
+
+  const { x, y, transform } = calculatePosition();
+
   return (
     <div 
       ref={ref}
       className="track-tooltip" 
       style={{ 
-        top: position.y, 
-        left: position.x,
+        top: y,
+        left: x,
         position: 'fixed',
+        transform: transform,
         zIndex: 1000,
         backgroundColor: DARK_MODE_SURFACE_ALT,
         color: DARK_MODE_TEXT_PRIMARY,
