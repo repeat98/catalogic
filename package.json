@@ -5,6 +5,7 @@
   "scripts": {
     "start": "webpack --mode development && electron .",
     "build": "webpack --mode production",
+    "debug": "electron . --remote-debugging-port=9222",
     "analyze": "webpack --mode production --profile --json > bundle-stats.json && webpack-bundle-analyzer bundle-stats.json"
   },
   "keywords": [],
