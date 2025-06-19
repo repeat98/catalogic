@@ -82,19 +82,19 @@ export const useTrackData = (svgDimensions, filterOptions = {}) => {
     const minMax = {};
     
     tracks.forEach(track => {
-      const processFeatures = (features, prefix = '') => {
+      const processFeatures = (features) => {
         try {
           const parsed = typeof features === 'string' ? JSON.parse(features) : features;
           if (parsed && typeof parsed === 'object') {
             Object.entries(parsed).forEach(([key, value]) => {
               const v = parseFloat(value);
               if (!isNaN(v)) {
-                const fullKey = prefix ? `${prefix}.${key}` : key;
-                if (!(fullKey in minMax)) {
-                  minMax[fullKey] = { min: v, max: v };
+                // Don't use prefixes - keep original key names for X/Y mode compatibility
+                if (!(key in minMax)) {
+                  minMax[key] = { min: v, max: v };
                 } else {
-                  minMax[fullKey].min = Math.min(minMax[fullKey].min, v);
-                  minMax[fullKey].max = Math.max(minMax[fullKey].max, v);
+                  minMax[key].min = Math.min(minMax[key].min, v);
+                  minMax[key].max = Math.max(minMax[key].max, v);
                 }
               }
             });
@@ -104,10 +104,10 @@ export const useTrackData = (svgDimensions, filterOptions = {}) => {
         }
       };
 
-      // Process all feature types
-      processFeatures(track.style_features, 'style');
-      processFeatures(track.mood_features, 'mood'); 
-      processFeatures(track.instrument_features, 'instrument');
+      // Process all feature types without prefixes
+      processFeatures(track.style_features);
+      processFeatures(track.mood_features); 
+      processFeatures(track.instrument_features);
       
       // Process spectral features
       const SPECTRAL_KEYWORDS = ['atonal', 'tonal', 'dark', 'bright', 'percussive', 'smooth', 'lufs'];

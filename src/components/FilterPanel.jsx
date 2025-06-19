@@ -88,58 +88,6 @@ const FilterPanel = ({
   return (
     <div className="FilterPanelOuterContainer">
       <div className="FilterPanelHeader">
-        <div className="FilterPanelControls">
-          {activeTab === 'Map' && (
-            <>
-              <div className="search-box">
-                <label htmlFor="trackSearch">Search Tracks:</label>
-                <div className="search-input-container">
-                  <input
-                    id="trackSearch"
-                    type="text"
-                    value={searchQuery}
-                    onChange={onSearchChange}
-                    placeholder="Search by title, filename, artist, album, genre, or key..."
-                    className="search-input"
-                  />
-                  {showSuggestions && searchSuggestions.length > 0 && (
-                    <div className="search-suggestions">
-                      {searchSuggestions.map((suggestion, index) => (
-                        <div
-                          key={suggestion}
-                          onClick={() => onSuggestionClick(suggestion)}
-                          className={`suggestion-item ${index === selectedSuggestionIndex ? 'selected' : ''}`}
-                        >
-                          {suggestion}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="FilterPanelActions">
-                <button onClick={onToggleFilterLogicMode} className="FilterLogicButton">
-                  Match: {filterLogicMode === 'intersection' ? 'All Categories (AND)' : 'Any Tag (OR)'}
-                </button>
-                <div className="confidence-slider">
-                  <label htmlFor="highlightThreshold" style={{ minWidth: 110, display: 'inline-block' }}>
-                    Confidence: {highlightThreshold.toFixed(2)}
-                  </label>
-                  <input
-                    id="highlightThreshold"
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.01"
-                    value={highlightThreshold}
-                    onChange={e => onHighlightThresholdChange(Number(e.target.value))}
-                    className="confidence-input"
-                  />
-                </div>
-              </div>
-            </>
-          )}
-        </div>
       </div>
       <div className="FilterPanelContainer">
         {categories.map(cat => (

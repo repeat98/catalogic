@@ -614,17 +614,38 @@ const TrackVisualizer = ({
   useEffect(() => {
     const updateDimensions = () => {
       if (viewModeRef.current) {
-        setSvgDimensions({
-          width: viewModeRef.current.clientWidth,
-          height: viewModeRef.current.clientHeight,
-        });
+        const rect = viewModeRef.current.getBoundingClientRect();
+        // Only update if we have valid dimensions (not zero)
+        if (rect.width > 0 && rect.height > 0) {
+          setSvgDimensions({
+            width: rect.width,
+            height: rect.height,
+          });
+        }
       } else {
         setSvgDimensions({ width: window.innerWidth, height: window.innerHeight - 180 });
       }
     };
-    updateDimensions();
+
+    // Use setTimeout to ensure DOM is fully rendered
+    const timeoutId = setTimeout(updateDimensions, 0);
+    
+    // Also set up resize observer for more reliable dimension tracking
+    let resizeObserver;
+    if (viewModeRef.current && window.ResizeObserver) {
+      resizeObserver = new ResizeObserver(updateDimensions);
+      resizeObserver.observe(viewModeRef.current);
+    }
+    
     window.addEventListener('resize', updateDimensions);
-    return () => window.removeEventListener('resize', updateDimensions);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+      window.removeEventListener('resize', updateDimensions);
+    };
   }, []);
 
 
@@ -1202,7 +1223,7 @@ const TrackVisualizer = ({
 
   // Initialize D3 visualization
   useEffect(() => {
-    if (!svgRef.current || !plotDataToUse.length) return;
+    if (!svgRef.current || !plotDataToUse.length || svgDimensions.width <= 0 || svgDimensions.height <= 0) return;
 
     // Clear any existing visualization
     d3.select(svgRef.current).selectAll("*").remove();
@@ -1481,7 +1502,9 @@ const TrackVisualizer = ({
 
   // Compute plotData for X/Y mode
   const xyPlotData = useMemo(() => {
-    if (visualizationMode !== VISUALIZATION_MODES.XY || !xAxisFeature || !yAxisFeature || !tracks.length) return [];
+    if (visualizationMode !== VISUALIZATION_MODES.XY || !xAxisFeature || !yAxisFeature || !tracks.length) {
+      return [];
+    }
     
     // Helper function to get feature value and check confidence
     const getFeatureValueAndConfidence = (track, feature) => {
@@ -1495,16 +1518,16 @@ const TrackVisualizer = ({
           // Look for exact match first
           if (styleFeatures[feature] !== undefined) {
             value = parseFloat(styleFeatures[feature]);
-            confidence = value;
+            confidence = Math.abs(value); // Use absolute value for confidence
           } else {
             // Look for style part match
             Object.entries(styleFeatures).forEach(([key, val]) => {
               const [, stylePart] = key.split('---');
               if (stylePart === feature) {
                 const prob = parseFloat(val);
-                if (!isNaN(prob) && prob > confidence) {
+                if (!isNaN(prob) && Math.abs(prob) > confidence) {
                   value = prob;
-                  confidence = prob;
+                  confidence = Math.abs(prob); // Use absolute value for confidence
                 }
               }
             });
@@ -1517,7 +1540,7 @@ const TrackVisualizer = ({
         const moodFeatures = typeof track.mood_features === 'string' ? JSON.parse(track.mood_features) : track.mood_features;
         if (moodFeatures && moodFeatures[feature] !== undefined) {
           value = parseFloat(moodFeatures[feature]);
-          confidence = value;
+          confidence = Math.abs(value); // Use absolute value for confidence
         }
       } catch (e) {}
       
@@ -1526,7 +1549,7 @@ const TrackVisualizer = ({
         const instrumentFeatures = typeof track.instrument_features === 'string' ? JSON.parse(track.instrument_features) : track.instrument_features;
         if (instrumentFeatures && instrumentFeatures[feature] !== undefined) {
           value = parseFloat(instrumentFeatures[feature]);
-          confidence = value;
+          confidence = Math.abs(value); // Use absolute value for confidence
         }
       } catch (e) {}
       
@@ -1558,13 +1581,14 @@ const TrackVisualizer = ({
       if (yLogMax === yLogMin) yLogMax = yLogMin + 1e-6;
     }
 
-    return tracks
+    const processedTracks = tracks
       .map(track => {
         const xData = getFeatureValueAndConfidence(track, xAxisFeature);
         const yData = getFeatureValueAndConfidence(track, yAxisFeature);
         
-        // Skip if either feature is below confidence threshold
-        if (xData.confidence < highlightThreshold || yData.confidence < highlightThreshold) {
+        // Use a much lower threshold (0.01) or skip confidence filtering for now
+        const effectiveThreshold = 0.01;
+        if (xData.confidence < effectiveThreshold || yData.confidence < effectiveThreshold) {
           return null;
         }
 
@@ -1591,6 +1615,8 @@ const TrackVisualizer = ({
         };
       })
       .filter(Boolean); // Remove null entries
+      
+    return processedTracks;
   }, [visualizationMode, xAxisFeature, yAxisFeature, tracks, featureMinMax, svgDimensions, highlightThreshold]);
 
   // Update D3 visualization when data changes

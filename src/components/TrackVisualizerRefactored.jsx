@@ -17,7 +17,7 @@
  * The collection filter selector appears at the top of the visualization.
  */
 
-import React, { useState, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import './TrackVisualizer.scss';
 
 // Custom hooks
@@ -58,8 +58,27 @@ const TrackVisualizerRefactored = ({
   onTagSelect,
   onViewModeChange
 }) => {
-  // Core state
-  const [svgDimensions] = useState({ width: window.innerWidth, height: window.innerHeight - 150 });
+  // Core state - properly responsive dimensions
+  const [svgDimensions, setSvgDimensions] = useState({ width: 800, height: 600 }); // Safe defaults
+  
+  // Update dimensions on mount and resize
+  useEffect(() => {
+    const updateDimensions = () => {
+      setSvgDimensions({
+        width: window.innerWidth - 40, // Account for padding
+        height: window.innerHeight - 200 // Account for controls and filter panel
+      });
+    };
+    
+    // Set initial dimensions
+    updateDimensions();
+    
+    // Listen for resize events
+    window.addEventListener('resize', updateDimensions);
+    
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, []);
+
   const { tracks, plotData, loading, error, featureMetadata, featureMinMax, refetch } = useTrackData(
     svgDimensions,
     // Pass filtering parameters
@@ -251,33 +270,74 @@ const TrackVisualizerRefactored = ({
       try {
         const styleFeatures = typeof track.style_features === 'string' 
           ? JSON.parse(track.style_features) : track.style_features;
-        if (styleFeatures && styleFeatures[feature] !== undefined) {
-          value = parseFloat(styleFeatures[feature]);
-          confidence = value;
+        if (styleFeatures) {
+          // Look for exact match first
+          if (styleFeatures[feature] !== undefined) {
+            value = parseFloat(styleFeatures[feature]);
+            confidence = Math.abs(value);
+          } else {
+            // Look for genre or style part match in genre---style format
+            Object.entries(styleFeatures).forEach(([key, val]) => {
+              const parts = key.split('---');
+              if (parts.length === 2) {
+                const [genrePart, stylePart] = parts;
+                const prob = parseFloat(val);
+                if (!isNaN(prob)) {
+                  // Check if feature matches genre part or style part
+                  if ((genrePart === feature || stylePart === feature) && Math.abs(prob) > confidence) {
+                    value = prob;
+                    confidence = Math.abs(prob);
+                  }
+                }
+              } else if (key === feature) {
+                // Direct key match
+                const prob = parseFloat(val);
+                if (!isNaN(prob) && Math.abs(prob) > confidence) {
+                  value = prob;
+                  confidence = Math.abs(prob);
+                }
+              }
+            });
+          }
         }
-      } catch (e) {}
+      } catch (e) {
+        console.warn('Error parsing style features:', e);
+      }
       
       try {
         const moodFeatures = typeof track.mood_features === 'string' 
           ? JSON.parse(track.mood_features) : track.mood_features;
         if (moodFeatures && moodFeatures[feature] !== undefined) {
-          value = parseFloat(moodFeatures[feature]);
-          confidence = value;
+          const val = parseFloat(moodFeatures[feature]);
+          if (!isNaN(val) && Math.abs(val) > confidence) {
+            value = val;
+            confidence = Math.abs(val);
+          }
         }
-      } catch (e) {}
+      } catch (e) {
+        console.warn('Error parsing mood features:', e);
+      }
       
       try {
         const instrumentFeatures = typeof track.instrument_features === 'string' 
           ? JSON.parse(track.instrument_features) : track.instrument_features;
         if (instrumentFeatures && instrumentFeatures[feature] !== undefined) {
-          value = parseFloat(instrumentFeatures[feature]);
-          confidence = value;
+          const val = parseFloat(instrumentFeatures[feature]);
+          if (!isNaN(val) && Math.abs(val) > confidence) {
+            value = val;
+            confidence = Math.abs(val);
+          }
         }
-      } catch (e) {}
+      } catch (e) {
+        console.warn('Error parsing instrument features:', e);
+      }
       
       if (SPECTRAL_KEYWORDS.includes(feature) && track[feature] !== undefined) {
-        value = track[feature];
-        confidence = 1;
+        const val = track[feature];
+        if (typeof val === 'number' && !isNaN(val)) {
+          value = val;
+          confidence = 1; // Spectral features are always considered high confidence
+        }
       }
       
       return { value, confidence };
@@ -299,11 +359,12 @@ const TrackVisualizerRefactored = ({
       if (yLogMax === yLogMin) yLogMax = yLogMin + 1e-6;
     }
 
-    return tracks
+    const processedTracks = tracks
       .map(track => {
         const xData = getFeatureValueAndConfidence(track, xAxisFeature);
         const yData = getFeatureValueAndConfidence(track, yAxisFeature);
         
+        // Use the highlightThreshold from the confidence slider to control which tracks are displayed
         if (xData.confidence < highlightThreshold || yData.confidence < highlightThreshold) {
           return null;
         }
@@ -329,6 +390,8 @@ const TrackVisualizerRefactored = ({
         };
       })
       .filter(Boolean);
+      
+    return processedTracks;
   }, [visualizationMode, xAxisFeature, yAxisFeature, tracks, featureMinMax, svgDimensions, highlightThreshold]);
 
   // Choose which plot data to use
@@ -720,56 +783,6 @@ const TrackVisualizerRefactored = ({
         )}
         
         <div className="VisualizationContainer">
-          {/* Collection Filter Selector */}
-          <div className="collection-filter-container">
-            <div className="collection-info">
-              <span className="collection-label">Viewing:</span>
-              <span className="collection-name">
-                {currentCollection.name} ({currentCollection.trackCount} tracks)
-              </span>
-            </div>
-            
-            <div className="collection-selectors">
-              <select 
-                className="collection-select"
-                onChange={(e) => handleCollectionFilterChange('all', null)}
-                value={currentCollection.type === 'all' ? 'all' : ''}
-              >
-                <option value="all">All Tracks</option>
-              </select>
-              
-              {crates && Object.keys(crates).length > 0 && (
-                <select 
-                  className="collection-select"
-                  value={currentCollection.type === 'crate' ? currentCollection.id : ''}
-                  onChange={(e) => e.target.value && handleCollectionFilterChange('crate', e.target.value)}
-                >
-                  <option value="">Select Crate...</option>
-                  {Object.entries(crates).map(([id, crate]) => (
-                    <option key={id} value={id}>
-                      📦 {crate.name} ({crate.tracks ? crate.tracks.length : 0})
-                    </option>
-                  ))}
-                </select>
-              )}
-              
-              {tags && Object.keys(tags).length > 0 && (
-                <select 
-                  className="collection-select"
-                  value={currentCollection.type === 'tag' ? currentCollection.id : ''}
-                  onChange={(e) => e.target.value && handleCollectionFilterChange('tag', e.target.value)}
-                >
-                  <option value="">Select Tag...</option>
-                  {Object.entries(tags).map(([id, tag]) => (
-                    <option key={id} value={id}>
-                      🏷️ {tag.name} ({tag.tracks ? tag.tracks.length : 0})
-                    </option>
-                  ))}
-                </select>
-              )}
-            </div>
-          </div>
-          
           <Controls
             visualizationMode={visualizationMode}
             onVisualizationModeChange={setVisualizationMode}
@@ -783,6 +796,13 @@ const TrackVisualizerRefactored = ({
             showSuggestions={showSuggestions}
             selectedSuggestionIndex={selectedSuggestionIndex}
             onKeyDown={handleKeyDown}
+            filterLogicMode={filterLogicMode}
+            onToggleFilterLogicMode={() => setFilterLogicMode(prev => 
+              prev === 'intersection' ? 'union' : 'intersection'
+            )}
+            highlightThreshold={highlightThreshold}
+            onHighlightThresholdChange={setHighlightThreshold}
+            activeTab="Map"
           />
           
           <Visualization

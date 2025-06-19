@@ -14,17 +14,21 @@ export const useD3Visualization = (
   const zoomBehaviorRef = useRef(null);
   const lastZoomStateRef = useRef({ k: 1, x: 0, y: 0 });
 
-  // Initialize D3 visualization
+  // Initialize D3 visualization structure (only when SVG or dimensions change)
   useEffect(() => {
-    if (!svgRef.current || !plotData.length) return;
+    if (!svgRef.current) return;
+
+    // Ensure dimensions are valid
+    const safeWidth = svgDimensions.width > 0 ? svgDimensions.width : 800;
+    const safeHeight = svgDimensions.height > 0 ? svgDimensions.height : 600;
 
     // Clear any existing visualization
     d3.select(svgRef.current).selectAll("*").remove();
 
     const svg = d3.select(svgRef.current)
-      .attr("width", svgDimensions.width)
-      .attr("height", svgDimensions.height)
-      .attr("viewBox", `0 0 ${svgDimensions.width} ${svgDimensions.height}`)
+      .attr("width", safeWidth)
+      .attr("height", safeHeight)
+      .attr("viewBox", `0 0 ${safeWidth} ${safeHeight}`)
       .attr("preserveAspectRatio", "xMidYMid meet");
 
     const g = svg.append("g");
@@ -32,7 +36,7 @@ export const useD3Visualization = (
 
     // Initialize zoom behavior
     zoomBehaviorRef.current = d3.zoom()
-      .scaleExtent([1, 50])
+      .scaleExtent([0.5, 50])
       .filter((event) => {
         if (event.type === 'wheel') return event.ctrlKey || event.metaKey;
         if (event.type === 'mousedown') return event.button === 1;
@@ -98,23 +102,51 @@ export const useD3Visualization = (
     });
 
     // Apply last known zoom state
-    if (lastZoomStateRef.current.k !== 1) {
+    if (lastZoomStateRef.current.k !== 1 || lastZoomStateRef.current.x !== 0 || lastZoomStateRef.current.y !== 0) {
       const transform = d3.zoomIdentity
         .translate(lastZoomStateRef.current.x, lastZoomStateRef.current.y)
         .scale(lastZoomStateRef.current.k);
       svg.call(zoomBehaviorRef.current.transform, transform);
     }
 
-    // Create dots
-    const dots = g.selectAll("circle")
-      .data(plotData)
-      .enter()
+    // Store D3 container reference
+    d3ContainerRef.current = { svg, g, dots: null };
+
+    // Cleanup function
+    return () => {
+      if (d3ContainerRef.current) {
+        d3ContainerRef.current.svg.selectAll("*").remove();
+      }
+    };
+  }, [svgDimensions]); // Only depend on dimensions, not plotData
+
+  // Update dots when plotData or trackColors change
+  useEffect(() => {
+    if (!d3ContainerRef.current?.g || !plotData.length) {
+      return;
+    }
+
+    const g = d3ContainerRef.current.g;
+
+    // Data join
+    const dots = g.selectAll("circle.track-dot")
+      .data(plotData, d => d.id);
+
+    // Remove old dots
+    dots.exit()
+      .transition()
+      .duration(300)
+      .attr("r", 0)
+      .remove();
+
+    // Add new dots - start with visible radius, not 0
+    const dotsEnter = dots.enter()
       .append("circle")
+      .attr("class", "track-dot")
       .attr("cx", d => d.x)
       .attr("cy", d => d.y)
-      .attr("r", 4 / lastZoomStateRef.current.k)
-      .attr("fill", (d, i) => trackColors[i]?.color || '#AAAAAA')
-      .attr("class", "track-dot")
+      .attr("r", 4 / lastZoomStateRef.current.k) // Start with visible radius
+      .attr("fill", "#AAAAAA") // Default fill
       .style("cursor", "grab")
       .style("pointer-events", "all")
       .on("mouseover", (event, d) => onTrackHover?.(d, event))
@@ -215,39 +247,32 @@ export const useD3Visualization = (
         })
       );
 
-    // Store D3 container reference
-    d3ContainerRef.current = { svg, g, dots };
+    // Merge enter and update selections
+    const dotsUpdate = dots.merge(dotsEnter);
 
-    // Cleanup function
-    return () => {
-      if (d3ContainerRef.current) {
-        d3ContainerRef.current.svg.selectAll("*").remove();
-      }
-    };
-  }, [plotData, svgDimensions, trackColors, onTrackHover, onTrackOut, onTrackClick]);
+    // Update colors immediately (no transition for color changes)
+    dotsUpdate
+      .attr("fill", (d, i) => {
+        const color = trackColors[i]?.color || '#AAAAAA';
+        return color;
+      });
 
-  // Update dots positions when plotData changes
-  useEffect(() => {
-    if (!d3ContainerRef.current?.dots) return;
-
-    d3ContainerRef.current.dots
-      .data(plotData)
+    // Update positions and radius with smooth transitions
+    dotsUpdate
       .transition()
-      .duration(500)
+      .duration(300)
       .attr("cx", d => d.x)
-      .attr("cy", d => d.y);
-  }, [plotData]);
+      .attr("cy", d => d.y)
+      .attr("r", 4 / lastZoomStateRef.current.k);
 
-  // Update dots colors when trackColors change
-  useEffect(() => {
-    if (!d3ContainerRef.current?.dots) return;
+    // Store updated dots selection
+    d3ContainerRef.current.dots = dotsUpdate;
 
-    d3ContainerRef.current.dots
-      .attr("fill", (d, i) => trackColors[i]?.color || '#AAAAAA');
-  }, [trackColors]);
+  }, [plotData, trackColors, onTrackHover, onTrackOut, onTrackClick]);
 
   const resetZoom = useCallback(() => {
     if (d3ContainerRef.current?.svg && zoomBehaviorRef.current) {
+      lastZoomStateRef.current = { k: 1, x: 0, y: 0 };
       d3ContainerRef.current.svg
         .transition()
         .duration(1000)
