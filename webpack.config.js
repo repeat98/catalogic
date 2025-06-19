@@ -34,16 +34,11 @@ module.exports = {
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/i,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              outputPath: 'assets',
-              publicPath: 'assets',
-              name: '[name].[ext]',
-            },
-          },
-        ],
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/[name][ext]',
+          publicPath: 'assets',
+        },
       }
     ],
   },
