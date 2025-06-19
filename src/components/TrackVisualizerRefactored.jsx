@@ -208,24 +208,36 @@ const TrackVisualizerRefactored = ({
           }
         } catch (e) {}
         
-        // Check other feature types
-        ['mood_features', 'instrument_features'].forEach(featureType => {
-          try {
-            const features = typeof track[featureType] === 'string'
-              ? JSON.parse(track[featureType]) : track[featureType];
-            if (features && features[feature]) {
-              const v = parseFloat(features[feature]);
-              const minmax = featureMinMax[feature];
-              if (minmax && minmax.max > minmax.min) {
-                const norm = (v - minmax.min) / (minmax.max - minmax.min);
-                if (norm >= highlightThreshold) return true;
-              }
+        // Check mood features  
+        try {
+          const moodFeatures = typeof track.mood_features === 'string'
+            ? JSON.parse(track.mood_features) : track.mood_features;
+          if (selectedFeatures.mood.includes(feature) && moodFeatures && moodFeatures[feature]) {
+            const v = parseFloat(moodFeatures[feature]);
+            const minmax = featureMinMax[feature];
+            if (minmax && minmax.max > minmax.min) {
+              const norm = (v - minmax.min) / (minmax.max - minmax.min);
+              if (norm >= highlightThreshold) return true;
             }
-          } catch (e) {}
-        });
+          }
+        } catch (e) {}
+        
+        // Check instrument features
+        try {
+          const instrumentFeatures = typeof track.instrument_features === 'string'
+            ? JSON.parse(track.instrument_features) : track.instrument_features;
+          if (selectedFeatures.instrument.includes(feature) && instrumentFeatures && instrumentFeatures[feature]) {
+            const v = parseFloat(instrumentFeatures[feature]);
+            const minmax = featureMinMax[feature];
+            if (minmax && minmax.max > minmax.min) {
+              const norm = (v - minmax.min) / (minmax.max - minmax.min);
+              if (norm >= highlightThreshold) return true;
+            }
+          }
+        } catch (e) {}
         
         // Check spectral features
-        if (SPECTRAL_KEYWORDS.includes(feature) && track[feature] !== undefined) {
+        if (selectedFeatures.spectral.includes(feature) && SPECTRAL_KEYWORDS.includes(feature) && track[feature] !== undefined) {
           const v = track[feature];
           const minmax = featureMinMax[feature];
           if (minmax && minmax.max > minmax.min) {

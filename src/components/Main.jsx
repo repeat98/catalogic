@@ -477,6 +477,8 @@ function Main({
 
   const addTrackToCrate = useCallback(async (crateId, trackId) => {
     console.log('addTrackToCrate called with:', { crateId, trackId });
+    console.log('Current view state before adding track:', { viewMode, selectedCrateId });
+    
     try {
       const currentCrate = crates[crateId];
       if (!currentCrate) {
@@ -500,6 +502,7 @@ function Main({
             ...prev,
             [crateId]: { ...prev[crateId], tracks: updatedTracks }
           }));
+          console.log('Crate state updated, checking view state after setCrates');
         } else {
           console.error('Failed to update crate on server');
         }
@@ -509,10 +512,12 @@ function Main({
     } catch (error) {
       console.error('Failed to add track to crate:', error);
     }
-  }, [crates, setCrates]);
+  }, [crates, setCrates, viewMode, selectedCrateId]);
 
   const addTracksToCrate = useCallback(async (crateId, trackIds) => {
     console.log('addTracksToCrate called with:', { crateId, trackIds });
+    console.log('Current view state before adding tracks:', { viewMode, selectedCrateId });
+    
     try {
       const currentCrate = crates[crateId];
       if (!currentCrate) {
@@ -542,13 +547,14 @@ function Main({
           ...prev,
           [crateId]: { ...prev[crateId], tracks: updatedTracks }
         }));
+        console.log('Multiple tracks added to crate, checking view state after setCrates');
       } else {
         console.error('Failed to update crate on server');
       }
     } catch (error) {
       console.error('Failed to add tracks to crate:', error);
     }
-  }, [crates, setCrates]);
+  }, [crates, setCrates, viewMode, selectedCrateId]);
 
   const removeTrackFromCrate = useCallback(async (crateId, trackId) => {
     try {
@@ -793,12 +799,17 @@ function Main({
 
   // Sidebar handlers
   const handleLibraryItemClick = (itemName) => {
+    console.log('=== LIBRARY ITEM CLICKED ===');
+    console.log('Switching to library item:', itemName);
     setSelectedLibraryItem(itemName);
     setViewMode('library');
     setSelectedCrateId(null);
   };
 
   const handleCrateItemClick = (crateId) => {
+    console.log('=== CRATE ITEM CLICKED ===');
+    console.log('Switching to crate:', crateId);
+    console.log('Stack trace:', new Error().stack);
     setSelectedCrateId(crateId);
     setViewMode('crate');
     setSelectedLibraryItem(null);
@@ -845,6 +856,14 @@ function Main({
     event.preventDefault();
     event.dataTransfer.dropEffect = 'copy';
   };
+
+  // Debug effect to track view mode changes
+  useEffect(() => {
+    console.log('=== VIEW STATE CHANGED ===');
+    console.log('View mode:', viewMode);
+    console.log('Selected crate ID:', selectedCrateId);
+    console.log('Stack trace:', new Error().stack);
+  }, [viewMode, selectedCrateId]);
 
   useEffect(() => {
     let tracksToDisplay = [...allTracks];

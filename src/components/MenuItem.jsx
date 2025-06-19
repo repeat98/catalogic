@@ -13,6 +13,7 @@ const MenuItem = ({
   isDragTarget = false, // Whether this item can accept drops
 }) => {
   const [isDraggedOver, setIsDraggedOver] = React.useState(false);
+  const [recentlyDropped, setRecentlyDropped] = React.useState(false);
   let itemClass = '';
 
   if (isSelected) {
@@ -49,6 +50,9 @@ const MenuItem = ({
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDraggedOver(false);
+    setRecentlyDropped(true);
+    // Reset the recently dropped flag after a short delay
+    setTimeout(() => setRecentlyDropped(false), 100);
     if (onDrop) {
       onDrop(e);
     }
@@ -56,6 +60,9 @@ const MenuItem = ({
 
   const handleTrackDrop = (e) => {
     setIsDraggedOver(false);
+    setRecentlyDropped(true);
+    // Reset the recently dropped flag after a short delay
+    setTimeout(() => setRecentlyDropped(false), 100);
     
     // Handle multiple tracks if present
     if (e.detail.allTracks && e.detail.isMultiTrackDrop) {
@@ -114,15 +121,27 @@ const MenuItem = ({
     }
   }, [id, isDragTarget, onDrop]);
 
+  const handleClick = (e) => {
+    // Prevent click if we just completed a drop operation
+    if (recentlyDropped) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    if (onClick) {
+      onClick(e);
+    }
+  };
+
   return (
     <div
       data-layer="menu-item-instance"
       data-menu-item-id={id}
       className={`MenuItemInstanceWrapper ${isDragTarget ? 'DragTarget' : ''} ${isDraggedOver ? 'drag-over' : ''}`}
-      onClick={onClick} // Main click for the item
+      onClick={handleClick} // Use custom click handler
       role="button"
       tabIndex={onClick ? 0 : -1}
-      onKeyPress={(e) => { if (onClick && (e.key === 'Enter' || e.key === ' ')) onClick(); }}
+      onKeyPress={(e) => { if (onClick && !recentlyDropped && (e.key === 'Enter' || e.key === ' ')) handleClick(e); }}
       onDrop={isDragTarget ? handleDrop : undefined}
       onDragOver={isDragTarget ? handleDragOver : undefined}
       onDragLeave={isDragTarget ? handleDragLeave : undefined}

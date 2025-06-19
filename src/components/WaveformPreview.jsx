@@ -13,8 +13,8 @@ const WaveformPreview = ({
   onPlayClick,
   onPendingSeek,
   height = 30,
-  waveColor = '#4a4a4a',
-  progressColor = '#666666'
+  waveColor = '#7a7a7a',
+  progressColor = '#9a9a9a'
 }) => {
   const waveformRef = useRef(null);
   const wavesurferRef = useRef(null);
@@ -71,7 +71,7 @@ const WaveformPreview = ({
         waveColor,
         progressColor,
         cursorWidth: 1,
-        cursorColor: '#666666',
+        cursorColor: '#9a9a9a',
         barWidth: 1,
         barGap: 1,
         responsive: true,

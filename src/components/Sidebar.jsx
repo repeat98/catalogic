@@ -257,13 +257,19 @@ const Sidebar = ({
         handleOpenContextMenu={handleOpenContextMenu}
         onCrateDrop={(event, crateId) => {
           event.preventDefault();
+          console.log('=== CRATE DROP EVENT ===');
+          console.log('Drop on crate ID:', crateId);
+          console.log('Current selected crate before drop:', selectedCrateId);
+          
           try {
             const data = JSON.parse(event.dataTransfer.getData('text/plain'));
+            console.log('Drop data:', data);
             
             if (crateManagementRef.current?.addTrackToCrate) {
               // Handle multi-track drop
               if (data.allTracks && data.isMultiTrackDrop) {
                 const trackIds = data.allTracks.map(track => track.id);
+                console.log('Adding multiple tracks to crate:', trackIds);
                 if (crateManagementRef.current.addTracksToCrate) {
                   crateManagementRef.current.addTracksToCrate(crateId, trackIds);
                 } else {
@@ -274,9 +280,12 @@ const Sidebar = ({
                 }
               } else if (data.trackId) {
                 // Handle single track drop (backward compatibility)
+                console.log('Adding single track to crate:', data.trackId);
                 crateManagementRef.current.addTrackToCrate(crateId, data.trackId);
               }
             }
+            
+            console.log('Crate drop handling completed');
           } catch (error) {
             console.error('Error handling crate drop:', error);
           }
