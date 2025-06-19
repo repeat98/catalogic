@@ -4,7 +4,8 @@
   "main": "main.js",
   "scripts": {
     "start": "webpack --mode development && electron .",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "analyze": "webpack --mode production --profile --json > bundle-stats.json && webpack-bundle-analyzer bundle-stats.json"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +21,7 @@
     "style-loader": "^4.0.0",
     "swc-loader": "^0.2.6",
     "webpack": "^5.94.0",
+    "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.1.0"
   },
