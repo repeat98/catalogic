@@ -1,5 +1,22 @@
 import { useRef, useEffect, useCallback } from 'react';
-import * as d3 from 'd3';
+import { select, pointer } from 'd3-selection';
+import { zoom, zoomTransform, zoomIdentity } from 'd3-zoom';
+import { drag } from 'd3-drag';
+import { line, curveBasis, curveLinear } from 'd3-shape';
+import 'd3-transition';
+
+// Compose a minimal d3 namespace with only the used utilities
+const d3 = {
+  select,
+  pointer,
+  zoom,
+  zoomTransform,
+  zoomIdentity,
+  drag,
+  line,
+  curveBasis,
+  curveLinear,
+};
 
 export const useD3Visualization = (
   svgRef, 

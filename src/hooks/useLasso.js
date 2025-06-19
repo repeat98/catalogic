@@ -1,5 +1,17 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import * as d3 from 'd3';
+import { select, pointer } from 'd3-selection';
+import { drag } from 'd3-drag';
+import { line, curveBasis, curveLinear } from 'd3-shape';
+import 'd3-transition';
+
+const d3 = {
+  select,
+  pointer,
+  drag,
+  line,
+  curveBasis,
+  curveLinear,
+};
 
 export const useLasso = (svgRef, plotData, isEnabled) => {
   const [isLassoMode, setIsLassoMode] = useState(false);
