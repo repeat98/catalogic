@@ -114,3 +114,12 @@
   margin-left: 5px;
   // color: #1db954; // Optional: color the sort indicator
 }
+
+// MyTags cell styles
+.Cell-mytags {
+  padding: 4px 8px !important; // Reduced padding for the cell containing MyTagsCell
+  
+  .my-tags-cell {
+    width: 100%;
+  }
+}

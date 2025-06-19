@@ -4,16 +4,36 @@ import './FilterPanel.scss';
 const FilterCategory = ({ title, options, activeItems, onToggle }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Filter options based on search term
+  // Filter options based on search term and prioritize selected items at the top, then by count
   const filteredOptions = useMemo(() => {
     if (!options || options.length === 0) return [];
-    if (!searchTerm.trim()) return options;
     
-    const lowerSearchTerm = searchTerm.toLowerCase().trim();
-    return options.filter(option => 
-      option.name.toLowerCase().includes(lowerSearchTerm)
-    );
-  }, [options, searchTerm]);
+    let filteredBySearch = options;
+    
+    // Apply search filter if there's a search term
+    if (searchTerm.trim()) {
+      const lowerSearchTerm = searchTerm.toLowerCase().trim();
+      filteredBySearch = options.filter(option => 
+        option.name.toLowerCase().includes(lowerSearchTerm)
+      );
+    }
+    
+    // Sort filtered options to show selected items first, then by count (descending), then alphabetically
+    return filteredBySearch.sort((a, b) => {
+      const aIsSelected = activeItems.includes(a.name);
+      const bIsSelected = activeItems.includes(b.name);
+      
+      // If one is selected and the other isn't, prioritize the selected one
+      if (aIsSelected && !bIsSelected) return -1;
+      if (!aIsSelected && bIsSelected) return 1;
+      
+      // If both have the same selection state, sort by count (descending)
+      if (b.count !== a.count) return b.count - a.count;
+      
+      // If counts are equal, maintain alphabetical order
+      return a.name.localeCompare(b.name);
+    });
+  }, [options, searchTerm, activeItems]);
 
   if (!options || options.length === 0) return null;
 

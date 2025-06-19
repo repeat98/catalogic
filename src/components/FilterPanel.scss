@@ -283,6 +283,15 @@
   background-color: #303030;
 }
 
+.FilterCheckboxItem input[type="checkbox"]:checked + .FilterOptionName {
+  color: #4CAF50;
+  font-weight: 500;
+}
+
+.FilterCheckboxItem input[type="checkbox"]:checked ~ .FilterOptionCount {
+  color: #66BB6A;
+}
+
 .FilterOptionName {
   flex-grow: 1;
 }

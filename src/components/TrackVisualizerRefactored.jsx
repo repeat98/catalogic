@@ -814,6 +814,9 @@ const TrackVisualizerRefactored = ({
             isLassoEnabled={true}
             onLassoToggle={handleLassoToggle}
             onLassoSelection={handleLassoSelection}
+            visualizationMode={visualizationMode}
+            xAxisFeature={xAxisFeature}
+            yAxisFeature={yAxisFeature}
           />
           
           {tooltip && (

@@ -10,7 +10,10 @@ const Visualization = ({
   onTrackClick,
   isLassoEnabled,
   onLassoToggle,
-  onLassoSelection
+  onLassoSelection,
+  visualizationMode,
+  xAxisFeature,
+  yAxisFeature
 }) => {
   const svgRef = useRef(null);
   const viewModeRef = useRef(null);
@@ -48,7 +51,10 @@ const Visualization = ({
     trackColors,
     onTrackHover,
     onTrackOut,
-    onTrackClick
+    onTrackClick,
+    visualizationMode,
+    xAxisFeature,
+    yAxisFeature
   );
 
   // Use lasso selection hook

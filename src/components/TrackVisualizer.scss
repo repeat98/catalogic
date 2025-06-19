@@ -600,3 +600,21 @@ img[src$="placeholder.png"] {
     }
   }
 }
+
+// Axis labels for XY mode
+.axis-label {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  fill: #e0e0e0;
+  user-select: none;
+  pointer-events: none;
+  
+  &.x-axis-label {
+    dominant-baseline: hanging;
+  }
+  
+  &.y-axis-label {
+    dominant-baseline: middle;
+  }
+}

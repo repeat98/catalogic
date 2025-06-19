@@ -26,7 +26,10 @@ const Track = ({
   onDragStart,
   viewMode,
   onRemoveTrackFromTag,
-  selectedTagId
+  selectedTagId,
+  tags,
+  onAddTagToTrack,
+  onRemoveTagFromTrack
 }) => {
   const handleMainClick = () => {
     if (onTrackClick) {
@@ -67,7 +70,7 @@ const Track = ({
         
         // Use renderCell function if provided, otherwise use default rendering
         if (renderCell) {
-          content = renderCell(track, col);
+          content = renderCell(track, col, { tags, onAddTagToTrack, onRemoveTagFromTrack });
         } else {
           content = track[col.key] !== undefined && track[col.key] !== null ? track[col.key] : '-';
           if (col.key === 'time') {

@@ -8,7 +8,10 @@ export const useD3Visualization = (
   trackColors,
   onTrackHover,
   onTrackOut,
-  onTrackClick
+  onTrackClick,
+  visualizationMode,
+  xAxisFeature,
+  yAxisFeature
 ) => {
   const d3ContainerRef = useRef(null);
   const zoomBehaviorRef = useRef(null);
@@ -119,6 +122,50 @@ export const useD3Visualization = (
       }
     };
   }, [svgDimensions]); // Only depend on dimensions, not plotData
+
+  // Update axis labels when in XY mode
+  useEffect(() => {
+    if (!d3ContainerRef.current?.svg || !visualizationMode) return;
+
+    const svg = d3ContainerRef.current.svg;
+    const safeWidth = svgDimensions.width > 0 ? svgDimensions.width : 800;
+    const safeHeight = svgDimensions.height > 0 ? svgDimensions.height : 600;
+
+    // Remove existing axis labels
+    svg.selectAll(".axis-label").remove();
+
+    // Add axis labels only in XY mode
+    if (visualizationMode === 'xy' && (xAxisFeature || yAxisFeature)) {
+      // X-axis label
+      if (xAxisFeature) {
+        svg.append("text")
+          .attr("class", "axis-label x-axis-label")
+          .attr("x", safeWidth / 2)
+          .attr("y", safeHeight - 10)
+          .attr("text-anchor", "middle")
+          .style("font-size", "14px")
+          .style("font-weight", "500")
+          .style("fill", "#e0e0e0")
+          .style("font-family", "Inter, sans-serif")
+          .text(xAxisFeature);
+      }
+
+      // Y-axis label (rotated)
+      if (yAxisFeature) {
+        svg.append("text")
+          .attr("class", "axis-label y-axis-label")
+          .attr("x", -safeHeight / 2)
+          .attr("y", 20)
+          .attr("text-anchor", "middle")
+          .attr("transform", "rotate(-90)")
+          .style("font-size", "14px")
+          .style("font-weight", "500")
+          .style("fill", "#e0e0e0")
+          .style("font-family", "Inter, sans-serif")
+          .text(yAxisFeature);
+      }
+    }
+  }, [visualizationMode, xAxisFeature, yAxisFeature, svgDimensions]);
 
   // Update dots when plotData or trackColors change
   useEffect(() => {

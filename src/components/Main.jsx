@@ -127,8 +127,162 @@ const getTopSpectralValue = (track) => {
   return validEntries[0][1];
 };
 
+// Helper functions to get the single highest confidence feature for each category (for filtering)
+const getTopGenreForTrack = (track) => {
+  if (!track.style_features || typeof track.style_features !== 'object') return null;
+  
+  let topGenre = null;
+  let topScore = -1;
+  
+  Object.entries(track.style_features).forEach(([fullTag, score]) => {
+    if (typeof score === 'number' && score > topScore) {
+      const parts = fullTag.split('---');
+      const genrePart = parts.length > 1 ? parts[0] : 'Unknown Genre';
+      topGenre = genrePart;
+      topScore = score;
+    }
+  });
+  
+  return topGenre;
+};
+
+const getTopStyleForTrack = (track) => {
+  if (!track.style_features || typeof track.style_features !== 'object') return null;
+  
+  let topStyle = null;
+  let topScore = -1;
+  
+  Object.entries(track.style_features).forEach(([fullTag, score]) => {
+    if (typeof score === 'number' && score > topScore) {
+      const parts = fullTag.split('---');
+      const stylePart = parts.length > 1 ? parts[1] : fullTag;
+      topStyle = stylePart;
+      topScore = score;
+    }
+  });
+  
+  return topStyle;
+};
+
+const getTopMoodForTrack = (track) => {
+  if (!track.mood_features || typeof track.mood_features !== 'object') return null;
+  
+  let topMood = null;
+  let topScore = -1;
+  
+  Object.entries(track.mood_features).forEach(([fullTag, score]) => {
+    if (typeof score === 'number' && score > topScore) {
+      const moodName = stripFeaturePrefix(fullTag);
+      topMood = moodName;
+      topScore = score;
+    }
+  });
+  
+  return topMood;
+};
+
+const getTopInstrumentForTrack = (track) => {
+  if (!track.instrument_features || typeof track.instrument_features !== 'object') return null;
+  
+  let topInstrument = null;
+  let topScore = -1;
+  
+  Object.entries(track.instrument_features).forEach(([fullTag, score]) => {
+    if (typeof score === 'number' && score > topScore) {
+      const instrumentName = stripFeaturePrefix(fullTag);
+      topInstrument = instrumentName;
+      topScore = score;
+    }
+  });
+  
+  return topInstrument;
+};
+
+const getTopSpectralFeatureForTrack = (track) => {
+  const spectralData = { 
+    atonal: track.atonal, 
+    tonal: track.tonal, 
+    dark: track.dark, 
+    bright: track.bright, 
+    percussive: track.percussive, 
+    smooth: track.smooth 
+  };
+  
+  let topFeature = null;
+  let topValue = -1;
+  
+  Object.entries(spectralData).forEach(([feature, value]) => {
+    if (typeof value === 'number' && value > topValue) {
+      topFeature = feature;
+      topValue = value;
+    }
+  });
+  
+  return topFeature;
+};
+
+// Helper function to calculate combined confidence score for selected features
+const getCombinedConfidenceScore = (track, activeFilters, filterLogicMode) => {
+  const activeFilterCategories = Object.keys(activeFilters).filter(cat => activeFilters[cat] && activeFilters[cat].length > 0);
+  
+  if (activeFilterCategories.length === 0) return 0;
+  
+  let totalScore = 0;
+  let validCategories = 0;
+  
+  activeFilterCategories.forEach(category => {
+    const selectedValues = activeFilters[category];
+    let categoryScore = 0;
+    
+    if (category === 'style') {
+      // Get the highest score among selected styles
+      selectedValues.forEach(styleName => {
+        const score = getSpecificStyleScore(track, styleName);
+        categoryScore = Math.max(categoryScore, score);
+      });
+    } else if (category === 'genre') {
+      // Get the highest score among selected genres
+      selectedValues.forEach(genreName => {
+        const score = getSpecificGenreScore(track, genreName);
+        categoryScore = Math.max(categoryScore, score);
+      });
+    } else if (category === 'mood') {
+      // Get the highest score among selected moods
+      selectedValues.forEach(moodName => {
+        const score = getSpecificMoodScore(track, moodName);
+        categoryScore = Math.max(categoryScore, score);
+      });
+    } else if (category === 'instrument') {
+      // Get the highest score among selected instruments
+      selectedValues.forEach(instrumentName => {
+        const score = getSpecificInstrumentScore(track, instrumentName);
+        categoryScore = Math.max(categoryScore, score);
+      });
+    } else if (category === 'spectral') {
+      // Get the highest value among selected spectral features
+      selectedValues.forEach(spectralFeature => {
+        const score = getSpecificSpectralScore(track, spectralFeature);
+        categoryScore = Math.max(categoryScore, score);
+      });
+    }
+    
+    if (categoryScore > 0) {
+      totalScore += categoryScore;
+      validCategories++;
+    }
+  });
+  
+  // For intersection mode, average the scores (all categories must contribute)
+  // For union mode, we already took the max of each category, so just return total
+  if (filterLogicMode === 'intersection') {
+    return validCategories > 0 ? totalScore / validCategories : 0;
+  } else {
+    return totalScore;
+  }
+};
+
 // Refined sortTracks function
-const sortTracks = (tracks, sortConfig, selectedFeatureCategory, activeFilters, getTopFeatureScoreFn, getTopSpectralValueFn, getTrackTopNRawStylesFn, getSpecificStyleScoreFn, getSpecificGenreScoreFn, getSpecificMoodScoreFn, getSpecificInstrumentScoreFn, getSpecificSpectralScoreFn) => {
+const sortTracks = (tracks, sortConfig, selectedFeatureCategory, activeFilters, filterLogicMode, getTopFeatureScoreFn, getTopSpectralValueFn, getTrackTopNRawStylesFn, getSpecificStyleScoreFn, getSpecificGenreScoreFn, getSpecificMoodScoreFn, getSpecificInstrumentScoreFn, getSpecificSpectralScoreFn) => {
   const sortedTracks = [...tracks].sort((a, b) => {
     let comparison = 0;
 
@@ -139,48 +293,14 @@ const sortTracks = (tracks, sortConfig, selectedFeatureCategory, activeFilters, 
                            (activeFilters.spectral && activeFilters.spectral.length > 0) ||
                            (activeFilters.genre && activeFilters.genre.length > 0);
 
-    // PRIORITY 1: Best match sorting when filters are active (regardless of selected feature category)
+    // PRIORITY 1: Sort by combined confidence score for selected features
     if (hasActiveFilters) {
-      let scoreA = 0, scoreB = 0, foundActiveFilter = false;
-
-      // Check for active filters in priority order (regardless of selectedFeatureCategory)
-      // Priority: Style > Mood > Instrument > Spectral > Genre
-      if (activeFilters.style && activeFilters.style.length > 0) {
-        const prioritizedStyle = activeFilters.style[0];
-        scoreA = getSpecificStyleScoreFn(a, prioritizedStyle);
-        scoreB = getSpecificStyleScoreFn(b, prioritizedStyle);
-        foundActiveFilter = true;
-      }
-      else if (activeFilters.mood && activeFilters.mood.length > 0) {
-        const prioritizedMood = activeFilters.mood[0];
-        scoreA = getSpecificMoodScoreFn(a, prioritizedMood);
-        scoreB = getSpecificMoodScoreFn(b, prioritizedMood);
-        foundActiveFilter = true;
-      }
-      else if (activeFilters.instrument && activeFilters.instrument.length > 0) {
-        const prioritizedInstrument = activeFilters.instrument[0];
-        scoreA = getSpecificInstrumentScoreFn(a, prioritizedInstrument);
-        scoreB = getSpecificInstrumentScoreFn(b, prioritizedInstrument);
-        foundActiveFilter = true;
-      }
-      else if (activeFilters.spectral && activeFilters.spectral.length > 0) {
-        const prioritizedSpectral = activeFilters.spectral[0];
-        scoreA = getSpecificSpectralScoreFn(a, prioritizedSpectral);
-        scoreB = getSpecificSpectralScoreFn(b, prioritizedSpectral);
-        foundActiveFilter = true;
-      }
-      else if (activeFilters.genre && activeFilters.genre.length > 0) {
-        const prioritizedGenre = activeFilters.genre[0];
-        scoreA = getSpecificGenreScoreFn(a, prioritizedGenre);
-        scoreB = getSpecificGenreScoreFn(b, prioritizedGenre);
-        foundActiveFilter = true;
-      }
-
-      if (foundActiveFilter) {
-        // Sort by the actual score for this filter (higher scores first)
-        comparison = scoreB - scoreA;
-        // If scores are equal, we'll fall through to secondary sorting
-      }
+      const scoreA = getCombinedConfidenceScore(a, activeFilters, filterLogicMode);
+      const scoreB = getCombinedConfidenceScore(b, activeFilters, filterLogicMode);
+      
+      // Sort by combined score (higher scores first)
+      comparison = scoreB - scoreA;
+      // If scores are equal, we'll fall through to secondary sorting
     }
 
     // PRIORITY 2: User-requested column sorting (only if no best match found or scores are equal)
@@ -748,51 +868,61 @@ function Main({
       );
     }
 
-    // 3. Apply Active Filters (only in library view - crates show their exact contents)
+    // 3. Apply confidence threshold filtering for selected features
     const activeFilterCategories = Object.keys(activeFilters).filter(cat => activeFilters[cat] && activeFilters[cat].length > 0);
+    const confidenceThreshold = 0.3; // Minimum confidence threshold
+    
     if (viewMode === 'library' && activeFilterCategories.length > 0) {
       if (filterLogicMode === 'intersection') {
-        activeFilterCategories.forEach(category => {
-          const selectedValues = activeFilters[category];
-          tracksToDisplay = tracksToDisplay.filter(track => {
-            if (category === 'style') {
-              const topStylesOfTrack = getTrackTopNRawStyles(track, 5);
-              return selectedValues.some(selStyle => topStylesOfTrack.includes(selStyle));
-            } else if (category === 'genre') {
-              if (!track.style_features || typeof track.style_features !== 'object') return false;
-              return selectedValues.some(selGenre => Object.keys(track.style_features).some(fullTag => (fullTag.split('---')[0] || 'Unknown Genre') === selGenre));
-            } else if (category === 'mood') {
-              if (!track.mood_features || typeof track.mood_features !== 'object') return false;
-              return selectedValues.some(selMood => Object.keys(track.mood_features).map(stripFeaturePrefix).includes(selMood));
-            } else if (category === 'instrument') {
-              if (!track.instrument_features || typeof track.instrument_features !== 'object') return false;
-              return selectedValues.some(selInstrument => Object.keys(track.instrument_features).map(stripFeaturePrefix).includes(selInstrument));
-            } else if (category === 'spectral') {
-              return selectedValues.some(specFeat => track[specFeat] !== null && track[specFeat] !== undefined && track[specFeat] !== 0);
-            }
-            return true; 
+        // For intersection mode, track must meet threshold in ALL selected categories
+        tracksToDisplay = tracksToDisplay.filter(track => {
+          return activeFilterCategories.every(category => {
+            const selectedValues = activeFilters[category];
+            
+            // Check if track meets threshold for at least one feature in this category
+            return selectedValues.some(selectedFeature => {
+              let confidence = 0;
+              
+              if (category === 'style') {
+                confidence = getSpecificStyleScore(track, selectedFeature);
+              } else if (category === 'genre') {
+                confidence = getSpecificGenreScore(track, selectedFeature);
+              } else if (category === 'mood') {
+                confidence = getSpecificMoodScore(track, selectedFeature);
+              } else if (category === 'instrument') {
+                confidence = getSpecificInstrumentScore(track, selectedFeature);
+              } else if (category === 'spectral') {
+                confidence = getSpecificSpectralScore(track, selectedFeature);
+              }
+              
+              return confidence >= confidenceThreshold;
+            });
           });
         });
-      } else { // filterLogicMode === 'union'
+      } else {
+        // For union mode, track must meet threshold in ANY selected category
         tracksToDisplay = tracksToDisplay.filter(track => {
           return activeFilterCategories.some(category => {
             const selectedValues = activeFilters[category];
-            if (category === 'style') {
-              const topStylesOfTrack = getTrackTopNRawStyles(track, 5);
-              return selectedValues.some(selStyle => topStylesOfTrack.includes(selStyle));
-            } else if (category === 'genre') {
-              if (!track.style_features || typeof track.style_features !== 'object') return false;
-              return selectedValues.some(selGenre => Object.keys(track.style_features).some(fullTag => (fullTag.split('---')[0] || 'Unknown Genre') === selGenre));
-            } else if (category === 'mood') {
-              if (!track.mood_features || typeof track.mood_features !== 'object') return false;
-              return selectedValues.some(selMood => Object.keys(track.mood_features).map(stripFeaturePrefix).includes(selMood));
-            } else if (category === 'instrument') {
-              if (!track.instrument_features || typeof track.instrument_features !== 'object') return false;
-              return selectedValues.some(selInstrument => Object.keys(track.instrument_features).map(stripFeaturePrefix).includes(selInstrument));
-            } else if (category === 'spectral') {
-              return selectedValues.some(specFeat => track[specFeat] !== null && track[specFeat] !== undefined && track[specFeat] !== 0);
-            }
-            return false;
+            
+            // Check if track meets threshold for at least one feature in this category
+            return selectedValues.some(selectedFeature => {
+              let confidence = 0;
+              
+              if (category === 'style') {
+                confidence = getSpecificStyleScore(track, selectedFeature);
+              } else if (category === 'genre') {
+                confidence = getSpecificGenreScore(track, selectedFeature);
+              } else if (category === 'mood') {
+                confidence = getSpecificMoodScore(track, selectedFeature);
+              } else if (category === 'instrument') {
+                confidence = getSpecificInstrumentScore(track, selectedFeature);
+              } else if (category === 'spectral') {
+                confidence = getSpecificSpectralScore(track, selectedFeature);
+              }
+              
+              return confidence >= confidenceThreshold;
+            });
           });
         });
       }
@@ -804,6 +934,7 @@ function Main({
       sortConfig, 
       selectedFeatureCategory, 
       activeFilters, 
+      filterLogicMode,
       getTopFeatureScore, 
       getTopSpectralValue, 
       getTrackTopNRawStyles,

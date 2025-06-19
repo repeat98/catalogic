@@ -201,6 +201,9 @@ const Content = ({
             viewMode={viewMode}
             onRemoveTrackFromTag={viewMode === 'tag' ? onRemoveTrackFromTag : undefined}
             selectedTagId={selectedTagId}
+            tags={tags}
+            onAddTagToTrack={onAddTrackToTag}
+            onRemoveTagFromTrack={onRemoveTrackFromTag}
           />
         </div>
         {viewMode === 'tag' && selectedTagId && (

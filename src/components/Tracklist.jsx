@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Track from './Track';
 import WaveformPreview from './WaveformPreview';
 import FeatureSelectDropdown from './FeatureSelectDropdown';
+import MyTagsCell from './MyTagsCell';
 import './Tracklist.scss';
 
 const featureCategories = [
@@ -39,6 +40,7 @@ const initialColumnsConfig = [
   { key: 'bpm', header: 'BPM', width: '70px', minWidth: 50, textAlign: 'right', resizable: true, sortable: true, sortType: 'number' },
   { key: 'key', header: 'Key', width: '70px', minWidth: 50, textAlign: 'right', resizable: true, sortable: true, sortType: 'string' },
   { key: 'year', header: 'Year', width: '70px', minWidth: 50, textAlign: 'right', resizable: true, sortable: true, sortType: 'string' }, // Year is often string, can be number if consistent
+  { key: 'mytags', header: 'MyTags', width: '150px', type: 'mytags', minWidth: 120, resizable: true, sortable: false },
 ];
 
 // Helper function to strip prefix like "Category---" (can be shared or duplicated if state management doesn't allow easy sharing)
@@ -71,7 +73,11 @@ const Tracklist = ({
   // View mode props
   viewMode,
   onRemoveTrackFromTag,
-  selectedTagId
+  selectedTagId,
+  // MyTags props
+  tags,
+  onAddTagToTrack,
+  onRemoveTagFromTrack
 }) => {
   const [columnConfig, setColumnConfig] = useState(
     initialColumnsConfig.map(col => ({ ...col, currentWidth: col.width }))
@@ -187,7 +193,7 @@ const Tracklist = ({
       .map(([tag, value]) => `${tag}: ${value.toFixed(2)}`); // Display with value
   };
 
-  const renderCell = (track, col) => {
+  const renderCell = (track, col, additionalProps = {}) => {
     if (col.type === 'image') {
       return (
         <img
@@ -242,6 +248,22 @@ const Tracklist = ({
         <div className="FeatureTagsContainer">
           {tagsToDisplay.map((tag, index) => <span key={`${tag}-${index}-${track.id}-${col.key}`} className="FeatureTag">{tag}</span>)}
         </div>
+      );
+    }
+
+    if (col.type === 'mytags') {
+      // Use additionalProps if available, fallback to direct props
+      const tagsToUse = additionalProps.tags || tags || {};
+      const addTagFn = additionalProps.onAddTagToTrack || onAddTagToTrack;
+      const removeTagFn = additionalProps.onRemoveTagFromTrack || onRemoveTagFromTrack;
+      
+      return (
+        <MyTagsCell
+          track={track}
+          availableTags={tagsToUse}
+          onAddTagToTrack={addTagFn}
+          onRemoveTagFromTrack={removeTagFn}
+        />
       );
     }
 
@@ -308,6 +330,9 @@ const Tracklist = ({
                 viewMode={viewMode}
                 onRemoveTrackFromTag={onRemoveTrackFromTag}
                 selectedTagId={selectedTagId}
+                tags={tags}
+                onAddTagToTrack={onAddTagToTrack}
+                onRemoveTagFromTrack={onRemoveTagFromTrack}
               />
             ))
           ) : (
