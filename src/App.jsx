@@ -19,7 +19,21 @@ const App = () => {
   const tagManagementRef = React.useRef({});
 
   useEffect(() => {
-    preloadAllWaveforms(); // Call the preloader on app start
+    // Defer preloading until UI is ready and user is likely idle
+    const startPreloading = () => {
+      // Use requestIdleCallback if available, otherwise setTimeout
+      if (window.requestIdleCallback) {
+        window.requestIdleCallback(() => {
+          preloadAllWaveforms();
+        }, { timeout: 5000 });
+      } else {
+        setTimeout(() => {
+          preloadAllWaveforms();
+        }, 3000);
+      }
+    };
+    
+    startPreloading();
   }, []); // Empty dependency array ensures it runs only once
 
   return (

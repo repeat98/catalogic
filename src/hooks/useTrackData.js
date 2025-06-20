@@ -7,11 +7,13 @@ import {
   pca, 
   hdbscan 
 } from '../utils/dataProcessingUtils.js';
+import { fetchTracksWithCache } from '../utils/trackDataCache.js';
 
 export const useTrackData = (svgDimensions, filterOptions = {}) => {
   const [tracks, setTracks] = useState([]);
   const [plotData, setPlotData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [processing, setProcessing] = useState(false); // New state for background processing
   const [error, setError] = useState(null);
   const [featureMetadata, setFeatureMetadata] = useState({ names: [], categories: [] });
   const [featureMinMax, setFeatureMinMax] = useState({});
@@ -24,15 +26,8 @@ export const useTrackData = (svgDimensions, filterOptions = {}) => {
       setLoading(true);
       setError(null);
       
-      const response = await fetch(`${API_BASE_URL}/tracks`);
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ 
-          error: `HTTP error! status: ${response.status}` 
-        }));
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-      }
-      
-      const rawData = await response.json();
+      // Use cached/deduplicated fetch
+      const rawData = await fetchTracksWithCache(`${API_BASE_URL}/tracks`);
       if (!Array.isArray(rawData)) {
         throw new Error("Invalid data: Expected array.");
       }
@@ -148,26 +143,67 @@ export const useTrackData = (svgDimensions, filterOptions = {}) => {
       return;
     }
 
-    const featureVectors = validTracksForProcessing.map(t => t.featureVector);
-    const processedFeatureData = normalizeFeatures(featureVectors, featureMetadata.categories);
-    const clusterLabels = hdbscan(processedFeatureData);
-    const projectedData = pca(processedFeatureData);
-
-    const newPlotData = validTracksForProcessing.map((track, index) => {
-      const p_coords = (projectedData && index < projectedData.length && 
-                       projectedData[index]?.length === 2)
-                ? projectedData[index] : [0.5, 0.5];
-      return {
+    // Defer expensive computations to avoid blocking the UI
+    const processDataAsync = async () => {
+      // First, show tracks with simple positioning to get something on screen quickly
+      const quickPlotData = validTracksForProcessing.map((track, index) => ({
         ...track,
-        originalX: p_coords[0],
-        originalY: p_coords[1],
-        x: PADDING + p_coords[0] * (svgDimensions.width - 2 * PADDING),
-        y: PADDING + p_coords[1] * (svgDimensions.height - 2 * PADDING),
-        cluster: clusterLabels[index] ?? -1,
-      };
-    });
-    
-    setPlotData(newPlotData);
+        originalX: Math.random(),
+        originalY: Math.random(),
+        x: PADDING + Math.random() * (svgDimensions.width - 2 * PADDING),
+        y: PADDING + Math.random() * (svgDimensions.height - 2 * PADDING),
+        cluster: -1, // Default cluster
+      }));
+      
+      setPlotData(quickPlotData);
+      setProcessing(true); // Indicate background processing
+
+      // Then compute the actual positioning in the background
+      await new Promise(resolve => setTimeout(resolve, 100)); // Let UI update
+
+      try {
+        const featureVectors = validTracksForProcessing.map(t => t.featureVector);
+        const processedFeatureData = normalizeFeatures(featureVectors, featureMetadata.categories);
+        
+        // Always compute PCA for spatial layout (fast enough even for large sets)
+        // Optionally skip heavy clustering step on very large collections
+        const CLUSTERING_THRESHOLD = 1000; // tweak as needed
+
+        const projectedData = pca(processedFeatureData);
+
+        let clusterLabels;
+        if (validTracksForProcessing.length > CLUSTERING_THRESHOLD) {
+          // Avoid expensive HDBSCAN on huge datasets – layout is preserved via PCA
+          console.log('[TrackData] Large dataset detected – skipping clustering for performance');
+          clusterLabels = new Array(validTracksForProcessing.length).fill(-1);
+        } else {
+          clusterLabels = hdbscan(processedFeatureData);
+        }
+
+        const finalPlotData = validTracksForProcessing.map((track, index) => {
+          const p_coords = (projectedData && index < projectedData.length && 
+                           projectedData[index]?.length === 2)
+                    ? projectedData[index] : [0.5, 0.5];
+          return {
+            ...track,
+            originalX: p_coords[0],
+            originalY: p_coords[1],
+            x: PADDING + p_coords[0] * (svgDimensions.width - 2 * PADDING),
+            y: PADDING + p_coords[1] * (svgDimensions.height - 2 * PADDING),
+            cluster: clusterLabels[index] ?? -1,
+          };
+        });
+        
+        setPlotData(finalPlotData);
+        setProcessing(false); // Processing complete
+      } catch (err) {
+        console.error('[TrackData] Error in async processing:', err);
+        setProcessing(false); // Processing failed but UI is still usable
+        // Keep the quick plot data if processing fails
+      }
+    };
+
+    processDataAsync();
   }, [tracks, featureMetadata, loading, svgDimensions]);
 
   // Fetch data on mount
@@ -179,6 +215,7 @@ export const useTrackData = (svgDimensions, filterOptions = {}) => {
     tracks,
     plotData,
     loading,
+    processing,
     error,
     featureMetadata,
     featureMinMax,

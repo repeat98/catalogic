@@ -1,7 +1,16 @@
-import WaveSurfer from 'wavesurfer.js';
 import { isWaveformCached, cacheWaveform, getCachedWaveform } from './waveformCache';
+import { fetchTracksWithCache } from './trackDataCache.js';
 
-const PRELOAD_DELAY_MS = 500; // Delay between processing each track to be less resource intensive
+// Adaptive delay based on power state - longer delays on battery to avoid throttling
+const getPreloadDelay = () => {
+  // Check if we're on battery (this is a heuristic, not 100% reliable)
+  if (navigator.getBattery) {
+    return navigator.getBattery().then(battery => {
+      return battery.charging ? 300 : 1500; // 300ms when plugged in, 1.5s on battery
+    }).catch(() => 800); // fallback
+  }
+  return Promise.resolve(800); // fallback delay
+};
 
 /**
  * Iteratively preloads and caches waveforms for all tracks in the database.
@@ -9,12 +18,8 @@ const PRELOAD_DELAY_MS = 500; // Delay between processing each track to be less 
 export const preloadAllWaveforms = async () => {
   console.log('[WaveformPreloader] Starting background waveform preloading...');
   try {
-    const response = await fetch('http://localhost:3000/tracks');
-    if (!response.ok) {
-      console.error('[WaveformPreloader] Failed to fetch track list:', response.status, await response.text());
-      return;
-    }
-    const tracks = await response.json();
+    // Use cached/deduplicated fetch
+    const tracks = await fetchTracksWithCache('http://localhost:3000/tracks');
     if (!tracks || tracks.length === 0) {
       // console.log('[WaveformPreloader] No tracks found to preload.'); // This one can be kept if desired, but commented for now to be very quiet.
       return;
@@ -44,6 +49,9 @@ export const preloadAllWaveforms = async () => {
 
         let wavesurfer = null;
         try {
+          // Dynamic import to avoid loading WaveSurfer in main bundle
+          const { default: WaveSurfer } = await import('wavesurfer.js');
+          
           wavesurfer = WaveSurfer.create({
             container: tempContainer, 
             backend: 'MediaElement', 
@@ -87,14 +95,16 @@ export const preloadAllWaveforms = async () => {
           }
         }
         
-        if (i < tracks.length - 1) { 
-            await new Promise(resolve => setTimeout(resolve, PRELOAD_DELAY_MS));
+        if (i < tracks.length - 1) {
+          const delay = await getPreloadDelay();
+          await new Promise(resolve => setTimeout(resolve, delay));
         }
 
       } catch (error) {
         console.error(`[WaveformPreloader] Error processing track ${track.id} (${track.title}):`, error);
         if (i < tracks.length - 1) {
-             await new Promise(resolve => setTimeout(resolve, PRELOAD_DELAY_MS * 2)); 
+          const delay = await getPreloadDelay();
+          await new Promise(resolve => setTimeout(resolve, delay * 2)); 
         }
       }
     }

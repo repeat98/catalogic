@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { select, pointer } from 'd3-selection';
 import { drag } from 'd3-drag';
 import { line, curveBasis, curveLinear } from 'd3-shape';
+import { polygonContains } from 'd3-polygon';
+import { zoomTransform } from 'd3-zoom';
 import 'd3-transition';
 
 const d3 = {
@@ -11,6 +13,8 @@ const d3 = {
   line,
   curveBasis,
   curveLinear,
+  polygonContains,
+  zoomTransform,
 };
 
 export const useLasso = (svgRef, plotData, isEnabled) => {
@@ -222,7 +226,9 @@ export const useLasso = (svgRef, plotData, isEnabled) => {
       const selectedPoints = plotData.filter(point => {
         const transformedX = point.x * transform.k + transform.x;
         const transformedY = point.y * transform.k + transform.y;
-        return d3.polygonContains(closedPoints, [transformedX, transformedY]);
+        return d3.polygonContains
+          ? d3.polygonContains(closedPoints, [transformedX, transformedY])
+          : polygonContains(closedPoints, [transformedX, transformedY]);
       });
       
       setSelectedTracks(selectedPoints);

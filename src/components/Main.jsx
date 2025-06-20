@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useContext, useCallback, lazy, Suspense } from 'react';
 import Navbar from './Navbar';   // Import the Navbar component
 import Content from './Content'; // Import the Content component
 import Player from './Player';   // Import the Player component
 import { PlaybackContext } from '../context/PlaybackContext';
 import './Main.scss';         // Styles for the .Main container
-import Map from './Map';
+
+// Lazy-load the Map tab so its heavy bundle is fetched only when needed
+const MapLazy = lazy(() => import('./Map'));
 
 // Corrected helper function to strip prefix like "Category---"
 const stripFeaturePrefix = (tagName) => {
@@ -1134,21 +1136,23 @@ function Main({
           />
         </div>
         <div style={{ display: activeTab === 'Map' ? 'block' : 'none' }}>
-          <Map
-            onPlayTrack={handlePlayTrack}
-            currentPlayingTrackId={currentPlayingTrack?.id}
-            isAudioPlaying={isPlaying}
-            currentTime={currentTime}
-            onSeek={handleSeek}
-            crates={crates}
-            tags={tags}
-            selectedCrateId={selectedCrateId}
-            selectedTagId={selectedTagId}
-            viewMode={viewMode}
-            onCrateSelect={setSelectedCrateId}
-            onTagSelect={setSelectedTagId}
-            onViewModeChange={setViewMode}
-          />
+          <Suspense fallback={<div className="MapLoading">Loading map…</div>}>
+            <MapLazy
+              onPlayTrack={handlePlayTrack}
+              currentPlayingTrackId={currentPlayingTrack?.id}
+              isAudioPlaying={isPlaying}
+              currentTime={currentTime}
+              onSeek={handleSeek}
+              crates={crates}
+              tags={tags}
+              selectedCrateId={selectedCrateId}
+              selectedTagId={selectedTagId}
+              viewMode={viewMode}
+              onCrateSelect={setSelectedCrateId}
+              onTagSelect={setSelectedTagId}
+              onViewModeChange={setViewMode}
+            />
+          </Suspense>
         </div>
       </div>
       <Player

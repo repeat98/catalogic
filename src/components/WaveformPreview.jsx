@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, useCallback, useContext } from 'react';
-import WaveSurfer from 'wavesurfer.js';
 import { useInViewport } from '../hooks/useInViewport';
 import { PlaybackContext } from '../context/PlaybackContext';
 import { getCachedWaveform, cacheWaveform } from '../utils/waveformCache.js';
@@ -24,7 +23,7 @@ const WaveformPreview = ({
   const { setPlayingWaveSurfer, currentTrack } = useContext(PlaybackContext);
   
   const [containerRef, isInViewport] = useInViewport({
-    rootMargin: '800px',
+    rootMargin: '400px', // Reduced from 800px to be more conservative on battery
     threshold: 0.1
   });
   
@@ -55,15 +54,21 @@ const WaveformPreview = ({
         cachedPeaks = cachedData.peaks;
       }
       
-      const response = await fetch(audioUrl, { method: 'HEAD' });
-      if (!response.ok) {
-        throw new Error(`Audio file not found: ${response.status} ${response.statusText}`);
+      // Only check if audio file exists when we don't have cached peaks
+      if (!cachedPeaks) {
+        const response = await fetch(audioUrl, { method: 'HEAD' });
+        if (!response.ok) {
+          throw new Error(`Audio file not found: ${response.status} ${response.statusText}`);
+        }
       }
 
       // Explicitly clear the container before creating a new WaveSurfer instance
       if (waveformRef.current) {
         waveformRef.current.innerHTML = '';
       }
+
+      // Dynamic import to reduce initial bundle size
+      const { default: WaveSurfer } = await import('wavesurfer.js');
 
       const wavesurfer = WaveSurfer.create({
         container: waveformRef.current,
