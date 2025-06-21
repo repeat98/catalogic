@@ -27,16 +27,19 @@ const Menu = ({
         </div>
         <MenuItem
           label="Tracks"
+          iconName="music_note"
           isSelected={selectedLibraryItem === 'Tracks'}
           onClick={() => handleLibraryItemClick('Tracks')}
         />
         <MenuItem
           label="Künstler:innen"
+          iconName="person"
           isSelected={selectedLibraryItem === 'Künstler:innen'}
           onClick={() => handleLibraryItemClick('Künstler:innen')}
         />
         <MenuItem
           label="Alben"
+          iconName="album"
           isSelected={selectedLibraryItem === 'Alben'}
           onClick={() => handleLibraryItemClick('Alben')}
           showOptions={false}
@@ -49,7 +52,7 @@ const Menu = ({
         <div data-layer="category-label-wrapper" className="CategoryLabelWrapper">
           <div data-layer="label" className="Label">CRATES</div>
           <button className="AddButton" onClick={() => addItem('crates')} aria-label="Add Crate" title="Add Crate">
-            <span className="AddIconSymbol">+</span>
+            <span className="material-symbol material-symbols-outlined">add</span>
           </button>
         </div>
         {cratesItems.map(item => (
@@ -57,6 +60,7 @@ const Menu = ({
             key={item.id}
             id={item.id}
             label={`${item.label} (${item.trackCount || 0})`}
+            iconName="folder"
             isSelected={selectedCrateItem === item.id}
             onClick={() => handleCrateItemClick(item.id)}
             showOptions={true}
@@ -74,7 +78,7 @@ const Menu = ({
         <div data-layer="category-label-wrapper" className="CategoryLabelWrapper">
           <div data-layer="label" className="Label">TAGS</div>
           <button className="AddButton" onClick={() => addItem('tags')} aria-label="Add Tag" title="Add Tag">
-            <span className="AddIconSymbol">+</span>
+            <span className="material-symbol material-symbols-outlined">add</span>
           </button>
         </div>
         {tagsItems.map(item => (
@@ -82,6 +86,7 @@ const Menu = ({
             key={item.id}
             id={item.id}
             label={`${item.label} (${item.trackCount || 0})`}
+            iconName="label"
             isSelected={selectedTagItem === item.id}
             onClick={() => handleTagItemClick(item.id)}
             showOptions={true}

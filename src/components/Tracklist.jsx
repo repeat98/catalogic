@@ -63,6 +63,7 @@ const Tracklist = ({
   isAudioPlaying,
   currentTime,
   onSeek,
+  onPendingSeek,
   selectedFeatureCategory,
   onFeatureCategoryChange,
   // Sorting props
@@ -215,6 +216,7 @@ const Tracklist = ({
           currentTime={currentPlayingTrackId === track.id ? currentTime : 0}
           onSeek={onSeek}
           onPlayClick={() => onPlayTrack && onPlayTrack(track)}
+          onPendingSeek={onPendingSeek}
         />
       );
     }

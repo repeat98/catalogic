@@ -51,6 +51,7 @@
     "react-window": "^1.8.10",
     "sqlite3": "^5.1.7",
     "umap-js": "^1.4.0",
-    "wavesurfer.js": "^7.9.5"
+    "wavesurfer.js": "^7.9.5",
+    "material-symbols": "^0.31.8"
   }
 }

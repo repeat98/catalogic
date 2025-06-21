@@ -1014,6 +1014,14 @@ function Main({
     }
   };
 
+  const handlePendingSeek = (seekTime) => {
+    // This function handles pending seeks from waveform clicks
+    // It will be called when a track is clicked at a specific position
+    // and will set the currentTime state to that position
+    console.log('[Main] Handling pending seek to time:', seekTime);
+    setCurrentTime(seekTime);
+  };
+
   useEffect(() => {
     if (currentWaveSurfer.current) {
       try {
@@ -1114,6 +1122,7 @@ function Main({
             isPlaying={isPlaying}
             currentTime={currentTime}
             onSeek={handleSeek}
+            onPendingSeek={handlePendingSeek}
             searchTerm={searchTerm}
             onSearchTermChange={handleSearchTermChange}
             sortConfig={sortConfig}
@@ -1160,6 +1169,7 @@ function Main({
         isPlaying={isPlaying}
         currentTime={currentTime}
         onSeek={handleSeek}
+        onPendingSeek={handlePendingSeek}
       />
     </div>
   );

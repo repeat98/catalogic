@@ -54,7 +54,14 @@ module.exports = {
           filename: 'assets/[name][ext]',
           publicPath: 'assets',
         },
-      }
+      },
+      {
+        test: /\.(woff2?|eot|ttf|otf)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/fonts/[name][ext]',
+        },
+      },
     ],
   },
   resolve: {

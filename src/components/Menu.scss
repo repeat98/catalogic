@@ -27,23 +27,24 @@
   .AddButton {
     background: none;
     border: none;
-    color: #777; /* Example color */
+    color: #8C8C8C;
     cursor: pointer;
     padding: 2px;
-    font-size: 1.2rem;
+    font-size: 24px;
     line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
   
     &:hover {
-      color: #333; /* Darker on hover */
+      color: #B3B3B3;
     }
-  }
-  
-  .AddIconSymbol {
-    // Styles for the '+' symbol if it's not just text
-    // For example, if it was an SVG or a custom font icon
+
+    .material-symbol,
+    .material-symbols-outlined {
+      font-size: 24px;
+      color: inherit;
+    }
   }
   
   .Divider {

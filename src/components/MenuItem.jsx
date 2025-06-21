@@ -4,6 +4,7 @@ import './MenuItem.scss'; // This SCSS remains unchanged for item appearance
 const MenuItem = ({
   id, // New: ID for the item, used for context menu actions
   label,
+  iconName,
   isSelected = false,
   showOptions = false,
   onClick, // Main click action for the item
@@ -149,7 +150,16 @@ const MenuItem = ({
       <div className={`${itemClass}`}>
         <div data-layer="title" className="Title">
           <div data-layer="icons" className="Icons">
-            <div data-layer="Vector" className="Vector" />
+            {iconName ? (
+              <span
+                className="material-symbol material-symbols-outlined"
+                aria-hidden="true"
+              >
+                {iconName}
+              </span>
+            ) : (
+              <div data-layer="Vector" className="Vector" />
+            )}
           </div>
           <div data-layer="library-title" className="LibraryTitle">{label}</div>
         </div>
@@ -157,15 +167,20 @@ const MenuItem = ({
           <div
             data-layer="dots"
             className="Dots"
-            onClick={handleDotsClick} // Attach click handler here for dots
+            onClick={handleDotsClick}
             role="button"
             aria-label="Options"
             tabIndex={0}
-            onKeyPress={(e) => { if (e.key === 'Enter' || e.key === ' ') handleDotsClick(e);}}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') handleDotsClick(e);
+            }}
           >
-            <div data-layer="Ellipse 38" className="Ellipse38" />
-            <div data-layer="Ellipse 39" className="Ellipse39" />
-            <div data-layer="Ellipse 40" className="Ellipse40" />
+            <span
+              className="material-symbol material-symbols-outlined"
+              aria-hidden="true"
+            >
+              more_vert
+            </span>
           </div>
         )}
       </div>

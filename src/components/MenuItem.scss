@@ -99,12 +99,18 @@
 }
 
 .Icons {
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-shrink: 0; // Prevents icon from shrinking
+
+  .material-symbol,
+  .material-symbols-outlined {
+    font-size: 24px;
+    color: #8C8C8C;
+  }
 }
 
 .Vector { // Default icon style
@@ -131,29 +137,23 @@
   }
 }
 
+// Updated Dots container for Material Symbol
 .Dots {
-  width: auto; // Or a fixed small width e.g., 4px
-  height: 18px;
+  width: 24px;
+  height: 24px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: space-between; // Distributes dots vertically evenly
-  flex-shrink: 0; // Prevents dots from shrinking
-  padding: 3px 0; // Adds some vertical padding to ensure dots are spaced within 18px height
+  justify-content: center;
+  flex-shrink: 0;
+
+  .material-symbol,
+  .material-symbols-outlined {
+    font-size: 24px;
+    color: #8C8C8C;
+  }
 }
 
-%ellipseBase {
-  width: 3px; // Slightly larger dots
-  height: 3px;
-  border-radius: 50%;
-}
-
-.Ellipse38 { @extend %ellipseBase; }
-.Ellipse39 { @extend %ellipseBase; }
-.Ellipse40 { @extend %ellipseBase; }
-
-// .Ellipse-Dark and .Ellipse-Light are now handled by context within .Property1Options and .Property1OptionSelected
-// No need for these as separate utility classes for dots if structured as above.
+// (Deprecated) Ellipse styles removed after replacing with Material Symbol
 
 // Drag and drop styles
 .MenuItemInstanceWrapper.DragTarget {

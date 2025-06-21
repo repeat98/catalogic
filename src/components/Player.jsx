@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import { PlaybackContext } from '../context/PlaybackContext';
+import WaveformPreview from './WaveformPreview';
 import './Player.scss'; // Imports styles for the Player component
 
-const Player = ({ currentPlayingTrack, isPlaying, currentTime }) => {
+const Player = ({ currentPlayingTrack, isPlaying, currentTime, onPendingSeek }) => {
   const { currentWaveSurfer } = useContext(PlaybackContext);
 
   const formatTime = (seconds) => {
@@ -24,14 +25,6 @@ const Player = ({ currentPlayingTrack, isPlaying, currentTime }) => {
     return 0;
   };
 
-  const getProgress = () => {
-    const duration = getDuration();
-    if (duration > 0 && currentTime >= 0) {
-      return Math.min((currentTime / duration) * 100, 100);
-    }
-    return 0;
-  };
-
   const handlePlayPause = () => {
     if (currentWaveSurfer.current) {
       try {
@@ -46,58 +39,102 @@ const Player = ({ currentPlayingTrack, isPlaying, currentTime }) => {
     }
   };
 
-  const handleSeek = (e) => {
-    if (!currentWaveSurfer.current || !currentPlayingTrack) return;
-    
-    try {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const percentage = Math.max(0, Math.min(1, x / rect.width));
-      
-      console.log('Player seeking to percentage:', percentage);
-      currentWaveSurfer.current.seekTo(percentage);
-    } catch (error) {
-      console.warn('Error seeking:', error);
+  const handleSeek = (seekTime) => {
+    if (currentWaveSurfer.current && currentPlayingTrack) {
+      try {
+        const duration = currentWaveSurfer.current.getDuration();
+        if (duration > 0) {
+          const seekPosition = Math.max(0, Math.min(1, seekTime / duration));
+          currentWaveSurfer.current.seekTo(seekPosition);
+        }
+      } catch (error) {
+        console.warn('Error seeking:', error);
+      }
     }
+  };
+
+  const handleWaveformClick = () => {
+    // This will be called when the waveform is clicked but the track is not currently playing
+    // Since this is the current track's player, we just need to play/pause
+    handlePlayPause();
   };
 
   return (
     <div className="Player">
       {currentPlayingTrack ? (
-        <>
-          <div className="PlayerInfo">
-            <img
-              src={currentPlayingTrack.artwork_thumbnail_path || 'assets/default-artwork.png'}
-              alt="artwork"
-              className="PlayerArtwork"
-              onError={(e) => { e.target.src = 'assets/default-artwork.png'; }}
-            />
-            <div className="TrackInfo">
-              <div className="TrackTitle">{currentPlayingTrack.title}</div>
-              <div className="TrackArtist">{currentPlayingTrack.artist}</div>
+        <div className="player-content">
+          {/* Track Info */}
+          <div className="track-info-section">
+            <div className="track-artwork">
+              <img
+                src={currentPlayingTrack.artwork_thumbnail_path || 'assets/default-artwork.png'}
+                alt="artwork"
+                onError={(e) => { e.target.src = 'assets/default-artwork.png'; }}
+              />
+            </div>
+            <div className="track-details">
+              <div className="track-title">{currentPlayingTrack.title}</div>
+              <div className="track-artist">{currentPlayingTrack.artist}</div>
             </div>
           </div>
-          <div className="PlayerControls">
-            <button 
-              className="PlayPauseButton"
-              onClick={handlePlayPause}
-            >
-              {isPlaying ? '⏸' : '▶'}
+
+          {/* Player Controls */}
+          <div className="player-controls-section">
+            <button className="control-btn skip-prev">
+              <span className="material-symbols-outlined">skip_previous</span>
             </button>
-            <div className="TimeInfo">
-              <span>{formatTime(currentTime)}</span>
-              <div className="ProgressBar" onClick={handleSeek}>
-                <div 
-                  className="ProgressFill"
-                  style={{ 
-                    width: `${getProgress()}%`
-                  }}
-                />
-              </div>
-              <span>{formatTime(getDuration())}</span>
+            <button
+              className="control-btn play-pause-btn"
+              onClick={handlePlayPause}
+              aria-label={isPlaying ? 'Pause' : 'Play'}
+            >
+              <span className="material-symbols-outlined">
+                {isPlaying ? 'pause' : 'play_arrow'}
+              </span>
+            </button>
+            <button className="control-btn skip-next">
+              <span className="material-symbols-outlined">skip_next</span>
+            </button>
+          </div>
+
+          {/* Waveform Visualization */}
+          <div className="waveform-section">
+            <WaveformPreview
+              trackId={currentPlayingTrack.id}
+              isPlaying={isPlaying}
+              currentTime={currentTime}
+              onSeek={handleSeek}
+              onPlayClick={handleWaveformClick}
+              onPendingSeek={onPendingSeek}
+              height={30}
+              waveColor="#606060"
+              progressColor="rgba(255, 255, 255, 0.3)"
+            />
+          </div>
+
+          {/* Volume Controls */}
+          <div className="volume-controls-section">
+            <div className="volume-icon">
+              <span className="material-symbols-outlined">volume_up</span>
+            </div>
+            <div className="volume-slider">
+              <input 
+                type="range" 
+                min="0" 
+                max="100" 
+                defaultValue="80"
+                className="volume-input"
+              />
             </div>
           </div>
-        </>
+
+          {/* Playlist Icon */}
+          <div className="playlist-section">
+            <button className="playlist-btn">
+              <span className="material-symbols-outlined">format_list_bulleted</span>
+            </button>
+          </div>
+        </div>
       ) : (
         <div className="NoTrackMessage">No track selected</div>
       )}
