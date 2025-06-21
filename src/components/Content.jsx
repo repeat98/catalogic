@@ -15,6 +15,7 @@ const Content = ({
   onTrackSelect,
   onPlayTrack,
   onSeek,
+  onPendingSeek,
   isLoading,
   error,
   // Updated Search props
@@ -193,6 +194,7 @@ const Content = ({
             isAudioPlaying={isPlaying}
             currentTime={currentTime}
             onSeek={onSeek}
+            onPendingSeek={onPendingSeek}
             selectedFeatureCategory={selectedFeatureCategory}
             onFeatureCategoryChange={onFeatureCategoryChange}
             sortConfig={sortConfig}

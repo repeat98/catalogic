@@ -60,8 +60,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error("Database connection error:", err.message);
   } else {
-    console.log("Connected to the SQLite database.");
-    // Initialize the database schema
+    // console.log("Connected to the SQLite database.");
     initDatabase();
   }
 });
@@ -72,9 +71,9 @@ const waveformsDir = path.join(__dirname, "waveforms");
 // Ensure the waveforms directory exists
 if (!fs.existsSync(waveformsDir)) {
   fs.mkdirSync(waveformsDir, { recursive: true });
-  console.log(`Created waveforms directory at ${waveformsDir}`);
+  // console.log(`Created waveforms directory at ${waveformsDir}`);
 } else {
-  console.log(`Waveforms directory already exists at ${waveformsDir}`);
+  // console.log(`Waveforms directory already exists at ${waveformsDir}`);
 }
 
 let mainWindow;
@@ -197,7 +196,7 @@ app.whenReady().then(() => {
       // Set up an interval to send updates to the renderer
       const intervalId = setInterval(() => {
         if (outputBuffer.length > 0) {
-          console.log("Sending output to renderer:", outputBuffer.join("")); // Debugging
+          // console.log("Sending output to renderer:", outputBuffer.join("")); // Debugging
           event.sender.send("python-output", outputBuffer.join(""));
           outputBuffer.length = 0; // Clear buffer after sending
         }
@@ -218,7 +217,7 @@ app.whenReady().then(() => {
       analyzeProcess.on("close", (code) => {
         clearInterval(intervalId); // Clear the interval when process closes
         if (code === 0) {
-          console.log("Final output sent to renderer:", output); // Debugging
+          // console.log("Final output sent to renderer:", output); // Debugging
           event.sender.send("python-output", output);
           resolve(output.trim());
         } else {
@@ -269,7 +268,7 @@ function initDatabase() {
     if (err) {
       console.error("Error creating crates table:", err.message);
     } else {
-      console.log("Crates table created or already exists.");
+      // console.log("Crates table created or already exists.");
     }
   });
 
@@ -288,7 +287,7 @@ function initDatabase() {
     if (err) {
       console.error("Error creating tags table:", err.message);
     } else {
-      console.log("Tags table created or already exists.");
+      // console.log("Tags table created or already exists.");
     }
   });
 
@@ -329,12 +328,12 @@ function initDatabase() {
               console.error(`Error adding ${column.name} column:`, err.message);
               reject(err);
             } else {
-              console.log(`Added ${column.name} column to classified_tracks table.`);
+              // console.log(`Added ${column.name} column to classified_tracks table.`);
               resolve();
             }
           });
         } else {
-          console.log(`${column.name} column already exists in classified_tracks table.`);
+          // console.log(`${column.name} column already exists in classified_tracks table.`);
           resolve();
         }
       });
@@ -342,7 +341,7 @@ function initDatabase() {
 
     Promise.all(addColumnPromises)
       .then(() => {
-        console.log("Database schema updated successfully.");
+        // console.log("Database schema updated successfully.");
       })
       .catch((err) => {
         console.error("Error adding new columns:", err.message);
@@ -872,14 +871,14 @@ function initRoutes() {
         
         // Validate the cached data
         if (parsedData && Array.isArray(parsedData.peaks) && parsedData.peaks.length > 0) {
-          console.log('Serving cached waveform for track', trackId, 'Size:', parsedData.peaks.length);
+          // console.log('Serving cached waveform for track', trackId, 'Size:', parsedData.peaks.length);
           res.json(parsedData);
         } else {
           console.error('Invalid waveform data format for track', trackId, 'Data:', parsedData);
           res.status(404).json({ error: "Invalid waveform data format" });
         }
       } else {
-        console.log('No cached waveform found for track', trackId);
+        // console.log('No cached waveform found for track', trackId);
         res.status(404).json({ error: "Waveform not found" });
       }
     } catch (error) {
@@ -904,17 +903,17 @@ function initRoutes() {
       // Ensure the waveforms directory exists
       if (!fs.existsSync(waveformsDir)) {
         fs.mkdirSync(waveformsDir, { recursive: true });
-        console.log('Created waveforms directory:', waveformsDir);
+        // console.log('Created waveforms directory:', waveformsDir);
       }
 
       // Write the waveform data to file
       fs.writeFileSync(waveformPath, JSON.stringify(waveformData, null, 2));
-      console.log('Waveform cached successfully for track', trackId, 'at path:', waveformPath);
+      // console.log('Waveform cached successfully for track', trackId, 'at path:', waveformPath);
       
       // Verify the file was written correctly
       if (fs.existsSync(waveformPath)) {
         const fileStats = fs.statSync(waveformPath);
-        console.log('Waveform file size:', fileStats.size, 'bytes');
+        // console.log('Waveform file size:', fileStats.size, 'bytes');
         res.json({ success: true, fileSize: fileStats.size });
       } else {
         throw new Error('File was not written successfully');
@@ -1071,5 +1070,5 @@ function initRoutes() {
 
 // Start the Express server
 expressApp.listen(port, () => {
-  console.log(`Express server running at http://localhost:${port}`);
+  // console.log(`Express server running at http://localhost:${port}`);
 });

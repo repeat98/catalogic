@@ -18,22 +18,22 @@ const RecommendationPanel = ({
   const [rejectedTrackIds, setRejectedTrackIds] = useState([]);
 
   const calculateSimilarityScores = useMemo(() => {
-    console.log('Calculating recommendations with:', {
-      currentTracksCount: currentTracks?.length,
-      allTracksCount: allTracks?.length
-    });
+    // console.log('Calculating recommendations with:', {
+    //   currentTracksCount: currentTracks?.length,
+    //   allTracksCount: allTracks?.length
+    // });
 
     if (!currentTracks?.length || !allTracks?.length) {
-      console.log('No tracks available for recommendations');
+      // Log removed
       return [];
     }
 
     // 1. Calculate the average feature vector of tracks in the current tag
     const tagTracks = allTracks.filter(track => currentTracks.includes(track.id));
-    console.log('Tag tracks found:', tagTracks.length);
+    // Log removed
 
     if (!tagTracks.length) {
-      console.log('No tracks found in current tag');
+      // Log removed
       return [];
     }
 
@@ -46,7 +46,7 @@ const RecommendationPanel = ({
     });
 
     if (allFeatureKeys.size === 0) {
-      console.log('No style features found in any tracks');
+      // Log removed
       return [];
     }
 
@@ -64,7 +64,7 @@ const RecommendationPanel = ({
     });
 
     if (tracksWithFeatures === 0) {
-        console.log('No tracks in tag have style features');
+        // Log removed
         return [];
     }
 
@@ -72,14 +72,14 @@ const RecommendationPanel = ({
       averageVector[key] /= tracksWithFeatures;
     });
 
-    console.log('Average vector calculated');
+    // Log removed
 
     // 2. Score candidate tracks against the average vector using cosine similarity
     const candidateTracks = allTracks.filter(track => !currentTracks.includes(track.id));
-    console.log('Candidate tracks found:', candidateTracks.length);
+    // Log removed
 
     if (candidateTracks.length === 0) {
-      console.log('No candidate tracks available');
+      // Log removed
       return [];
     }
     
@@ -121,14 +121,14 @@ const RecommendationPanel = ({
       .sort((a, b) => b.similarityScore - a.similarityScore)
       .slice(0, 20);
 
-    console.log('Final recommendations count:', finalRecommendations.length);
+    // Log removed
     return finalRecommendations;
   }, [currentTracks, allTracks]);
 
   useEffect(() => {
     setIsLoading(true);
     const newRecommendations = calculateSimilarityScores;
-    console.log('Setting new recommendations:', newRecommendations.length);
+    // Log removed
     setRecommendations(newRecommendations);
     setIsLoading(false);
   }, [calculateSimilarityScores]);

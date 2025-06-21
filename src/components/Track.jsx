@@ -32,12 +32,14 @@ const Track = ({
   onRemoveTagFromTrack
 }) => {
   const handleMainClick = () => {
+    console.log('[Track] handleMainClick called for track:', track.id);
     if (onTrackClick) {
       onTrackClick();
     }
   };
 
   const handleDoubleClick = (e) => {
+    console.log('[Track] handleDoubleClick called for track:', track.id);
     if (onPlayClick) {
       e.stopPropagation(); // Prevent row selection from firing again if it's already selected
       onPlayClick(e);

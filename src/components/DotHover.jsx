@@ -144,7 +144,7 @@ const DotHover = ({
         const texture = await PIXI.Texture.from(artworkPath);
         coverArt.texture = texture;
       } catch (error) {
-        console.error("💥 Error loading cover art:", error);
+        // Error log removed
         coverArt.texture = PIXI.Texture.from(defaultArtwork);
       }
     };
@@ -189,7 +189,7 @@ const DotHover = ({
           }
         }
       } catch (error) {
-        console.error("💥 Error loading waveform:", error);
+        // Error log removed
         
         const errorText = new PIXI.Text({
           text: 'Error loading waveform',

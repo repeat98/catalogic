@@ -9,15 +9,31 @@ export const PlaybackProvider = ({ children }) => {
   const [currentTrack, setCurrentTrack] = useState(null);
   const currentWaveSurfer = useRef(null);
 
+  // Add logging wrapper for setCurrentTrack
+  const setCurrentTrackWithLog = (track) => {
+    console.log('[PlaybackContext] setCurrentTrack called:', {
+      oldTrackId: currentTrack?.id,
+      newTrackId: track?.id
+    });
+    setCurrentTrack(track);
+  };
+
   /**
    * Sets the currently playing WaveSurfer instance.
    * Stops any previously playing instance and resets its progress.
    * @param {WaveSurfer} wavesurfer - The WaveSurfer instance to set as currently playing.
    */
   const setPlayingWaveSurfer = (newWaveSurferInstance) => {
+    console.log('[PlaybackContext] setPlayingWaveSurfer called:', {
+      hadPrevious: !!currentWaveSurfer.current,
+      hasNew: !!newWaveSurferInstance,
+      isSameInstance: currentWaveSurfer.current === newWaveSurferInstance
+    });
+    
     // Stop and reset the previous instance if it's different from the new one
     if (currentWaveSurfer.current && currentWaveSurfer.current !== newWaveSurferInstance) {
       try {
+        console.log('[PlaybackContext] Stopping previous WaveSurfer');
         currentWaveSurfer.current.stop(); // This stops playback and resets progress
         currentWaveSurfer.current.setVolume(0);
       } catch (error) {
@@ -29,8 +45,9 @@ export const PlaybackProvider = ({ children }) => {
     currentWaveSurfer.current = newWaveSurferInstance;
     
     // Ensure the new instance has full volume (only for new instances)
-    if (newWaveSurferInstance && currentWaveSurfer.current !== newWaveSurferInstance) {
+    if (newWaveSurferInstance) {
       try {
+        console.log('[PlaybackContext] Setting volume on new WaveSurfer');
         newWaveSurferInstance.setVolume(1);
       } catch (error) {
         console.warn('[Context] Error setting volume on new WaveSurfer:', error);
@@ -79,7 +96,7 @@ export const PlaybackProvider = ({ children }) => {
     <PlaybackContext.Provider
       value={{
         currentTrack,
-        setCurrentTrack,
+        setCurrentTrack: setCurrentTrackWithLog,
         currentWaveSurfer,
         setPlayingWaveSurfer,
       }}

@@ -461,7 +461,7 @@ const TrackVisualizerRefactored = ({
   }, []);
 
   const handleTrackClick = useCallback((trackData) => {
-    console.log("Clicked track:", trackData.id, trackData.title);
+    // Log removed
   }, []);
 
   // Search functionality
@@ -780,8 +780,8 @@ const TrackVisualizerRefactored = ({
           <TempPlaylist
             selectedTracks={selectedTracks}
             onClearSelection={lassoMode.clearFn}
-            onTrackClick={(track) => console.log('Track clicked in temp playlist:', track.title)}
-            onTrackDoubleClick={(track) => console.log('Track double-clicked in temp playlist:', track.title)}
+            onTrackClick={(track) => { /* console.log('Track clicked in temp playlist:', track.title) */ }}
+            onTrackDoubleClick={(track) => { /* console.log('Track double-clicked in temp playlist:', track.title) */ }}
             onRemoveTrack={(track) => {
               setSelectedTracks(prev => prev.filter(t => t.id !== track.id));
             }}

@@ -6,6 +6,13 @@ import './Player.scss'; // Imports styles for the Player component
 const Player = ({ currentPlayingTrack, isPlaying, currentTime, onPendingSeek }) => {
   const { currentWaveSurfer } = useContext(PlaybackContext);
 
+  console.log('[Player] Component state:', {
+    currentPlayingTrackId: currentPlayingTrack?.id,
+    isPlaying,
+    currentTime,
+    hasWaveSurfer: !!currentWaveSurfer.current
+  });
+
   const formatTime = (seconds) => {
     if (!seconds || seconds < 0) return '0:00';
     const minutes = Math.floor(seconds / 60);
@@ -26,6 +33,7 @@ const Player = ({ currentPlayingTrack, isPlaying, currentTime, onPendingSeek }) 
   };
 
   const handlePlayPause = () => {
+    console.log('[Player] handlePlayPause called, isPlaying:', isPlaying);
     if (currentWaveSurfer.current) {
       try {
         if (isPlaying) {
@@ -40,11 +48,13 @@ const Player = ({ currentPlayingTrack, isPlaying, currentTime, onPendingSeek }) 
   };
 
   const handleSeek = (seekTime) => {
+    console.log('[Player] handleSeek called:', seekTime);
     if (currentWaveSurfer.current && currentPlayingTrack) {
       try {
         const duration = currentWaveSurfer.current.getDuration();
         if (duration > 0) {
           const seekPosition = Math.max(0, Math.min(1, seekTime / duration));
+          console.log('[Player] Seeking to position:', seekPosition);
           currentWaveSurfer.current.seekTo(seekPosition);
         }
       } catch (error) {
@@ -56,6 +66,7 @@ const Player = ({ currentPlayingTrack, isPlaying, currentTime, onPendingSeek }) 
   const handleWaveformClick = () => {
     // This will be called when the waveform is clicked but the track is not currently playing
     // Since this is the current track's player, we just need to play/pause
+    console.log('[Player] handleWaveformClick called');
     handlePlayPause();
   };
 
@@ -99,6 +110,7 @@ const Player = ({ currentPlayingTrack, isPlaying, currentTime, onPendingSeek }) 
 
           {/* Waveform Visualization */}
           <div className="waveform-section">
+            {/* Temporarily disabled to prevent interference with TrackCell waveforms
             <WaveformPreview
               trackId={currentPlayingTrack.id}
               isPlaying={isPlaying}
@@ -110,6 +122,19 @@ const Player = ({ currentPlayingTrack, isPlaying, currentTime, onPendingSeek }) 
               waveColor="#606060"
               progressColor="rgba(255, 255, 255, 0.3)"
             />
+            */}
+            <div style={{ 
+              height: '30px', 
+              backgroundColor: '#2a2a2a', 
+              borderRadius: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#666',
+              fontSize: '12px'
+            }}>
+              Waveform Display
+            </div>
           </div>
 
           {/* Volume Controls */}

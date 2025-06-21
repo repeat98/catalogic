@@ -387,6 +387,7 @@ function Main({
   const [isLoading, setIsLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
+  const [pendingSeekTime, setPendingSeekTime] = useState(null);
   const { currentWaveSurfer, setCurrentTrack: setContextTrack } = useContext(PlaybackContext);
   const timeUpdateIntervalRef = useRef(null);
   const [selectedFeatureCategory, setSelectedFeatureCategory] = useState('Style');
@@ -478,13 +479,13 @@ function Main({
   }, [setCrates, selectedCrateId, setSelectedCrateId, setViewMode, setSelectedLibraryItem]);
 
   const addTrackToCrate = useCallback(async (crateId, trackId) => {
-    console.log('addTrackToCrate called with:', { crateId, trackId });
-    console.log('Current view state before adding track:', { viewMode, selectedCrateId });
+    // console.log('addTrackToCrate called with:', { crateId, trackId });
+    // console.log('Current view state before adding track:', { viewMode, selectedCrateId });
     
     try {
       const currentCrate = crates[crateId];
       if (!currentCrate) {
-        console.log('Crate not found:', crateId);
+        // console.log('Crate not found:', crateId);
         return;
       }
 
@@ -499,17 +500,17 @@ function Main({
         });
         
         if (response.ok) {
-          console.log('Successfully added track to crate');
+          // console.log('Successfully added track to crate');
           setCrates(prev => ({
             ...prev,
             [crateId]: { ...prev[crateId], tracks: updatedTracks }
           }));
-          console.log('Crate state updated, checking view state after setCrates');
+          // console.log('Crate state updated, checking view state after setCrates');
         } else {
           console.error('Failed to update crate on server');
         }
       } else {
-        console.log('Track already in crate');
+        // console.log('Track already in crate');
       }
     } catch (error) {
       console.error('Failed to add track to crate:', error);
@@ -517,13 +518,13 @@ function Main({
   }, [crates, setCrates, viewMode, selectedCrateId]);
 
   const addTracksToCrate = useCallback(async (crateId, trackIds) => {
-    console.log('addTracksToCrate called with:', { crateId, trackIds });
-    console.log('Current view state before adding tracks:', { viewMode, selectedCrateId });
+    // console.log('addTracksToCrate called with:', { crateId, trackIds });
+    // console.log('Current view state before adding tracks:', { viewMode, selectedCrateId });
     
     try {
       const currentCrate = crates[crateId];
       if (!currentCrate) {
-        console.log('Crate not found:', crateId);
+        // console.log('Crate not found:', crateId);
         return;
       }
 
@@ -531,7 +532,7 @@ function Main({
       const newTracks = trackIds.filter(trackId => !existingTracks.includes(trackId));
       
       if (newTracks.length === 0) {
-        console.log('All tracks already in crate');
+        // console.log('All tracks already in crate');
         return;
       }
 
@@ -544,12 +545,12 @@ function Main({
       });
       
       if (response.ok) {
-        console.log(`Successfully added ${newTracks.length} tracks to crate`);
+        // console.log(`Successfully added ${newTracks.length} tracks to crate`);
         setCrates(prev => ({
           ...prev,
           [crateId]: { ...prev[crateId], tracks: updatedTracks }
         }));
-        console.log('Multiple tracks added to crate, checking view state after setCrates');
+        // console.log('Multiple tracks added to crate, checking view state after setCrates');
       } else {
         console.error('Failed to update crate on server');
       }
@@ -801,17 +802,17 @@ function Main({
 
   // Sidebar handlers
   const handleLibraryItemClick = (itemName) => {
-    console.log('=== LIBRARY ITEM CLICKED ===');
-    console.log('Switching to library item:', itemName);
+    // console.log('=== LIBRARY ITEM CLICKED ===');
+    // console.log('Switching to library item:', itemName);
     setSelectedLibraryItem(itemName);
     setViewMode('library');
     setSelectedCrateId(null);
   };
 
   const handleCrateItemClick = (crateId) => {
-    console.log('=== CRATE ITEM CLICKED ===');
-    console.log('Switching to crate:', crateId);
-    console.log('Stack trace:', new Error().stack);
+    // console.log('=== CRATE ITEM CLICKED ===');
+    // console.log('Switching to crate:', crateId);
+    // console.log('Stack trace:', new Error().stack);
     setSelectedCrateId(crateId);
     setViewMode('crate');
     setSelectedLibraryItem(null);
@@ -837,7 +838,7 @@ function Main({
 
   // Drag and drop handlers
   const handleTrackDragStart = (event, track) => {
-    console.log('Track drag started:', track.id, track.title);
+    // console.log('Track drag started:', track.id, track.title);
     event.dataTransfer.setData('text/plain', JSON.stringify({ trackId: track.id, trackData: track }));
     event.dataTransfer.effectAllowed = 'copy';
   };
@@ -861,10 +862,10 @@ function Main({
 
   // Debug effect to track view mode changes
   useEffect(() => {
-    console.log('=== VIEW STATE CHANGED ===');
-    console.log('View mode:', viewMode);
-    console.log('Selected crate ID:', selectedCrateId);
-    console.log('Stack trace:', new Error().stack);
+    // console.log('=== VIEW STATE CHANGED ===');
+    // console.log('View mode:', viewMode);
+    // console.log('Selected crate ID:', selectedCrateId);
+    // console.log('Stack trace:', new Error().stack);
   }, [viewMode, selectedCrateId]);
 
   useEffect(() => {
@@ -992,25 +993,55 @@ function Main({
       return;
     }
 
+    console.log('[Main] handlePlayTrack called:', {
+      trackId: track.id,
+      currentPlayingTrackId: currentPlayingTrack?.id,
+      isPlaying,
+      pendingSeekTime
+    });
+
     if (currentPlayingTrack && currentPlayingTrack.id === track.id) {
+      console.log('[Main] Toggling play/pause for current track');
       setIsPlaying(prev => !prev);
     } else {
+      console.log('[Main] Setting new track as current:', track.id);
+      
+      // Stop the current track if playing
+      if (currentWaveSurfer.current && isPlaying) {
+        try {
+          console.log('[Main] Stopping current track before switching');
+          currentWaveSurfer.current.pause();
+        } catch (e) {
+          console.warn('[Main] Error stopping current track:', e);
+        }
+      }
+      
       setCurrentPlayingTrack(track);
       setContextTrack(track);
       setIsPlaying(true);
-      setCurrentTime(0);
+      
+      // If we have a pending seek time, use it; otherwise start from 0
+      if (pendingSeekTime !== null) {
+        console.log('[Main] Using pending seek time:', pendingSeekTime);
+        setCurrentTime(pendingSeekTime);
+        setPendingSeekTime(null); // Clear it after use
+      } else {
+        setCurrentTime(0);
+      }
     }
   };
 
   const handleSeek = (newTime) => {
+    console.log('[Main] handleSeek called:', newTime);
     if (currentWaveSurfer.current) {
       try {
         const duration = currentWaveSurfer.current.getDuration();
         if (duration > 0) {
           const seekPosition = Math.min(1, Math.max(0, newTime / duration));
+          console.log('[Main] Seeking to position:', seekPosition, 'time:', newTime);
           currentWaveSurfer.current.seekTo(seekPosition);
         }
-      } catch(e) { /* console.warn("Error in handleSeek", e) */ }
+      } catch(e) { console.warn("Error in handleSeek", e) }
     }
   };
 
@@ -1019,16 +1050,24 @@ function Main({
     // It will be called when a track is clicked at a specific position
     // and will set the currentTime state to that position
     console.log('[Main] Handling pending seek to time:', seekTime);
-    setCurrentTime(seekTime);
+    setPendingSeekTime(seekTime);
   };
 
   useEffect(() => {
+    console.log('[Main] Play/pause effect triggered:', {
+      isPlaying,
+      hasWaveSurfer: !!currentWaveSurfer.current,
+      currentTrackId: currentPlayingTrack?.id
+    });
+    
     if (currentWaveSurfer.current) {
       try {
         if (isPlaying) {
+          console.log('[Main] Starting playback');
           currentWaveSurfer.current.setVolume(1);
           currentWaveSurfer.current.play();
         } else {
+          console.log('[Main] Pausing playback');
           currentWaveSurfer.current.pause();
         }
       } catch(e) { console.warn("[Main] Error in play/pause effect", e) }

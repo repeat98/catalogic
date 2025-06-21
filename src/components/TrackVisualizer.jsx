@@ -1107,7 +1107,7 @@ const TrackVisualizer = ({
     };
   }, []);
 
-  const handleDotClick = useCallback((trackData) => console.log("Clicked track:", trackData.id, trackData.title), []);
+  const handleDotClick = useCallback((trackData) => // Log removed
 
   // Function to generate search suggestions
   const generateSuggestions = useCallback((query) => {
@@ -2038,10 +2038,10 @@ const TrackVisualizer = ({
             selectedTracks={selectedTracks}
             onClearSelection={handleClearSelection}
             onTrackClick={(track) => {
-              console.log('Track clicked in temp playlist:', track.title);
+              // Log removed
             }}
             onTrackDoubleClick={(track) => {
-              console.log('Track double-clicked in temp playlist:', track.title);
+              // Log removed
             }}
             onRemoveTrack={(track) => {
               setSelectedTracks(prev => prev.filter(t => t.id !== track.id));

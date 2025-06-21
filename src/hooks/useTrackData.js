@@ -174,7 +174,7 @@ export const useTrackData = (svgDimensions, filterOptions = {}) => {
         let clusterLabels;
         if (validTracksForProcessing.length > CLUSTERING_THRESHOLD) {
           // Avoid expensive HDBSCAN on huge datasets – layout is preserved via PCA
-          console.log('[TrackData] Large dataset detected – skipping clustering for performance');
+          // console.log('[TrackData] Large dataset detected – skipping clustering for performance');
           clusterLabels = new Array(validTracksForProcessing.length).fill(-1);
         } else {
           clusterLabels = hdbscan(processedFeatureData);

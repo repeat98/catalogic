@@ -16,7 +16,7 @@ const getPreloadDelay = () => {
  * Iteratively preloads and caches waveforms for all tracks in the database.
  */
 export const preloadAllWaveforms = async () => {
-  console.log('[WaveformPreloader] Starting background waveform preloading...');
+  // console.log('[WaveformPreloader] Starting background waveform preloading...');
   try {
     // Use cached/deduplicated fetch
     const tracks = await fetchTracksWithCache('http://localhost:3000/tracks');
@@ -108,7 +108,7 @@ export const preloadAllWaveforms = async () => {
         }
       }
     }
-    console.log('[WaveformPreloader] Finished background waveform preloading.');
+    // console.log('[WaveformPreloader] Finished background waveform preloading.');
   } catch (error) {
     console.error('[WaveformPreloader] General error during preloading process:', error);
   }
