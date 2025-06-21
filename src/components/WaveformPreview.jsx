@@ -16,7 +16,8 @@ const WaveformPreview = ({
   onPendingSeek,
   height = 30,
   waveColor = '#7a7a7a',
-  progressColor = '#9a9a9a'
+  progressColor = '#9a9a9a',
+  isPlayerWaveform = false  // New prop to identify player waveforms
 }) => {
   const waveformRef = useRef(null);
   const wavesurferRef = useRef(null);
@@ -103,6 +104,12 @@ const WaveformPreview = ({
       isInitializingRef.current = false;
 
       wavesurfer.on('click', (relativePos) => {
+        // Only handle clicks if we have handlers (not read-only mode)
+        if (!onSeek && !onPlayClick) {
+          console.log(`[WaveformPreview ${trackId}] Click ignored - read-only mode`);
+          return;
+        }
+        
         console.log(`[WaveformPreview ${trackId}] Click event:`, {
           relativePos,
           isThisPreviewTheCurrentTrack,
@@ -208,6 +215,18 @@ const WaveformPreview = ({
     setIsReady(false);
   }, [trackId]);
 
+  // Effect to handle trackId changes
+  useEffect(() => {
+    console.log(`[WaveformPreview] Track ID changed to:`, trackId);
+    return () => {
+      // Cleanup when trackId changes or component unmounts
+      if (wavesurferRef.current) {
+        console.log(`[WaveformPreview] Cleaning up waveform for track:`, trackId);
+        cleanupWaveform();
+      }
+    };
+  }, [trackId, cleanupWaveform]);
+
   useEffect(() => {
     if (isInViewport) {
       vLog(`[WaveformPreview ${trackId}] In viewport - initializing`);
@@ -230,15 +249,38 @@ const WaveformPreview = ({
     vLog(`[WaveformPreview ${trackId}] Volume control effect:`, {
       isThisPreviewTheCurrentTrack,
       isReady,
-      hasWaveSurfer: !!wavesurferRef.current
+      hasWaveSurfer: !!wavesurferRef.current,
+      hasPlayClick: !!onPlayClick,
+      isPlayerWaveform
     });
     
     if (isThisPreviewTheCurrentTrack && isReady && wavesurferRef.current) {
-      console.log(`[WaveformPreview ${trackId}] Setting as playing wavesurfer`);
-      setPlayingWaveSurfer(wavesurferRef.current);
-      try {
-        wavesurferRef.current.setVolume(1);
-      } catch (e) { vLog('Error setting volume to 1 for track', trackId, e); }
+      // Only set as playing wavesurfer if this is an interactive waveform (has onPlayClick) and not the player
+      if (onPlayClick && !isPlayerWaveform) {
+        console.log(`[WaveformPreview ${trackId}] Setting as playing wavesurfer`);
+        setPlayingWaveSurfer(wavesurferRef.current);
+        try {
+          wavesurferRef.current.setVolume(1);
+        } catch (e) { vLog('Error setting volume to 1 for track', trackId, e); }
+      } else if (isPlayerWaveform) {
+        // This is a display-only waveform (Player), keep it muted but sync play/pause state
+        vLog(`[WaveformPreview ${trackId}] Player waveform - syncing play/pause state`);
+        try {
+          wavesurferRef.current.setVolume(0);
+          // Sync the play/pause state with the main playback
+          if (isPlaying && !wavesurferRef.current.isPlaying()) {
+            wavesurferRef.current.play();
+          } else if (!isPlaying && wavesurferRef.current.isPlaying()) {
+            wavesurferRef.current.pause();
+          }
+        } catch (e) { vLog('Error syncing player waveform state', trackId, e); }
+      } else {
+        // This is a display-only waveform (like in Player), keep it muted
+        vLog(`[WaveformPreview ${trackId}] Display-only mode - keeping muted`);
+        try {
+          wavesurferRef.current.setVolume(0);
+        } catch (e) { vLog('Error muting display-only waveform', trackId, e); }
+      }
     } else if (wavesurferRef.current && isReady) {
       vLog(`[WaveformPreview ${trackId}] Muting non-current track`);
       try {
@@ -248,7 +290,7 @@ const WaveformPreview = ({
         }
       } catch (e) { vLog('Error muting/pausing non-current track', trackId, e); }
     }
-  }, [isThisPreviewTheCurrentTrack, isReady, setPlayingWaveSurfer, trackId]);
+  }, [isThisPreviewTheCurrentTrack, isReady, setPlayingWaveSurfer, trackId, onPlayClick, isPlayerWaveform, isPlaying]);
 
   useEffect(() => {
     if (wavesurferRef.current && isReady && currentTime !== undefined && !justAppliedSeek && pendingSeekTime === null) {
@@ -263,21 +305,23 @@ const WaveformPreview = ({
             currentTime,
             timeDifference,
             isThisPreviewTheCurrentTrack,
-            isPlaying
+            isPlaying,
+            isPlayerWaveform
           });
           
-          if (isThisPreviewTheCurrentTrack && isPlaying) {
-            // Don't sync during active playback to avoid interrupting user seeks
-            vLog(`[WaveformPreview ${trackId}] Skipping sync during playback`);
-          } else {
+          // For player waveforms, always sync to show progress
+          // For TrackCell waveforms, only sync when not actively playing to avoid interrupting user seeks
+          if (isPlayerWaveform || (!isThisPreviewTheCurrentTrack || !isPlaying)) {
             const seekPosition = Math.min(1, Math.max(0, currentTime / duration));
             vLog(`[WaveformPreview ${trackId}] Syncing to position:`, seekPosition);
             wavesurferRef.current.seekTo(seekPosition);
+          } else {
+            vLog(`[WaveformPreview ${trackId}] Skipping sync during playback`);
           }
         }
       }
     }
-  }, [currentTime, isReady, trackId, isThisPreviewTheCurrentTrack, isPlaying, justAppliedSeek, pendingSeekTime]);
+  }, [currentTime, isReady, trackId, isThisPreviewTheCurrentTrack, isPlaying, justAppliedSeek, pendingSeekTime, isPlayerWaveform]);
 
   // Effect to apply pending seek when track becomes current
   useEffect(() => {

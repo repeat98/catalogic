@@ -6,11 +6,12 @@ import './Player.scss'; // Imports styles for the Player component
 const Player = ({ currentPlayingTrack, isPlaying, currentTime, onPendingSeek }) => {
   const { currentWaveSurfer } = useContext(PlaybackContext);
 
-  console.log('[Player] Component state:', {
+  console.log('[Player] Component render:', {
     currentPlayingTrackId: currentPlayingTrack?.id,
     isPlaying,
     currentTime,
-    hasWaveSurfer: !!currentWaveSurfer.current
+    hasWaveSurfer: !!currentWaveSurfer.current,
+    timestamp: Date.now()
   });
 
   const formatTime = (seconds) => {
@@ -110,31 +111,18 @@ const Player = ({ currentPlayingTrack, isPlaying, currentTime, onPendingSeek }) 
 
           {/* Waveform Visualization */}
           <div className="waveform-section">
-            {/* Temporarily disabled to prevent interference with TrackCell waveforms
             <WaveformPreview
+              key={`player-waveform-${currentPlayingTrack.id}`}
               trackId={currentPlayingTrack.id}
               isPlaying={isPlaying}
               currentTime={currentTime}
               onSeek={handleSeek}
               onPlayClick={handleWaveformClick}
-              onPendingSeek={onPendingSeek}
               height={30}
-              waveColor="#606060"
-              progressColor="rgba(255, 255, 255, 0.3)"
+              waveColor="#7a7a7a"
+              progressColor="#9a9a9a"
+              isPlayerWaveform={true}
             />
-            */}
-            <div style={{ 
-              height: '30px', 
-              backgroundColor: '#2a2a2a', 
-              borderRadius: '4px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#666',
-              fontSize: '12px'
-            }}>
-              Waveform Display
-            </div>
           </div>
 
           {/* Volume Controls */}

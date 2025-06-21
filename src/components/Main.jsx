@@ -1141,6 +1141,14 @@ function Main({
 
   const [activeTab, setActiveTab] = useState('Collection');
 
+  // Add effect to track currentPlayingTrack changes
+  useEffect(() => {
+    console.log('[Main] currentPlayingTrack changed:', {
+      trackId: currentPlayingTrack?.id,
+      title: currentPlayingTrack?.title
+    });
+  }, [currentPlayingTrack]);
+
   return (
     <div className="Main">
       <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
